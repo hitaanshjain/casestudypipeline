@@ -11,7 +11,7 @@ This plan adapts the verified ideas from the recon of the IMathAS template pipel
 2. **Ground-truth hierarchy** (recon #9): SymPy result > LLM claim; pdflatex result > LLM claim about compiling; approved playbook > model inference. Written down, enforced in code.
 3. **Evidence-gated stages** (recon #4). A stage passes by producing its evidence artifact (per-answer recomputation report, compile log, judge ledger), never by "no errors found."
 4. **Read-only validators, quarantined mutation** (recon #5). Validators report, they never edit. The only things that write case content are the author stage and the regeneration loop. Any format-only fix pass is guarded by a forbidden-change scan: boxed answers, expressions, trap numbers, verdict, and question count must be byte-identical before and after.
-5. **Defense in depth** (recon #2). The highest-stakes rules live in three places: the prompt (v4 invariants), a linter, and the final gate. Examples: scope fence (banned concepts), answer-number consistency, trap materiality.
+5. **Defense in depth** (recon #2). The highest-stakes rules live in three places: the prompt (v5 invariants), a linter, and the final gate. Examples: scope fence (banned concepts), answer-number consistency, trap materiality.
 6. **Verification is not approval** (recon #3). Terminal machine status is `READY_FOR_INSTRUCTOR_REVIEW`. Only a human sets `APPROVED_FOR_MATHGPT`. Early on, that human is Peter calibrating difficulty against the taco-truck benchmark.
 7. **Per-run isolation** (recon #6, lightweight). Every run gets `runs/<run_id>/` holding all artifacts plus a `run_manifest.json` with input hashes and stage statuses. No artifact is ever read from outside the run folder.
 8. **Fixtures with negative controls** (recon #8). A `fixtures/` corpus of good and bad case specs; the bad ones must keep failing. CI is just "run the validators over fixtures and diff against expected_results.json."
@@ -58,9 +58,9 @@ HUMAN GATE (Peter / instructor)                                 status: APPROVED
 
 **S0 Intake.** Validate the request (subject, subtopic required; domain, case_number, key_placement, count optional). Create `runs/<run_id>/`, hash inputs into `run_manifest.json`.
 
-**S1 Playbook.** Look up `playbooks/<subject>__<subtopic-slug>.json`. Cache hit with `approved: true` proceeds. Miss: one LLM call derives the playbook (P1 to P7 from prompt v4), saved with `approved: false`, run pauses at `NEEDS_PLAYBOOK_APPROVAL`; a human skims, edits, flips the flag once, and every future run for that subject reuses it. This is the harvest loop as a pipeline stage, with the consistency and cost benefits of deriving once.
+**S1 Playbook.** Look up `playbooks/<subject>__<subtopic-slug>.json`. Cache hit with `approved: true` proceeds. Miss: one LLM call derives the playbook (P1 to P8 from prompt v5), saved with `approved: false`, run pauses at `NEEDS_PLAYBOOK_APPROVAL`; a human skims, edits, flips the flag once, and every future run for that subject reuses it. This is the harvest loop as a pipeline stage, with the consistency and cost benefits of deriving once.
 
-**S2 Author.** One LLM call with: v4 invariants (adapted to emit JSON, see section 5), the approved playbook, and the request. Output is `case_spec.json`, validated against `case_spec.schema.json`. Schema failure retries once with the validator errors appended, then blocks.
+**S2 Author.** One LLM call with: v5 invariants (adapted to emit JSON, see section 5), the approved playbook, and the request. Output is `case_spec.json`, validated against `case_spec.schema.json`. Schema failure retries once with the validator errors appended, then blocks.
 
 **S3 Verify.** Deterministic, read-only, no LLM. For every part, map `math.kind` to a SymPy routine, recompute the expected answers from the expressions, and emit per-answer evidence: `{part, quantity, expected, recomputed, match, method}`. Also checks: trap wrong-number recomputed from the stated wrong method; trap materiality (the wrong and right numbers land on opposite sides of the decision threshold, or differ by a configured minimum); clean-number policy from the playbook (integers or stated rounding); scope fence (expression feature scan: e.g., a calc1-no-integrals run must contain no `Integral` nodes; banned function forms per playbook). Any mismatch routes back to S2 with the findings attached to the prompt (max 3 regenerations, then `BLOCKED_MATH` for human eyes).
 
@@ -125,12 +125,12 @@ New fixtures harvested from the v4 review (each with a bad case that must keep f
 
 ---
 
-## 5. Prompt migration (what happens to v4)
+## 5. Prompt migration (what happens to the single-shot prompt)
 
-v4 stays as the single-shot manual prompt (useful for quick experiments and for Peter). The pipeline splits it into three derived prompts, all sharing v4's invariants and playbooks as the single source of truth:
+v5 (which superseded v4 after the July 2 external review) stays as the single-shot manual prompt (useful for quick experiments and for Peter). The pipeline splits it into three derived prompts, all sharing v5's invariants and playbooks as the single source of truth:
 - **author.md**: invariants + playbook + request, output contract changed from LaTeX to `case_spec.json` per the schema. Expressions must be SymPy-parseable Python syntax (`**` not `^`), a rule stated in the prompt AND enforced by the schema AND rejected by the verifier (defense in depth).
-- **render.md**: verified spec in, LaTeX contract (the v4 preamble and rules) out. It is told, and lint enforces, that it may not alter any number.
-- **judge.md**: the checklist ledger prompt built from v4's preflight items, reworded adversarially ("find the way this case fails the strip test; if you cannot, state what you examined").
+- **render.md**: verified spec in, LaTeX contract (the v5 preamble and rules) out. It is told, and lint enforces, that it may not alter any number.
+- **judge.md**: the checklist ledger prompt built from v5's preflight items, reworded adversarially ("find the way this case fails the strip test; if you cannot, state what you examined").
 
 ---
 

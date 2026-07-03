@@ -106,33 +106,35 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 4. Ask MathGPT which web math renderer they use; confirm OpenStax license terms.
 5. Real-student timing validation.
 6. Build the fixture suite starting from the extracts' patterns.
-7. Sync this machine's partial working copy with the full repo (cases/, plan/, recon/, prompts/archive/ are absent here); move v4 into prompts/archive/ during that sync.
-8. Pipeline: add a verdict-category control at S0 intake so verdict distribution across a course pack is measurable and steerable (v5 handles per-call bias only).
+7. Finish the repo sync (mostly done July 2: cases/, plan/, recon/ now present and committed): still missing prompts/archive/ (v1-v3) and the 4 cases/archive/ harder-tier files; move v4 into prompts/archive/ once it exists.
+8. DECIDE (Hitaansh): calculus-textbook.pdf, the full 52MB OpenStax PDF, is committed and pushed to the GitHub remote. Section 2 already logs the OpenStax NonCommercial license caution; a public repo redistributing the full book is a real exposure, and the 52MB blob permanently bloats clones. Removing it properly requires a history rewrite (git filter-repo) plus force push, so it is a deliberate call, and it gets harder the more commits pile on top. Check whether the repo is private as a stopgap.
+9. Pipeline: add a verdict-category control at S0 intake so verdict distribution across a course pack is measurable and steerable (v5 handles per-call bias only).
 
 ## 14. ACTIVE TASK: freeze case_spec.schema.json and start pipeline week 1
 
 The v4 review cycle is COMPLETE (July 2, 2026): findings triaged, accepted edits shipped as v5, full accept/modify/reject record in section 5, residual limits in section 12. The review request predicted version skew and it happened exactly as predicted (reviewer quoted the removed 80-95% rule).
-Next per the build plan (section 7): freeze case_spec.schema.json FIRST (the week-1 non-negotiable), then week-1 tasks per plan/pipeline_build_plan.md. Note: the plan file is not on this machine (see backlog 7); sync the full repo before starting, or pull the plan file in. The v5 prompt is the single-shot manual mode; the pipeline's author.md / render.md / judge.md derive from the same invariants+playbooks source of truth, so schema fields should mirror v5's required content (boxed answers, skill labels, trap both-numbers, verdict category chosen at authoring time, P8 reference data list, verification arithmetic).
+Next per the build plan (section 7): freeze case_spec.schema.json FIRST (the week-1 non-negotiable), then week-1 tasks per plan/pipeline_build_plan.md (now in the repo). The v5 prompt is the single-shot manual mode; the pipeline's author.md / render.md / judge.md derive from the same invariants+playbooks source of truth, so schema fields should mirror v5's required content (boxed answers, skill labels, trap both-numbers, verdict category chosen at authoring time, P8 reference data list, verification arithmetic).
 Fresh-session v5 tests (backlog 2) can run in parallel with schema work.
 
 ## 15. Repo layout and file map
 
-NOTE: this machine's working copy is PARTIAL. Present here: CLAUDE.md, prompt_review_request.md (at repo root, not prompts/), prompts/universal_case_study_prompt_v5.md, prompts/universal_case_study_prompt_v4.md. Everything else below lives in the full repo elsewhere; sync per backlog 7.
+Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshjain/casestudypipeline (pushed). Commit after every change per the operating rules.
 
 ```
 /CLAUDE.md                                  (this file)
+/.gitignore                                 (LaTeX build junk, _reference/, runs/)
+/calculus-textbook.pdf                      52MB OpenStax PDF: COMMITTED AND PUSHED, see backlog 8
+/prompt_review_request.md                   the review prompt (repo root)
 /prompts/universal_case_study_prompt_v5.md  CURRENT generator prompt
-/prompts/universal_case_study_prompt_v4.md  superseded; move to prompts/archive/ on sync
-/prompt_review_request.md                   the review prompt (root on this machine)
-/prompts/archive/master_case_study_prompt_v3.md
-/prompts/archive/calc1_case_generator_prompt_v2_latex.md
-/prompts/archive/calc1_case_study_generator_prompt.md   (v1)
+/prompts/universal_case_study_prompt_v4.md  superseded; move to prompts/archive/ when archives are added
+/prompts/archive/                           NOT YET IN REPO: v1, v2, v3 prompt files still to add
 /cases/food_bank_case_calc1.md  /cases/food_bank_case.tex  /cases/food_bank_case.pdf
 /cases/community_garden_case_calc1.md
-/cases/alder_creek_bridge_calc1.md          (+ the Taco_Truck docx from Peter if available)
+/cases/alder_creek_bridge_calc1.md
+/cases/Taco_Truck_case_study.docx.pdf       Peter's benchmark case
 /cases/tests/test_stats_recycling_case.{tex,pdf}
 /cases/tests/test_finance_cookie_case.{tex,pdf}
-/cases/archive/alder_creek_bridge_case.md  terranova_pueblo_decision_case.md  terranova_energy_case.md  cedar_and_sage_quantitative_case.md
+/cases/archive/                             directory EMPTY: the 4 harder-tier files (sec 6) still to add
 /plan/pipeline_build_plan.md
 /recon/PIPELINE_RECON.md  /recon/REFERENCE_EXTRACTS.md
 /recon/pipeline_recon_prompt_claude_code.md  /recon/extraction_prompt_run2.md
