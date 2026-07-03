@@ -105,7 +105,7 @@ Mix rule: roughly 40% definition, 40% procedure, 20% interpretation; with count 
 Traceability: each card carries a % comment citing its source, either a section anchor (e.g. #kuttler-1.3-def-5) or `lo_mapping:missing_concepts[n]`. A card whose answer cannot be tied to a specific file passage may not exist.
 
 ### Output contract
-One complete, compilable LaTeX document under the SAME fixed house preamble and hard rules as v5 (pdflatex first pass, ASCII only, grayscale, no code fences, allowed packages only). Layout:
+One complete, compilable LaTeX document under the house preamble, minimally adapted for the deck (as implemented: keybox dropped as unused, a cardbox environment added, footer text "COURSE NAME · DECK TITLE · Flashcards"; all v5 hard rules kept: pdflatex first pass, ASCII only, grayscale, no code fences, allowed packages only). Layout:
 - Title line: topic-derived, plus course name prettified from lo_mapping.source_course_level.
 - Page 1 "Quiz yourself": numbered card fronts (the prompt/question only).
 - Page 2 "Answers": the same numbers with the backs. Numbering must match exactly.
