@@ -1,0 +1,142 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\tcbuselibrary{skins,breakable}
+
+\definecolor{boxbg}{gray}{0.94}
+\definecolor{boxline}{gray}{0.55}
+\definecolor{keybg}{gray}{0.97}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\small\color{gray} Intro Statistics \quad$\cdot$\quad The Recycling Contract Renewal Decision \quad$\cdot$\quad Case Study \#1}
+\fancyfoot[R]{\small\color{gray}\thepage}
+
+\newtcolorbox{databox}{enhanced, breakable, colback=boxbg, colframe=boxline,
+  boxrule=0.6pt, arc=3pt, left=10pt, right=10pt, top=8pt, bottom=8pt}
+\newtcolorbox{keybox}{enhanced, breakable, colback=keybg, colframe=boxline,
+  boxrule=0.8pt, arc=3pt, left=12pt, right=12pt, top=10pt, bottom=10pt}
+
+\newcommand{\question}[1]{\medskip\noindent\textbf{#1}\par\smallskip}
+\newcommand{\hint}[1]{{\small\color{gray}\textit{Hint: #1}}\par}
+\newcommand{\skill}[1]{{\small\textit{Skill: #1}}\par}
+
+\begin{document}
+{\small NAME: \underline{\hspace{2.6in}}}\par\vspace{6pt}
+\begin{center}
+{\LARGE\bfseries The Recycling Contract Renewal Decision}\\[3pt]
+\rule{2.2in}{0.8pt}\\[5pt]
+{\itshape a city program decision \quad$\bullet$\quad Intro Statistics}
+\end{center}
+
+\vspace{4pt}
+
+Dana coordinates the city's curbside recycling program. For years, audits have found that 20 percent of recycling bins are contaminated with trash, and every contaminated bin costs the city money at the sorting plant. Last year the city paid Clear Bin Media \$30{,}000 to run an education campaign, and the contract is up for renewal this month. Dana's team just audited a random sample of bins, and the number looks better than 20 percent. The city manager wants the renewal decision backed by evidence, not vibes, and the renewal call is Dana's.
+
+\medskip
+\begin{databox}
+\textbf{Dana's records (everything you need)}
+\begin{itemize}[leftmargin=14pt, itemsep=3pt, topsep=4pt]
+\item Historical contamination rate: \textbf{20\% of bins}, stable for years before the campaign.
+\item This month's audit: a random sample of \textbf{100 bins}, of which \textbf{16 were contaminated}.
+\item From the city analyst's formula sheet: if the true rate were still $p_0$, an audit of $n$ bins varies by chance with standard error $\sqrt{p_0(1-p_0)/n}$, and the city treats a result as convincing evidence of a drop only when $z = (\hat{p} - p_0)/\text{SE}$ is $-1.645$ or lower (the city's 5\% evidence standard).
+\item Renewing the campaign costs \textbf{\$30{,}000 per year}. Next quarter Dana could afford a \textbf{400-bin} audit.
+\end{itemize}
+\end{databox}
+
+\question{1. Frame the Skeptic's Question}
+Write the two competing explanations as statements about the true contamination rate $p$: the skeptic's position (the campaign changed nothing) and the campaign's claim. Then confirm the audit is large enough to trust the formula sheet: both $np_0$ and $n(1-p_0)$ should be at least 10.
+\hint{The skeptic says $p$ is still exactly 0.20, and the sample just got lucky.}
+
+\question{2. Is the Drop Real, or Just Luck?}
+Compute the sample rate $\hat{p}$, the standard error, and $z$. By the city's 5\% evidence standard, is 16 out of 100 convincing evidence that the campaign lowered the rate?
+\hint{Compare your $z$ to $-1.645$.}
+
+\question{3. Settle the Renewal Dispute}
+A teammate says: ``16\% is clearly below 20\%. The campaign obviously worked. Renew.'' As a group, decide whether the teammate is right, using your answer to Question 2, and be ready to defend your call. Then check one more thing: if next quarter's 400-bin audit came back at the very same 16\%, what would $z$ be, and would the city's conclusion change?
+\hint{Only $n$ changes inside the standard error.}
+
+\medskip
+\noindent\textit{As a group, write Dana a 2--3 sentence recommendation: renew now, decline, or wait for the bigger audit, and what the numbers say.}
+
+\vfill
+\begin{center}\small\color{gray}Instructor materials on the next page.\end{center}
+
+\newpage
+
+\section*{Optional checklist (hand out only if a group is stuck)}
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+\item The skeptic's assumption pins down $p_0 = 0.20$. Write both claims about $p$ before touching any numbers.
+\item Compute $\hat{p} = 16/100$ first, then the standard error using $p_0 = 0.20$, not $\hat{p}$.
+\item $z$ measures how many standard errors the audit sits below 20\%. Compare it to $-1.645$.
+\item For the teammate: ``lower than 20\%'' and ``too low to be luck'' are different claims. Which one did you test?
+\item For the 400-bin audit, recompute the standard error with $n = 400$ and reuse $\hat{p} = 0.16$.
+\end{enumerate}
+
+\section*{Answer key (instructor)}
+\begin{keybox}
+\textbf{Q1. Framing.}\\
+Skeptic (null): $p = 0.20$, the campaign changed nothing.\\
+Campaign's claim (alternative): $p < 0.20$.\\
+Conditions: $np_0 = 100(0.20) = 20 \ge 10$ and $n(1-p_0) = 80 \ge 10$, so the normal model applies.\\
+\skill{framing competing claims as hypotheses about a proportion; checking conditions}
+
+\medskip
+\textbf{Q2. The test.}\\
+$\hat{p} = 16/100 = 0.16$.\\
+$\text{SE} = \sqrt{(0.20)(0.80)/100} = \sqrt{0.0016} = 0.04$.\\
+$z = (0.16 - 0.20)/0.04 = \boxed{-1.0}$\\
+Since $-1.0 > -1.645$, the audit is NOT convincing at the 5\% standard. A drop this size or larger happens by pure luck about 16\% of the time when the true rate is still 20\% ($p$-value $\approx 0.159$).\\
+\skill{test statistic, decision against a significance standard}
+
+\medskip
+\textbf{Q3. The dispute, and the bigger audit.}\\
+The teammate confuses ``the sample is lower'' with ``the drop is too large to be chance.'' The correct resolution: 16 out of 100 is consistent with luck, so the audit does not establish that the campaign worked.\\
+At $n = 400$ with the same $\hat{p} = 0.16$: $\text{SE} = \sqrt{(0.20)(0.80)/400} = 0.02$, so $z = -0.04/0.02 = \boxed{-2.0}$, which IS convincing ($-2.0 \le -1.645$, $p$-value $\approx 0.023$).\\
+Same percentage, different conclusion: sample size, not the percentage alone, determines how sure the city can be. For reference, this month's audit would have been convincing only at $\hat{p} \le 0.20 - 1.645(0.04) = 0.134$, i.e., 13 or fewer contaminated bins.\\
+\skill{statistical evidence versus eyeballing; the role of sample size}
+
+\medskip
+\textbf{Verdict.} Do not renew on this evidence alone: a \$30{,}000 commitment should not rest on a result that luck produces one time in six. Run the 400-bin audit next quarter; if contamination is still near 16\%, that audit will settle it. (Note the honest verdict here is ``not yet,'' not ``no.'')
+\end{keybox}
+
+\section*{Alignment (instructor-facing)}
+\begin{description}[leftmargin=0pt, itemsep=2pt]
+\item[Course:] Intro Statistics.
+\item[Textbook:] OpenStax Introductory Statistics, Chapter 9, Hypothesis Testing with One Sample (one-proportion $z$-test).
+\item[Learning objectives (3):] (1) frame competing real-world claims as hypotheses about a true proportion; (2) measure surprise with the standard error and a $z$-statistic against an evidence standard; (3) distinguish ``the sample looks lower'' from ``the drop is statistically convincing,'' and see how sample size changes the verdict at the same percentage.
+\item[Distinct because:] the trap is settled by the test itself, and the two audits (100 vs 400 bins, same 16\%) reach opposite conclusions, which is the deepest lesson available at this level.
+\item[Inert distractors:] the vendor's name; the sorting-plant cost detail (motivation only, no computation uses it).
+\end{description}
+
+% ================= DERIVED PLAYBOOK (review and promote to library if good) =================
+% SUBJECT: Intro Statistics   SUBTOPIC: hypothesis testing with one proportion
+% P1 SCOPE FENCE: one-proportion z-test only: hypotheses about p, sample proportion,
+%    SE = sqrt(p0(1-p0)/n) under the null, z statistic, decision vs a critical value at 5%,
+%    success/failure condition np0 >= 10 and n(1-p0) >= 10. NOT allowed (untaught here):
+%    two-proportion tests, t-tests, chi-square, confidence intervals, power calculations by name.
+% P2 GRAIN SIZE: chunky. ONE concept (the test) in layers: frame, compute, interpret,
+%    then the sample-size twist. Fills 15-20 group minutes.
+% P3 FULL STRENGTH: degenerate version = "here are H0 and Ha, compute z." Full strength =
+%    students frame the hypotheses from a real claim, check conditions, run the test, and
+%    interpret the conclusion for a dollar decision; the same p-hat is tested at two sample sizes.
+% P4 CLEAN NUMBERS: n of 100 and 400; p0 = 0.20; counts giving SE of 0.04 and 0.02 and z of
+%    -1.0 and -2.0 exactly; critical value -1.645 supplied on a formula sheet.
+% P5 TRAP: the misconception with decision stakes is "the sample percentage is lower, therefore
+%    the claim is proven" (eyeballing vs sampling variability). Wrong path: 16% < 20% so renew.
+%    Right path: z = -1.0, not significant. The gap flips the $30,000 decision. Runner-up
+%    misconceptions (not used): p-value = probability the null is true; significance = importance.
+% P6 AUTHENTIC USERS: city program coordinators, quality-control managers, public-health
+%    officers, campaign and product managers evaluating interventions.
+% P7 INTERPRETATION DEMAND: hypotheses stated in words about the true rate; z interpreted as
+%    "how many SEs below normal"; the decision stated as renew / decline / wait with the
+%    evidence standard named; the n = 400 result interpreted as what sample size buys.
+% ===========================================================================================
+\end{document}

@@ -1,0 +1,107 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\tcbuselibrary{skins,breakable}
+
+\definecolor{boxbg}{gray}{0.94}
+\definecolor{boxline}{gray}{0.55}
+\definecolor{keybg}{gray}{0.97}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\small\color{gray} Intro Finance \quad$\cdot$\quad The Cookie Box Pricing Decision \quad$\cdot$\quad Case Study \#2}
+\fancyfoot[R]{\small\color{gray}\thepage}
+
+\newtcolorbox{databox}{enhanced, breakable, colback=boxbg, colframe=boxline,
+  boxrule=0.6pt, arc=3pt, left=10pt, right=10pt, top=6pt, bottom=6pt}
+
+\newcommand{\question}[1]{\medskip\noindent\textbf{#1}\par\smallskip}
+\newcommand{\hint}[1]{{\small\color{gray}\textit{Hint: #1}}\par}
+
+\begin{document}
+\thispagestyle{fancy}
+{\small NAME: \underline{\hspace{2.6in}}}\par\vspace{4pt}
+\begin{center}
+{\LARGE\bfseries The Cookie Box Pricing Decision}\\[3pt]
+\rule{2.2in}{0.8pt}\\[4pt]
+{\itshape a small-business pricing decision \quad$\bullet$\quad Intro Finance}
+\end{center}
+
+\vspace{2pt}
+
+Amara owns a small bakery and wants to launch a line of gourmet cookie boxes. Her accountant is blunt: the new line only makes sense if it earns a \textbf{40\% profit margin}, and it must carry \$1{,}200 a month of extra kitchen and lease costs on its own. Her business partner has already printed a price sheet using a rule of thumb. Before Amara commits, she wants the numbers checked.
+
+\smallskip
+\begin{databox}
+\textbf{Amara's numbers (everything you need)}
+\begin{itemize}[leftmargin=14pt, itemsep=2pt, topsep=3pt]
+\item Cost to make one box: \textbf{\$6.00}. Fixed costs for the line: \textbf{\$1{,}200 per month}.
+\item Required profit margin: \textbf{40\%}. Margin is profit as a share of the \emph{price}.
+\item A campus market study estimates sales of about \textbf{400 boxes per month} at a price near \$10.
+\item The partner's price sheet: ``cost plus a 40\% markup, so \$6.00 + 40\% = \textbf{\$8.40} per box.''
+\end{itemize}
+\end{databox}
+
+\question{1. Check the Partner's Price}
+The partner insists a 40\% markup gives a 40\% margin. At \$8.40 per box, what margin does Amara actually earn? As a group, settle whether markup and margin are the same thing, and be ready to defend your answer.
+\hint{Margin divides the profit by the price; markup divides it by the cost.}
+
+\question{2. Find the Right Price}
+What price gives a true 40\% margin? Verify your price by computing its margin.
+\hint{At the right price, the \$6.00 cost is exactly 60\% of the price.}
+
+\question{3. Will the Line Survive?}
+For the partner's \$8.40 and for your Question 2 price: how many boxes per month does the line need just to cover the \$1{,}200 in fixed costs, and what is the monthly profit or loss at the expected 400 boxes? Which price makes the launch viable?
+\hint{Each box contributes its profit toward the fixed costs; break-even is fixed costs divided by profit per box.}
+
+\smallskip
+\noindent\textit{As a group, write Amara a 2--3 sentence recommendation: launch or not, at what price, and what to tell the partner about the price sheet.}
+
+\vfill
+
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}\textbf{ANSWER KEY}\end{center}
+{\small
+\textit{1)} Profit at \$8.40 is $8.40 - 6.00 = \$2.40$. Margin $= 2.40/8.40 = \boxed{28.6\%}$, well short of 40\%. Markup and margin are different: markup measures against cost, margin against price, so a 40\% markup always yields a smaller margin.
+
+\textit{2)} Require $\text{price} - 6.00 = 0.40 \times \text{price}$, so $6.00 = 0.60 \times \text{price}$ and $\text{price} = \boxed{\$10.00}$. Check: $(10.00 - 6.00)/10.00 = 40\%$.
+
+\textit{3)} Profit per box: \$2.40 at \$8.40; \$4.00 at \$10.00. Break-even: $1200/2.40 = \boxed{500 \text{ boxes}}$ at \$8.40 versus $1200/4.00 = \boxed{300 \text{ boxes}}$ at \$10.00. At the expected 400 boxes: \$8.40 loses $400(2.40) - 1200 = -\$240$ per month; \$10.00 earns $400(4.00) - 1200 = +\$400$ per month. Only the \$10.00 price is viable.
+
+\textit{Verdict.} Launch at \$10.00: expected demand (400) clears the 300-box break-even and nets about \$400 a month. At the partner's \$8.40 the line loses \$240 a month at the same demand, so the price sheet must be corrected before printing menus.
+}
+
+% ================= VETTED PLAYBOOK USED (Intro Finance, from library) =================
+% P1 Scope: markup vs margin + linear break-even (subtopic supplied); no calculus; formulas
+%    described in plain words in hints.
+% P2 Grain: two concepts, decision compares two real options (two candidate prices) against
+%    a demand threshold.
+% P3 Full strength: options differ structurally (a rule-of-thumb price vs a margin-derived
+%    price with different break-evens), not just different numbers on identical structures;
+%    break-even solved, not eyeballed.
+% P4 Clean numbers: whole dollars, margin 40%, cost $6.00, break-evens 500 and 300,
+%    profits -$240 and +$400 at 400 boxes.
+% P5 Trap: confusing markup with margin; wrong path gives $8.40 and a money-losing launch;
+%    the gap flips the decision. Framed as the partner's claim = the group discussion.
+% P6 Authentic user: small-business owner pricing a product line.
+% P7 Interpretation: every computed number restated as dollars per month and launch/no-launch.
+%
+% Instructor checklist (same_page mode, kept as comments):
+%  1. Compute profit per box at $8.40 first, then divide by the PRICE for margin.
+%  2. For Q2, write the margin requirement as an equation and solve for price.
+%  3. Break-even = fixed costs / profit per box. Do it at both prices.
+%  4. Compare both break-evens to 400 expected boxes, then compute profit at 400.
+% Alignment: Intro Finance; markup vs margin; contribution and break-even analysis;
+% objectives: (1) distinguish markup from margin and price to a required margin;
+% (2) compute break-even from fixed costs and per-unit contribution; (3) turn both into a
+% launch decision against expected demand. Inert distractors: none beyond flavor (bakery
+% setting, menu printing).
+% ======================================================================================
+\end{document}

@@ -1,0 +1,149 @@
+\documentclass[11pt]{article}
+
+% ---------- packages ----------
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\tcbuselibrary{skins,breakable}
+
+% ---------- colors ----------
+\definecolor{ink}{HTML}{1A1A2E}
+\definecolor{accent}{HTML}{2C5F8A}
+\definecolor{soft}{HTML}{F1F5F9}
+\definecolor{rule}{HTML}{CBD5E1}
+\definecolor{keybg}{HTML}{FBF7EF}
+\definecolor{keyline}{HTML}{C9A24B}
+
+% ---------- section styling ----------
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0em}{}
+\titlespacing{\section}{0pt}{14pt}{6pt}
+
+% ---------- header ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\small\color{gray} The Food Bank Warehouse Decision \quad$\cdot$\quad Calculus 1}
+\fancyfoot[R]{\small\color{gray}\thepage}
+
+% ---------- data box ----------
+\newtcolorbox{databox}{
+  enhanced, breakable, colback=soft, colframe=rule,
+  boxrule=0.6pt, arc=3pt, left=10pt, right=10pt, top=8pt, bottom=8pt
+}
+
+% ---------- answer key box ----------
+\newtcolorbox{keybox}{
+  enhanced, breakable, colback=keybg, colframe=keyline,
+  boxrule=1pt, arc=3pt, left=12pt, right=12pt, top=10pt, bottom=10pt
+}
+
+\newcommand{\question}[1]{\medskip\noindent\textbf{\color{ink}#1}\par\smallskip}
+\newcommand{\hint}[1]{{\small\color{gray}\textit{Hint: #1}}\par}
+
+\begin{document}
+
+% ---------- title ----------
+\begin{center}
+{\LARGE\bfseries\color{ink} The Food Bank Warehouse Decision}\\[4pt]
+{\color{accent}\rule{2.2in}{1.2pt}}\\[6pt]
+{\itshape A nonprofit operations decision \quad$\bullet$\quad Calculus 1}
+\end{center}
+
+\vspace{6pt}
+
+Every winter, the Riverside Food Bank gets slammed with holiday donations. Its director, Marcus, is worried about two different things at once. The warehouse might physically overflow with food during the surge, and his volunteer crew might not be able to sort donations fast enough on the busiest day. Both problems point to the same expensive fix: leasing a second warehouse and recruiting more volunteers. Marcus wants to decide with numbers, not panic. His records are below.
+
+\section*{Marcus's records \small\color{gray}(everything you need)}
+\vspace{-4pt}
+
+\begin{databox}
+\begin{description}[leftmargin=0pt, itemsep=6pt]
+\item[The holiday surge.] Donations arrive at the rate $C(t) = 120t - 10t^2$ crates per day, where $t$ is the number of days since the surge began. The surge lasts \textbf{12 days}. Meanwhile, partner pantries pick up a steady \textbf{100 crates per day} the whole time.
+\item[Right now.] The warehouse currently holds \textbf{2{,}000 crates} and can hold at most \textbf{3{,}500}. Volunteers can sort at most \textbf{300 crates per day}. The warehouse is a converted textile mill on Route 9.
+\end{description}
+\end{databox}
+
+\section*{Your questions}
+
+\question{1. Will the warehouse overflow during the surge?}
+The change in what is stored is the food coming \emph{in} minus the food going \emph{out}. Find the net change in inventory over the 12 days,
+\[
+\int_0^{12}\bigl(120t - 10t^2 - 100\bigr)\,dt,
+\]
+then add it to the 2{,}000 crates already there. Does the total go past the 3{,}500 the warehouse can hold?
+
+\question{2. On the single busiest day, can the volunteers keep up?}
+Find the busiest day of the surge and the peak donation rate. Compare that peak to the 300 crates per day the volunteers can sort. Are they keeping up or falling behind?
+\hint{$C(t)$ is an upside-down parabola, so its peak is where the slope $C'(t)$ equals zero.}
+
+\question{3. A board member's shortcut.}
+At a meeting, a board member says: ``We will get about 360 crates a day for 12 days, so budget for $360 \times 12 = 4{,}320$ crates of donations.'' Find the \emph{actual} total donations over the surge and explain why the board member's number is too high.
+\hint{Is the donation rate really 360 every single day?}
+
+\medskip
+\noindent\textit{Write Marcus a 2--3 sentence recommendation: should he lease the second warehouse and recruit more volunteers, and what do the numbers say?}
+
+\vfill
+
+\begin{center}\small\color{gray}Optional checklist on the next page if you get stuck, followed by the answer key.\end{center}
+
+\newpage
+
+\section*{Optional checklist \small\color{gray}(only if you are stuck)}
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+\item ``Net change'' means in minus out. What is the rate of food coming in? Going out? Subtract, then integrate over the 12 days.
+\item Add that net change to the starting 2{,}000 crates and compare to 3{,}500.
+\item The busiest day: where is the donation rate largest? Use the derivative.
+\item Compare that peak rate to what the volunteers can handle.
+\end{enumerate}
+
+\vspace{10pt}
+
+\section*{Answer key \small\color{gray}(instructor)}
+
+\begin{keybox}
+
+\textbf{Q1. Overflow?} \; Net change in inventory over 12 days:
+\[
+\int_0^{12}\!\bigl(120t - 10t^2 - 100\bigr)\,dt
+= \left[\,60t^2 - \tfrac{10}{3}t^3 - 100t\,\right]_0^{12}
+= 8640 - 5760 - 1200 = \boxed{1680 \text{ crates gained.}}
+\]
+Ending inventory $= 2000 + 1680 = \mathbf{3{,}680}$ crates, which is past the 3{,}500 limit. \textbf{The warehouse overflows} by about 180 crates. \\[2pt]
+{\small\color{accent}Skill: net change, turning an inflow-minus-outflow rate into a total (Net Change Theorem).}
+
+\medskip
+\textbf{Q2. Busiest day?} \; $C'(t) = 120 - 20t = 0 \Rightarrow t = 6$, so the peak is \textbf{day 6}. Peak rate $C(6) = 720 - 360 = \mathbf{360}$ crates per day. Since $360 > 300$, the volunteers fall behind by about \textbf{60 crates on the peak day}. \\[2pt]
+{\small\color{accent}Skill: maximum via the derivative.}
+
+\medskip
+\textbf{Q3. The shortcut.} \; Actual total donations:
+\[
+\int_0^{12}\!\bigl(120t - 10t^2\bigr)\,dt
+= \left[\,60t^2 - \tfrac{10}{3}t^3\,\right]_0^{12}
+= 8640 - 5760 = \boxed{2880 \text{ crates.}}
+\]
+The board member multiplied the \emph{peak} rate (360, which only happens on day 6) by all 12 days. The rate climbs to 360 and then falls back, so the honest total is the integral, \textbf{2{,}880}, not 4{,}320. The average is $2880 \div 12 = 240$ crates per day. \\[2pt]
+{\small\color{accent}Skill: a changing rate cannot be treated as constant.}
+
+\medskip
+\textbf{Verdict.} \; Both signals say \textbf{expand}. Inventory will overflow the warehouse ($3{,}680 > 3{,}500$) and the volunteers cannot keep up on the busiest day ($360 > 300$). Marcus should lease the second warehouse and recruit extra holiday volunteers, and budget around the real donation total of 2{,}880 crates, not the inflated 4{,}320.
+
+\end{keybox}
+
+\vspace{10pt}
+
+\section*{Alignment \small\color{gray}(instructor-facing)}
+\begin{description}[leftmargin=0pt, itemsep=3pt]
+\item[Course:] Calculus 1 only.
+\item[OpenStax Calculus Volume 1:] 4.3 Maxima and Minima; 5.3 Fundamental Theorem of Calculus; 5.4 Net Change Theorem; 5.2 (average value of a function).
+\item[Learning objectives:] (1) turn a net rate into an accumulated total with the integral; (2) find a maximum with the derivative and compare it to a capacity; (3) recognize that a changing rate cannot be multiplied as if constant.
+\end{description}
+
+\end{document}
