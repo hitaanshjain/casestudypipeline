@@ -96,7 +96,7 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 
 ## 12. Known caveats (post-review, July 2, 2026)
 
-- The phase2 v1 prompts passed their first test round July 2 (see sec 6: case, flashcards, and the calibration-gate negative control all green on static checks), BUT: outputs are NOT yet compiled (no pdflatex/tectonic on this machine, so "compiles first pass" is unproven); the test agents load CLAUDE.md so the runs are semi-fresh, not clean-room; single runs on one model family, so variance and portability are unmeasured.
+- The phase2 v1 prompts passed their first test round July 2 (see sec 6: case, flashcards, and the calibration-gate negative control all green), and both outputs COMPILE, exit 0 first pass, under tools/tectonic.exe (installed July 2; one cosmetic overfull-hbox warning in the case's weak-mapping note). Residual caveats: tectonic is XeTeX-based, so strict pdflatex-on-TeX-Live parity is unverified (the plan blesses tectonic as the alternative engine; spot-check pdflatex once somewhere); the test agents load CLAUDE.md so the runs are semi-fresh, not clean-room; single runs on one model family, so variance and portability are unmeasured.
 - v5 has had ZERO test generations. The v4 tests were contaminated (produced with full project context) and v5 changes behavior-relevant text (verdict-first, P8, hints, ruled lines), so fresh-session runs on a novel subject are the real test; they also check the review's untested stress-test predictions (stats critical values, now covered by P8; physics constant conventions, now forced by P4's "pick one and say why").
 - RESOLVED in v5: the stats concealment collision (old formula-sheet ad hoc move) is now structurally sanctioned via P8 reference data.
 - same_page output remains the least-tested path.
@@ -130,7 +130,8 @@ All open questions settled with Hitaansh July 2:
 Carried design rules: 12 invariants and fixed preamble unchanged; derivation P1-P8 re-grounded on the files; ground-truth hierarchy for file conflicts (verified_answer > model's own solution; critique_findings > mapper justifications; section content > model memory; problem.txt defines skills); never copy section LaTeX verbatim (crawl macros like \gray break our preamble), restate in house style; adopt the primary section's notation conventions student-facing; alignment block cites actual PRIMARY/SUPPORTING sections with roles and honest corpus-gap notes.
 Progress: spec signed off and BOTH PROMPTS DRAFTED July 2 (prompts/phase2_case_study_prompt_v1.md, prompts/phase2_flashcards_prompt_v1.md; see sec 5 lineage entry for contents; one recorded spec deviation: flashcards preamble minimally adapted rather than byte-identical, spec updated to match).
 TEST ROUND COMPLETE July 2, all three green on static checks (results and caveats: sec 6 and sec 12; artifacts: cases/tests/test_phase2_simplex_{case,flashcards}.tex).
-Next: (a) compile both test artifacts with pdflatex on a machine that has TeX (this one has none), the one unproven checklist item; (b) show Peter the Copper Kettle case + flashcards as the phase 2 demo; (c) truly fresh-session and cross-provider re-tests (the July 2 runs were harness subagents that load CLAUDE.md, same model family); (d) re-map the sec 7 pipeline plan onto the two-phase split (schema freeze stays PAUSED, backlog 1b); (e) harvest the corrupted-verified_answer negative control into the future fixture suite.
+COMPILED July 2: tectonic installed at tools/tectonic.exe (gitignored binary), both test artifacts exit 0 first pass, PDFs committed alongside the .tex in cases/tests/ and visually inspected (layout clean; student sheet runs 2 pages because of the procedure-sheet box, as the content-beats-page-fit rule intends).
+Next: (a) SHOW PETER the Copper Kettle case + flashcards PDFs as the phase 2 demo (ready; framing notes: the source-top warning banner is a feature, and the calibration gate is the "did the model understand my problem" answer); (b) truly fresh-session and cross-provider re-tests; (c) one-time pdflatex parity spot-check on a TeX Live machine (tectonic is XeTeX-based); (d) re-map the sec 7 pipeline plan onto the two-phase split (schema freeze stays PAUSED, backlog 1b); (e) harvest the corrupted-verified_answer negative control into the future fixture suite.
 
 ## 15. Repo layout and file map
 
@@ -153,6 +154,9 @@ Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshj
 /cases/Taco_Truck_case_study.docx.pdf       Peter's benchmark case
 /cases/tests/test_stats_recycling_case.{tex,pdf}
 /cases/tests/test_finance_cookie_case.{tex,pdf}
+/cases/tests/test_phase2_simplex_case.{tex,pdf}        phase 2 demo (Copper Kettle)
+/cases/tests/test_phase2_simplex_flashcards.{tex,pdf}  phase 2 demo (5-card deck)
+/tools/tectonic.exe                         local TeX engine (gitignored; XeTeX-based, plan-approved pdflatex alternative)
 /cases/archive/                             directory EMPTY: the 4 harder-tier files (sec 6) still to add
 /phase1example/problem.txt                  example INPUT to phase 1 (simplex pivot, 4 parts)
 /phase1example/{primary.md, supporting_01.md, supporting_02.md, lo_mapping.json, verified_answer.txt}
