@@ -1,0 +1,113 @@
+{
+  "state": "FOUND",
+  "template_id": "lay6e_s9_3_e6",
+  "learning_objective": "Execute one iteration of the simplex method on a linear-programming tableau: identify the entering variable from the objective row, choose the pivot row by the minimum-ratio rule, perform the pivot via elementary row operations, read off the resulting basic feasible solution, and assess optimality from the bottom-row entries.",
+  "learning_objectives": [
+    {
+      "part_id": null,
+      "learning_objective": "Execute one iteration of the simplex method on a linear-programming tableau: identify the entering variable from the objective row, choose the pivot row by the minimum-ratio rule, perform the pivot via elementary row operations, read off the resulting basic feasible solution, and assess optimality from the bottom-row entries.",
+      "mapped_section_keys": [],
+      "confidence": null,
+      "rationale": "synthesized from legacy singular field"
+    }
+  ],
+  "source_course_level": "linear_algebra",
+  "rubric_scores": {
+    "topic_keyword_match": 0.45,
+    "lo_explicit_match": 0.35,
+    "exercise_pattern_match": 0.4,
+    "course_level_match": 0.55
+  },
+  "confidence_score": 0.425,
+  "mapping_confidence": "LOW",
+  "confidence_rubric_version": 1,
+  "no_primary_available": false,
+  "sections": [
+    {
+      "book_key": "first_course_linear_algebra_kuttler",
+      "section_number": "1.3",
+      "section_title": "Gaussian Elimination",
+      "page_uuid": "",
+      "openstax_url": "",
+      "role": "PRIMARY",
+      "justification": "The mechanical core of one simplex iteration is exactly an elementary-row-operation pivot performed on a matrix: locate a pivot column, locate a pivot row, scale the pivot row so the pivot becomes 1, and eliminate the other entries in that column using row replacements. Kuttler §1.3 develops precisely this machinery (Definition 1.3.5 Pivot Position and Pivot Column; Algorithm 1.3.1 the reduced row-echelon form algorithm) and contains worked examples of pivoting that the student can directly imitate to carry out part (i) of this problem. The simplex-specific rules layered ON TOP (entering-variable rule = most-negative bottom-row entry; minimum-ratio rule for the leaving variable; optimality criterion = bottom row nonnegative) are NOT in this section; that gap is acknowledged honestly in the rubric scoring. This is the most usable per-section grounding available because Austin/Kuttler's content files are guaranteed and this section's tagged keywords (`pivot`, `gauss-jordan-elimination`, `row-operations`) align directly with the tableau manipulation the problem requires.",
+      "learning_objectives": [
+        "Use Gaussian Elimination to solve systems of linear equations.",
+        "Identify a matrix in row-echelon and reduced row-echelon form.",
+        "Find the rank of a matrix."
+      ],
+      "also_in_books": [],
+      "corpus": "kuttler",
+      "artifact_ids": []
+    },
+    {
+      "book_key": "understanding_linear_algebra_austin",
+      "section_number": "1.4",
+      "section_title": "Pivots and their influence on solution spaces",
+      "page_uuid": "",
+      "openstax_url": "",
+      "role": "SUPPORTING",
+      "justification": "Austin §1.4 is the most concept-focused treatment of PIVOT positions in either OER LA book — exactly the vocabulary the problem uses ('pivot iteration', 'bring into the basis', identifying basic vs. free / non-basic variables). The section's discussion of basic versus free variables maps onto the simplex notion of basic vs. non-basic variables (the basic variables are those whose columns are unit vectors after the pivot — columns y3, y4, P in the starting tableau; the basic feasible solution sets the non-basic variables to zero). Provides conceptual scaffolding for part (ii) of the problem (reading off the BFS) that PRIMARY's procedural §1.3 does not emphasize.",
+      "learning_objectives": [
+        "If a linear system is consistent, the columns of the coefficient matrix containing pivot positions correspond to basic variables and the columns without pivot positions correspond to free variables."
+      ],
+      "also_in_books": [],
+      "corpus": "austin",
+      "artifact_ids": []
+    },
+    {
+      "book_key": "first_course_linear_algebra_kuttler",
+      "section_number": "1.2",
+      "section_title": "Systems of Equations, Algebraic Procedures",
+      "page_uuid": "",
+      "openstax_url": "",
+      "role": "SUPPORTING",
+      "justification": "Provides the elementary-row-operation foundation (Definition 1.2.4 Elementary Operations; Theorem 1.2.1 Elementary Operations and Solutions) that justifies WHY a simplex pivot preserves the underlying constraint system — i.e., why after pivoting the new tableau encodes the same feasible region as the old one. Useful background for students who need to see that row scaling + row replacement are legitimate operations.",
+      "learning_objectives": [
+        "Use elementary operations to find the solution to a linear system of equations.",
+        "Find the row-echelon form of an augmented matrix."
+      ],
+      "also_in_books": [],
+      "corpus": "kuttler",
+      "artifact_ids": []
+    }
+  ],
+  "books_searched": [
+    "first_course_linear_algebra_kuttler",
+    "understanding_linear_algebra_austin",
+    "contemporary_mathematics",
+    "college_algebra_2e",
+    "precalculus_2e"
+  ],
+  "no_coverage_reasoning": "",
+  "fallback_sections": [],
+  "error_type": "",
+  "error_message": "",
+  "source": "dynamic",
+  "critique_score": 0.45,
+  "critique_findings": [
+    "The problem is specifically about the SIMPLEX METHOD for linear programming — entering variable rule, minimum-ratio test for leaving variable, optimality test from bottom-row signs, basic feasible solution interpretation. None of the cited sections cover any of these simplex-specific concepts. PRIMARY (Kuttler §1.3 Gaussian Elimination) only covers generic row-operation mechanics.",
+    "The mapper's own justification admits: 'The simplex-specific rules layered ON TOP (entering-variable rule = most-negative bottom-row entry; minimum-ratio rule for the leaving variable; optimality criterion = bottom row nonnegative) are NOT in this section.' This is honest, but means PRIMARY does not actually let a student solve parts (iii) and (iv) of the problem, which are the simplex-specific tasks.",
+    "Contemporary Mathematics §5.11 (Linear Programming) is in the available index AND was searched, but is not cited as SUPPORTING. Its LOs ('Compose an objective function to be minimized or maximized', 'Apply linear programming to solve application problems') are the only direct topical hit for 'linear programming' in the entire corpus and should at minimum appear as SUPPORTING context-setting, even if its treatment is graphical rather than tableau-based.",
+    "SUPPORTING entries (Austin §1.4 pivots, Kuttler §1.2 elementary operations) are pure padding for THIS problem — they recap pivot/row-op mechanics already covered by PRIMARY. They do not provide the missing simplex-specific decision rules.",
+    "Confidence_score of 0.425 / LOW is appropriately calibrated — the mapper recognized the gap. But the mapping itself is structurally weak because no available section actually teaches the simplex method; the corpus simply lacks this topic (Lay §9.3 is not in the available books)."
+  ],
+  "missing_concepts": [
+    "Simplex method entering-variable rule: choose the column with the most negative entry in the objective (bottom) row.",
+    "Minimum-ratio test for leaving variable: among rows with positive entries in the pivot column, choose the row minimizing RHS / pivot-column entry.",
+    "Simplex optimality criterion: a maximization tableau is optimal when every entry in the bottom (objective) row corresponding to a decision variable is nonnegative.",
+    "Basic feasible solution from a tableau: non-basic variables (columns without a unit-vector pattern) are set to zero; basic variables read off the RHS column of their unit-vector row.",
+    "Slack variable interpretation in standard-form LP setup (needed to recognize that y3, y4 in the initial tableau are slacks)."
+  ],
+  "primary_assessment": "needs_change",
+  "supporting_assessment": "incomplete",
+  "recommended_changes": [
+    "Replace or supplement PRIMARY with `contemporary_mathematics §5.11 Linear Programming` — it is the only section in the searched corpus that names linear-programming objective functions and constraints, even though it does not cover the simplex tableau itself.",
+    "Acknowledge in `no_coverage_reasoning` that the simplex-method-on-tableaux topic (Lay §9.3) has no direct coverage in any available book; consider setting `no_primary_available: true` or flagging this as a corpus gap rather than forcing Kuttler §1.3 as PRIMARY.",
+    "Drop Kuttler §1.2 from SUPPORTING (redundant with the §1.3 row-operation content already cited).",
+    "If keeping Kuttler §1.3 as PRIMARY for the mechanical pivot step, add Contemporary Math §5.11 as SUPPORTING to at least name the optimization framework."
+  ],
+  "search_reasonable": true,
+  "multipart_assessment": "multipart_missing_parts",
+  "critique_status": "completed"
+}

@@ -27,6 +27,7 @@ Hitaansh (junior CS student, contract engineer for MathGPT.ai) is building an AI
 - **MathGPT.ai** (per July 2026 web search): instructor-led learning platform, in 1,200+ courses across ~150 higher-ed institutions; Socratic, cheat-proof AI tutor that guides rather than answers; per-student problem variations; assignment manager; OER/textbook support. Our generator is a content engine feeding it. Open question: which web math renderer their frontend uses (KaTeX/MathJax), for the in-platform display path.
 - **Textbook**: OpenStax (Calculus Volume 1 for Calc 1). Chosen over Stewart for licensing, cost, and MathGPT's OER support. CAUTION, logged: OpenStax uses a NonCommercial license and carries a notice about LLM ingestion; confirm commercial and AI-use terms with OpenStax before shipping. Not legal advice; verify.
 - **Peter's requirements so far**: Calc 1 only for now; simplify for a less sophisticated audience (we answered with scaffolding, not dilution; see decisions log); add flashcards and quizzes (promised, not yet built; they should be generated FROM each case's objectives, a retrieval-practice layer around the case); every case ships with a textbook/learning-objective alignment block.
+- **Peter's two-phase directive (July 2, 2026, supersedes parts of the sec 7 plan; re-planning pending)**: the pipeline splits into a MINIMUM of two phases. Phase 1: input = one source problem (problem.txt), output = 5 files: primary.md (PRIMARY OER section extract with license/attribution metadata, LOs, topics, content), supporting_01.md and supporting_02.md (SUPPORTING section extracts, same format), lo_mapping.json (problem LO, PRIMARY/SUPPORTING section citations with justifications, confidence rubric, critique_findings, missing_concepts, primary/supporting assessments, recommended_changes), verified_answer.txt (fully worked verified answer to the SOURCE problem). Phase 2: input = those 5 files, output = (1) a case study like our current ones, (2) a set of flashcards on the problem's topic. Any-subject by design: the fence comes from the input problem plus cited sections, not a typed subtopic. Example in /phase1example (simplex pivot problem mapped to Kuttler/Austin linear algebra sections; verified answer re-derived by us July 2 and confirmed correct). Interface matches the recon's human source inputs (problem.txt, primary.md, supporting_*.md, lo_mapping.json, verified_answer.txt): Peter is having phase 1 GENERATE what his IMathAS pipeline required humans to supply. Current focus per Hitaansh: phase 2 prompt only; phase 1 is understood as an input contract, not built by us right now.
 
 ## 3. What a case study means here (settled definition)
 
@@ -100,7 +101,8 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 
 ## 13. Backlog
 
-1. ACTIVE TASK (section 14): freeze case_spec.schema.json; start pipeline week-1 tasks per the plan.
+1. ACTIVE TASK (section 14): phase 2 prompt (case study + flashcards from the 5-file input).
+1b. PAUSED: freeze case_spec.schema.json / pipeline week-1 tasks; resume after the sec 7 plan is re-mapped onto Peter's two-phase split (phase 1 roughly covers S0/S1 plus retrieval and LO-mapping machinery we never planned; phase 2 roughly covers S2-S7).
 2. Fresh-session v5 tests on 1-2 novel subjects (variance measurement; also exercises P8 on a table-dependent subject like stats or physics).
 3. Flashcards + quizzes generated from case objectives.
 4. Ask MathGPT which web math renderer they use; confirm OpenStax license terms.
@@ -110,11 +112,10 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 8. DECIDE (Hitaansh): calculus-textbook.pdf, the full 52MB OpenStax PDF, is committed and pushed to the GitHub remote. Section 2 already logs the OpenStax NonCommercial license caution; a public repo redistributing the full book is a real exposure, and the 52MB blob permanently bloats clones. Removing it properly requires a history rewrite (git filter-repo) plus force push, so it is a deliberate call, and it gets harder the more commits pile on top. Check whether the repo is private as a stopgap.
 9. Pipeline: add a verdict-category control at S0 intake so verdict distribution across a course pack is measurable and steerable (v5 handles per-call bias only).
 
-## 14. ACTIVE TASK: freeze case_spec.schema.json and start pipeline week 1
+## 14. ACTIVE TASK: design and build the phase 2 prompt (case study + flashcards from the 5-file input)
 
-The v4 review cycle is COMPLETE (July 2, 2026): findings triaged, accepted edits shipped as v5, full accept/modify/reject record in section 5, residual limits in section 12. The review request predicted version skew and it happened exactly as predicted (reviewer quoted the removed 80-95% rule).
-Next per the build plan (section 7): freeze case_spec.schema.json FIRST (the week-1 non-negotiable), then week-1 tasks per plan/pipeline_build_plan.md (now in the repo). The v5 prompt is the single-shot manual mode; the pipeline's author.md / render.md / judge.md derive from the same invariants+playbooks source of truth, so schema fields should mirror v5's required content (boxed answers, skill labels, trap both-numbers, verdict category chosen at authoring time, P8 reference data list, verification arithmetic).
-Fresh-session v5 tests (backlog 2) can run in parallel with schema work.
+Peter's two-phase directive (sec 2) reshapes the roadmap: phase 2 consumes the 5 phase-1 files and produces the case study plus flashcards. Plan presented to Hitaansh July 2; open questions pending his/Peter's answers before the prompt is written: (1) fresh clean numbers vs reusing the source problem's numbers (rec: fresh; verified_answer becomes a method exemplar and calibration gate); (2) flashcard count/format/delivery and whether students see them before or after the case (concealment interacts); (3) one prompt emitting both artifacts vs two prompts sharing the input digest (rec: two); (4) confirm the subtopic-as-typed-input rule is superseded by problem+sections as the fence (would be a logged-decision reversal per operating rule 3); (5) behavior on LOW-confidence/needs_change mappings (rec: proceed, supply missing_concepts as reference data, honest instructor note); (6) attribution placement for CC BY sections; (7) whether students have access to the primary/supporting sections as course readings; (8) whether the playbook library/harvest survives as an input (rec: yes, optional).
+Prior active task (freeze case_spec.schema.json, sec 7 plan) is PAUSED pending re-planning around the phase split; the schema will need to mirror the phase-2 input contract too.
 
 ## 15. Repo layout and file map
 
@@ -135,6 +136,9 @@ Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshj
 /cases/tests/test_stats_recycling_case.{tex,pdf}
 /cases/tests/test_finance_cookie_case.{tex,pdf}
 /cases/archive/                             directory EMPTY: the 4 harder-tier files (sec 6) still to add
+/phase1example/problem.txt                  example INPUT to phase 1 (simplex pivot, 4 parts)
+/phase1example/{primary.md, supporting_01.md, supporting_02.md, lo_mapping.json, verified_answer.txt}
+                                            example 5-file OUTPUT of phase 1 = INPUT contract for phase 2
 /plan/pipeline_build_plan.md
 /recon/PIPELINE_RECON.md  /recon/REFERENCE_EXTRACTS.md
 /recon/pipeline_recon_prompt_claude_code.md  /recon/extraction_prompt_run2.md

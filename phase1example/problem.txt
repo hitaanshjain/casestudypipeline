@@ -1,0 +1,13 @@
+A community nutritionist is applying the simplex method to maximize a daily protein-yield score P over four nonnegative decision quantities y1, y2, y3, y4 (servings of four ingredients). After setting up the initial system and performing the early bookkeeping, the working tableau has reached the state shown below, where the last column is the right-hand-side constants and the bottom row corresponds to the objective P:
+
+  Columns: y1 | y2 | y3 | y4 | P || RHS
+  Row 1:    4 |  3 |  1 |  0 | 0 || 60
+  Row 2:    2 |  9 |  0 |  1 | 0 || 90
+  Row 3:   -5 | -2 |  0 |  0 | 1 ||  0
+
+Working from this tableau, complete the following tasks (please answer them in the order listed):
+
+(i) Carry out exactly one pivot iteration and display the updated tableau in full (all entries, including the objective row).
+(ii) From that updated tableau, read off the corresponding basic feasible solution. Report the value of every decision quantity y1, y2, y3, y4 as well as the current value of P.
+(iii) State whether the tableau you produced in part (i) already represents an optimal solution to the maximization, and justify your conclusion by pointing to specific entries of the bottom row.
+(iv) Looking back at the original tableau (before you pivoted): which decision quantity did you choose to bring into the basis, and what was the rule that drove your choice?
