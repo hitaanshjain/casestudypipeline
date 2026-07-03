@@ -1,29 +1,47 @@
 # CLAUDE.md: Math Case Study Generation Project
-### Handoff from claude.ai session, July 2, 2026. Read fully before acting.
+
+## Read fully before acting.
+
+## Operating rules (apply every session, no reminder needed)
+
+1. After any significant decision, design change, or completed task, update CLAUDE.md
+   (decisions log in section 9, case library in section 6, backlog in section 13)
+   in the SAME response, before ending your turn. Do not wait to be asked.
+2. After any change to files, stage and commit with git and a clear message
+   describing what changed and why. Never leave the working tree dirty at the end
+   of a task.
+3. If a decision contradicts something already logged, record the reversal and the
+   reason rather than silently overwriting.
 
 ## 0. How to use this file
+
 This is the project memory. It captures everything decided and built so far. The ACTIVE TASK is in section 14. Keep this file updated as decisions are made: add to the decisions log, the case library, and the backlog; prune anything superseded. Never contradict a logged decision without recording why.
 
 ## 1. Project in one paragraph
+
 Hitaansh (junior CS student, contract engineer for MathGPT.ai) is building an AI pipeline that generates business-school-style case studies for math courses: one realistic decision a protagonist faces, solved through 2 to 4 interlocking quantitative questions, with a planted misconception trap, a group discussion element, and a fully verified answer key, delivered as compiled LaTeX worksheets. Target audience: struggling community college students. First subject: Calculus 1, then Linear Algebra and Intro Finance, with an architecture meant to scale to any quantitative subject. Prototype pipeline due end of August 2026. Team: Hitaansh plus two other interns.
 
 ## 2. People, product, constraints
+
 - **Peter**: Hitaansh's boss/contact at MathGPT.ai. Communicates by iMessage and email. Gives difficulty feedback; his taste is the calibration signal. He generated the taco-truck case (via his own Claude, simplifying our Alder Creek bridge case) and declared it the target difficulty for the community-college tier.
 - **MathGPT.ai** (per July 2026 web search): instructor-led learning platform, in 1,200+ courses across ~150 higher-ed institutions; Socratic, cheat-proof AI tutor that guides rather than answers; per-student problem variations; assignment manager; OER/textbook support. Our generator is a content engine feeding it. Open question: which web math renderer their frontend uses (KaTeX/MathJax), for the in-platform display path.
 - **Textbook**: OpenStax (Calculus Volume 1 for Calc 1). Chosen over Stewart for licensing, cost, and MathGPT's OER support. CAUTION, logged: OpenStax uses a NonCommercial license and carries a notice about LLM ingestion; confirm commercial and AI-use terms with OpenStax before shipping. Not legal advice; verify.
 - **Peter's requirements so far**: Calc 1 only for now; simplify for a less sophisticated audience (we answered with scaffolding, not dilution; see decisions log); add flashcards and quizzes (promised, not yet built; they should be generated FROM each case's objectives, a retrieval-practice layer around the case); every case ships with a textbook/learning-objective alignment block.
 
 ## 3. What a case study means here (settled definition)
+
 - One cohesive real-world decision faced by a named protagonist. The questions interlock: later parts need earlier results, and the recommendation needs all of them. NOT a multi-part word problem with unrelated parts (Peter's original complaint about other models).
 - Difficulty benchmark: **the taco truck** (Peter's). Diego weighs a second truck. Arrivals C(t) = 120t - 30t^2 people/hour, service cap 100; peak via C'(t)=0 at t=2 gives 120 > 100. Growth g(t) = 80 - 4t per month; integral over 12 months = 672, so 300+672 = 972 > 600 threshold. Trap: 300 + 80(12) = 1,260 overcounts because a changing rate cannot be treated as constant. Verdict: buy. Two clean calculus moves, one decision, clean verified numbers.
 - A harder tier exists (Alder Creek original, Terranova Pueblo, Cedar & Sage conversions) built on hidden-method, single-question, competing-hypothesis design. Parked for now; community-college tier is the product.
 - The permanent tension, resolved: true HBS cases have no single right answer; our autonomy/verification requirement demands one. The bridge: **path ambiguity with answer uniqueness**: multiple plausible analytical routes, exactly one survives the numbers, tempting wrong routes flip the decision. Residual open judgment goes to a rubric layer, never the verifier.
 
 ## 4. Design principles (the distilled system)
+
 Twelve invariants (stated once in the prompt, subject-agnostic): (1) one decision, interlocking parts; (2) compute-interpret-decide arc, no computation left uninterpreted; (3) misconception trap with decision stakes, both numbers shown; (4) full-strength concepts, never degenerate versions; (5) minimal faithful instance, numbers worked backward from clean answers; (6) grain-size time budget (chunky subjects = 1 concept layered, fine-grained = 2 interlocking; 15-20 group minutes); (7) context must constrain (strip test; inert distractors allowed only as obvious flavor); (8) method concealment (technique names never student-facing); (9) scaffold, don't dilute (optional checklist, fixed rigor); (10) honest verdicts (rotate outcomes; not every case says yes); (11) exactly one genuine discussion element, about judgment not computation, default = the trap as a teammate's claim with a checkable resolution; (12) verify everything, keys show operator-bearing work per boxed answer with skill labels.
 Plus: **derive-then-generate playbooks**. Subject rules are instances of the invariants; for a new subject the model derives a playbook (P1 scope fence, P2 grain size, P3 full-strength forms, P4 clean-number conventions, P5 the trap, P6 authentic users, P7 interpretation demands, P8 reference data: constants, formulas, critical values students need but cannot derive, supplied in the data block without naming the technique) before generating, emitted as LaTeX comments for human harvest into a vetted library. The syllabus fence (subtopic) can never be derived; it is a required input.
 
 ## 5. Prompt lineage
+
 - v1: Calc 1 only, markdown output, taco-truck anchored.
 - v2: LaTeX output contract, one-page student sheet, collaboration requirement, title/mini-title rules (stole layout discipline from Peter's finance worksheet prompt; rejected its single-concept rule and its subtopic-in-title header, which leaks the method; it also had zero verification machinery). Later edit: concept selection made input-driven (sections rule; optimization+accumulation demoted to default; alternative pairings listed; trap adapts to integral-free scope since integration arrives late in Calc 1).
 - v3: master prompt, shared core + subject modules for calc1 / linear_algebra / intro_finance (module idea generalized from Peter's Linear Algebra prompt's topic-specific rules; its coffee-shop gold standard verified correct: x=9, y=6, z=15, total 30 < 35, verdict don't buy, which inspired the verdict-variety rule). Finance anchor written by us (5-year loan: 8% simple = $7,000 beats 7.5% compounded = ~$7,178; sticker-rate trap).
@@ -31,19 +49,23 @@ Plus: **derive-then-generate playbooks**. Subject rules are instances of the inv
 - **v5 (CURRENT)**: `prompts/universal_case_study_prompt_v5.md`. Product of the section 14 external review, triaged July 2, 2026 (reviewer verdict: ship with edits; scores: enforceability 4, cohesion 8, scalability 5, LaTeX 7, clarity 6). Version skew confirmed: the reviewer quoted the removed 80-95% fill rule, so they reviewed the pre-relaxation copy and their page-fit findings were largely already fixed. Review depth gauge: they did NOT catch the already-fixed skill-label/same_page contradiction, nor the "about ten"/twelve invariant-count mismatch, confirming a single pass is not exhaustive. Accepted edits (some modified): P8 REFERENCE DATA added to the derivation step and all three playbooks (structurally sanctions the formula-sheet move from the old stats caveat; finance's one-off "formulas may be supplied" allowance generalized into P8); hint content rule in invariant 9 with good/bad examples (hints nudge at scenario level, never name or paraphrase the technique; this was the highest-frequency concealment leak); verdict chosen BEFORE data is built with "proceed" needing justification (replaces the unenforceable stateless "rotate across cases" wording); three ruled lines under the group recommendation (resolves the genuine no-answer-space vs written-recommendation contradiction); % VERIFICATION comment block before \end{document} (visible arithmetic per boxed answer, doubles as a diff target for S3/S4); no-code-fence rule plus an explicit non-ASCII offender sweep; blank-subtopic behavior defined (playbook default used with a flagged assumption comment, else a one-line error comment and no case); trap number must itself be clean and the gap must flip or nearly flip the verdict (invariant 3 and P5); soft sizing guide with countable budgets (scenario 90-130 words, 3-4 questions, data block about 6 rows), content completeness still beats page fit; revision_rules scoped to user-requested follow-up turns only; "about ten" corrected to twelve; footer placeholders made explicit. Rejected, with reasons: deleting revision_rules (manual iteration with Peter is a real usage path; scoped instead); the reviewer's 25-35% bloat trim beyond true duplicates (checklist redundancy is deliberate defense in depth per section 8); dropping enumitem/array from the preamble (compile-guarantee stability beats minimalism); any prompt-side fix for the self-graded strip test (S6 judge owns that check); no change for invariant 4 vs 5 tension (the taco-truck anchor is the calibration mechanism, and no concrete edit was proposed).
 
 ## 6. Generated case library (files in cases/)
+
 Community-college tier (the product): taco truck (Peter's benchmark, in the prompt as anchor), food_bank (net accumulation: inflow minus outflow vs warehouse cap; overflow 3,680 > 3,500; peak day 6 at 360 > 300; trap 4,320 vs honest 2,880), community_garden (constrained optimization 60x120 = 7,200 sq ft; harvest integral 512 >= 400 promise; trap 768 vs 512), alder_creek_calc1 (forensic bridge, Calc 1 only: flood peak 2,000 < 2,500 scour threshold kills the state's theory; damage rate integral calibrated to D(40)=0.40 predicts failure at T~58.4 yrs = 2023-24; the 2005 report's linear extrapolation is the embedded trap; replacement design 5,500 trucks/day via decaying growth-rate integral).
 Test generations under v4 (with caveats, see sec 13): test_stats_recycling (derived-playbook path, one-proportion test: z = -1.0 not significant at n=100, z = -2.0 significant at n=400 with the same 16%, verdict "not yet"), test_finance_cookie (same_page path, markup vs margin: 28.6% at $8.40 vs $10 for true 40%, break-evens 500 vs 300 against 400 demand, launch at $10). Both compile first pass.
 Harder tier (archive): alder_creek original (Calc 1/2), terranova_pueblo (single-question, Helios licensing option +$3.4M beats building -$3.3M), cedar_and_sage quantitative conversion. Chat-only, no files: Lumen Labs, Arclight.
 
 ## 7. Pipeline build plan (full detail: plan/pipeline_build_plan.md)
+
 Eight stages: S0 intake -> S1 playbook (cache keyed subject+subtopic, approved flag; derivation is a cached pipeline stage, the harvest loop) -> S2 author (LLM emits case_spec.json, NOT LaTeX; schema-validated) -> S3 verify (SymPy re-derives every answer with per-answer evidence rows; trap materiality = wrong and right numbers on opposite sides of the decision threshold; scope-fence expression scan; regenerate max 3) -> S4 render (spec to .tex; lint enforces ASCII, skill labels, derivation sufficiency, concealment scan, and numeric identity: boxed values must string-match verified values, our forbidden-change scan) -> S5 compile (pdflatex first pass) -> S6 judge (LLM checklist ledger incl. strip test and difficulty vs taco truck; advisory flags, not a hard veto) -> S7 package. Terminal machine status: READY_FOR_INSTRUCTOR_REVIEW, never "done"; only a human sets APPROVED_FOR_MATHGPT. Ground-truth hierarchy: SymPy > LLM; pdflatex > LLM claims; approved playbook > model inference. Fixtures with negative controls are the CI (bad cases must keep failing). Key metric: first-try pass rate at S3. Stack: Python 3.11+, anthropic SDK (+optional openai), sympy, jsonschema, jinja2 optional, pdflatex/tectonic, CLI first, FastAPI stretch. Team split: A = prompts and LLM stages (author/judge, v4 derivatives), B = verification core + fixtures, C = render/compile/lint/infra/CLI. Week 1 non-negotiable: freeze case_spec.schema.json first. Definition of done: CLI takes subject+subtopic, emits verified packages for all three subjects, negative controls green, measured acceptance rate and cost per case.
 Prompt migration: v4 stays as single-shot manual mode; pipeline derives author.md (JSON out), render.md (verified spec to LaTeX, may not alter any number), judge.md (adversarial ledger) from the same invariants+playbooks source of truth.
 
 ## 8. Recon takeaways (recon/PIPELINE_RECON.md, recon/REFERENCE_EXTRACTS.md)
+
 Peter's example pipeline (IMathAS template generator, v3.26.9): prompt repository + 27 Python static validators + 62 schemas, human pastes 7 phase messages into a chat, evidence-gated (SHA-256 + JSON Schema + line-level proof), terminal status READY_FOR_HUMAN_REVIEW_STATIC_VERIFIED never PRODUCTION_READY. We adopted: semantic-before-concrete (their semantic ids -> our case_spec before LaTeX), defense in depth (rule in prompt + linter + gate), evidence-gated completion, read-only validators with one quarantined mutator + computed forbidden-change scan, per-run isolation, adversarial audit with non-findings ledger, fixtures with negative controls, ground-truth hierarchy, derivation-sufficiency checks. We rejected: chat-message orchestration (we automate via API; their biggest gap is no automated LLM layer), their schema/tool scale (we start with ~6 artifacts, ~6 checks, grow per caught failure).
-REFERENCE_EXTRACTS.md contains verbatim adaptation-ready code: (1) validator skeleton (exit 0/2, checks dict, report self-validates against its own schema; fixture suites are explicit blocks, no discovery magic), (2) fixture suite pattern (the key negative control: a contract claiming PASS that omits evidence_lines must FAIL), (3) forbidden-change scan (refusal guard unless semantic_safety_verified; comparator is COMPUTED, never attested; _norm_fmt strips only authorized transforms), (4) line-level evidence rows (strict `is not True` boolean checks, required-field set, ordering, duplicate rejection; mirror for SymPy evidence rows), (5) gate evaluator (closed FINAL_ALLOWED_STATUSES vocabulary, completeness matrix, independent re-derivation instead of trusting earlier reports; our package gate should re-run one SymPy spot check), plus schema conventions (warning: their smallest schemas are permissive stubs that check nothing; don't copy those).
+REFERENCE_EXTRACTS.md contains verbatim adaptation-ready code: (1) validator skeleton (exit 0/2, checks dict, report self-validates against its own schema; fixture suites are explicit blocks, no discovery magic), (2) fixture suite pattern (the key negative control: a contract claiming PASS that omits evidence_lines must FAIL), (3) forbidden-change scan (refusal guard unless semantic_safety_verified; comparator is COMPUTED, never attested; \_norm_fmt strips only authorized transforms), (4) line-level evidence rows (strict `is not True` boolean checks, required-field set, ordering, duplicate rejection; mirror for SymPy evidence rows), (5) gate evaluator (closed FINAL_ALLOWED_STATUSES vocabulary, completeness matrix, independent re-derivation instead of trusting earlier reports; our package gate should re-run one SymPy spot check), plus schema conventions (warning: their smallest schemas are permissive stubs that check nothing; don't copy those).
 
 ## 9. Key decisions log (with reasons)
+
 - Correctness architecture from day one: LLM authors, deterministic math engine (SymPy) verifies; the model's arithmetic is never the source of truth. "100% correct autonomously" is realistic; "zero human review ever" is a later milestone.
 - Narrow-and-deep scope beats broad-and-flaky; Calc 1 first (Peter confirmed Calc 1 only).
 - Scaffold, don't dilute, for the struggling-student audience (backed by productive-failure research); optional analyst's checklist is the mechanism; we pushed back on Peter's "simplify" accordingly and he accepted.
@@ -57,15 +79,18 @@ REFERENCE_EXTRACTS.md contains verbatim adaptation-ready code: (1) validator ske
 - Review triage principle (July 2, 2026, v4 review): accept edits that convert unmeasurable prompt rules into countable or mechanical ones (verdict-first, sizing budgets, P8 reference data, hint examples); keep deliberate checklist redundancy (defense in depth); enforcement for checks a model self-grades (strip test, arithmetic) lives in the pipeline, not in more prompt prose.
 
 ## 10. Research foundations (from the July session's literature run)
+
 Forensic/failure case studies are an established engineering pedagogy (Delatte's Beyond Failure, ASCE workshops). Direct product ancestor: Vanderbilt's Jasper Woodbury anchored instruction (narrative problems, data embedded in story, students generate subgoals; validated across 17 classes/7 states). Model-Eliciting Activities supply the design-principles pattern (client-driven, self-assessment principle -> our holdout-data trick). Productive failure (Kapur): struggle before instruction improves concepts and transfer -> hint policy must not reveal the model early (aligns with MathGPT's Socratic tutor). Pseudocontext (Meyer/Boaler) -> the strip test. Thompson: rate-vs-accumulation is the deepest documented Calc 1 weakness -> rate-to-total is the highest-value archetype. Archetype library: forensic post-mortem, rate ledger with threshold, model identification (with holdout validation), competing flows, design to margin, honest error.
 
 ## 11. Working conventions and user preferences
+
 - NEVER use em dashes in anything written for Hitaansh or for messages he sends (texts to Peter, docs). Use commas, colons, or restructure.
 - Messages to Peter: keep Hitaansh's casual, direct texting voice; when he supplies a draft, edit minimally (strip hedges, add substance) unless asked otherwise.
 - Every number in every case must be re-derivable; when producing a case, verify arithmetic before presenting; state honest caveats (this project's culture is flagging our own violations).
 - Files: snake_case names; cases ship as .md or .tex+.pdf; prompts as .md.
 
 ## 12. Known caveats (post-review, July 2, 2026)
+
 - v5 has had ZERO test generations. The v4 tests were contaminated (produced with full project context) and v5 changes behavior-relevant text (verdict-first, P8, hints, ruled lines), so fresh-session runs on a novel subject are the real test; they also check the review's untested stress-test predictions (stats critical values, now covered by P8; physics constant conventions, now forced by P4's "pick one and say why").
 - RESOLVED in v5: the stats concealment collision (old formula-sheet ad hoc move) is now structurally sanctioned via P8 reference data.
 - same_page output remains the least-tested path.
@@ -74,6 +99,7 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 - Flashcard/quiz layer promised to Peter, not built.
 
 ## 13. Backlog
+
 1. ACTIVE TASK (section 14): freeze case_spec.schema.json; start pipeline week-1 tasks per the plan.
 2. Fresh-session v5 tests on 1-2 novel subjects (variance measurement; also exercises P8 on a table-dependent subject like stats or physics).
 3. Flashcards + quizzes generated from case objectives.
@@ -84,12 +110,15 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 8. Pipeline: add a verdict-category control at S0 intake so verdict distribution across a course pack is measurable and steerable (v5 handles per-call bias only).
 
 ## 14. ACTIVE TASK: freeze case_spec.schema.json and start pipeline week 1
+
 The v4 review cycle is COMPLETE (July 2, 2026): findings triaged, accepted edits shipped as v5, full accept/modify/reject record in section 5, residual limits in section 12. The review request predicted version skew and it happened exactly as predicted (reviewer quoted the removed 80-95% rule).
 Next per the build plan (section 7): freeze case_spec.schema.json FIRST (the week-1 non-negotiable), then week-1 tasks per plan/pipeline_build_plan.md. Note: the plan file is not on this machine (see backlog 7); sync the full repo before starting, or pull the plan file in. The v5 prompt is the single-shot manual mode; the pipeline's author.md / render.md / judge.md derive from the same invariants+playbooks source of truth, so schema fields should mirror v5's required content (boxed answers, skill labels, trap both-numbers, verdict category chosen at authoring time, P8 reference data list, verification arithmetic).
 Fresh-session v5 tests (backlog 2) can run in parallel with schema work.
 
 ## 15. Repo layout and file map
+
 NOTE: this machine's working copy is PARTIAL. Present here: CLAUDE.md, prompt_review_request.md (at repo root, not prompts/), prompts/universal_case_study_prompt_v5.md, prompts/universal_case_study_prompt_v4.md. Everything else below lives in the full repo elsewhere; sync per backlog 7.
+
 ```
 /CLAUDE.md                                  (this file)
 /prompts/universal_case_study_prompt_v5.md  CURRENT generator prompt
@@ -108,4 +137,5 @@ NOTE: this machine's working copy is PARTIAL. Present here: CLAUDE.md, prompt_re
 /recon/PIPELINE_RECON.md  /recon/REFERENCE_EXTRACTS.md
 /recon/pipeline_recon_prompt_claude_code.md  /recon/extraction_prompt_run2.md
 ```
+
 Compile check for any .tex: `pdflatex -interaction=nonstopmode <file>.tex` must exit 0 on the first pass.
