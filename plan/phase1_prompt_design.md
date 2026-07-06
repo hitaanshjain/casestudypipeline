@@ -1,5 +1,5 @@
 # Phase 1 Prompt Design (spec)
-### Status: awaiting Hitaansh sign-off  ·  July 5, 2026
+### Status: signed off by Hitaansh, July 5, 2026
 ### Decisions behind this spec: CLAUDE.md sec 2 (two-phase directive), sec 9 (July 5 phase 1 architecture entry), sec 14
 
 Phase 1 takes ONE source problem (problem.txt) and generates the five files Peter's IMathAS pipeline required humans to hand-supply, which are exactly the input contract of our phase 2 prompts (plan/phase2_prompt_design.md sec 1). It runs as TWO agentic prompts in sequence, in a harness with file tools (Claude Code or equivalent), searching a local corpus in references/. Reference example throughout: /phase1example (the simplex problem and Peter's five files for it).

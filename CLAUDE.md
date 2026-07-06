@@ -127,7 +127,7 @@ Phase 2 is COMPLETE (prompts drafted, tested, compiled July 2; demo artifacts in
 
 Architecture settled with Hitaansh July 5 (full entry: decisions log, sec 9): local references/ corpus (book_map.json + sections/ per book); two agentic prompts, generator + critic; lo_mapping.json clones Peter's schema exactly; critic re-solves the problem from scratch before reading drafts and halts on mismatch (phase 1's calibration gate); critic is report-only; Calc 1/OpenStax first, golden diff vs /phase1example deferred until other books are added.
 
-Spec: plan/phase1_prompt_design.md, DRAFTED July 5, awaiting Hitaansh sign-off. Key contents: interfaces (run inputs, references/ contract, five-file output contract), generator's 5 mandated steps, critic's 3 mandated steps (independence-preserving gate ordering: solve BEFORE opening drafts), schema fill rules for Peter's dead fields (template_id "" etc.), rubric anchors with confidence_score = median of the four rubric dimensions (inferred from the example: median(0.45, 0.35, 0.40, 0.55) = 0.425, flagged as assumption), failure behavior via phase1_error.txt, test plan with two negative controls (calibration corruption; simplex problem vs calc-only corpus as the free coverage control).
+Spec: plan/phase1_prompt_design.md, SIGNED OFF July 5. Key contents: interfaces (run inputs, references/ contract, five-file output contract), generator's 5 mandated steps, critic's 3 mandated steps (independence-preserving gate ordering: solve BEFORE opening drafts), schema fill rules for Peter's dead fields (template_id "" etc.), rubric anchors with confidence_score = median of the four rubric dimensions (inferred from the example: median(0.45, 0.35, 0.40, 0.55) = 0.425, flagged as assumption), failure behavior via phase1_error.txt, test plan with two negative controls (calibration corruption; simplex problem vs calc-only corpus as the free coverage control).
 
 Next after sign-off: (a) corpus prep: build references/openstax_calculus_v1/ (book_map.json + section files, OpenStax Calc Vol 1 core chapters; settle committed-vs-gitignored, see backlog 8 exposure); (b) draft prompts/phase1_generator_prompt_v1.md and prompts/phase1_critic_prompt_v1.md; (c) test round per spec sec 7 (happy path + both negative controls + end-to-end into phase 2); (d) golden diff once linear algebra books land.
 
@@ -145,7 +145,7 @@ Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshj
 /prompts/universal_case_study_prompt_v5.md  CURRENT, manual subject/subtopic path
 /prompts/universal_case_study_prompt_v4.md  superseded; move to prompts/archive/ when archives are added
 /plan/phase2_prompt_design.md               phase 2 design spec (signed off July 2)
-/plan/phase1_prompt_design.md               phase 1 design spec (drafted July 5, sign-off pending)
+/plan/phase1_prompt_design.md               phase 1 design spec (signed off July 5)
 /references/                                PLANNED, not yet in repo: per-book corpus (book_map.json + sections/), see phase 1 spec sec 1
 /prompts/archive/                           NOT YET IN REPO: v1, v2, v3 prompt files still to add
 /cases/food_bank_case_calc1.md  /cases/food_bank_case.tex  /cases/food_bank_case.pdf
