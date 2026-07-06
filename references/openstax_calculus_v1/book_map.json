@@ -260,72 +260,202 @@
       "title": "Defining the Derivative",
       "book_page": 188,
       "file": "sections/3_1_defining_the_derivative.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Recognize the meaning of the tangent to a curve at a point.",
+        "Calculate the slope of a tangent line.",
+        "Identify the derivative as the limit of a difference quotient.",
+        "Calculate the derivative of a given function at a point.",
+        "Describe the velocity as a rate of change.",
+        "Explain the difference between average velocity and instantaneous velocity.",
+        "Estimate the derivative from a table of values."
+      ],
+      "topic_keywords": [
+        "difference quotient",
+        "secant line",
+        "tangent line",
+        "limit definition of the derivative",
+        "derivative at a point",
+        "differentiation",
+        "average velocity",
+        "instantaneous velocity",
+        "instantaneous rate of change"
+      ]
     },
     {
       "number": "3.2",
       "title": "The Derivative as a Function",
       "book_page": 203,
       "file": "sections/3_2_the_derivative_as_a_function.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Define the derivative function of a given function.",
+        "Graph a derivative function from the graph of a given function.",
+        "State the connection between derivatives and continuity.",
+        "Describe three conditions for when a function does not have a derivative.",
+        "Explain the meaning of a higher-order derivative."
+      ],
+      "topic_keywords": [
+        "derivative function",
+        "differentiability",
+        "differentiability implies continuity",
+        "leibniz notation",
+        "vertical tangent",
+        "corner point",
+        "higher-order derivatives",
+        "acceleration"
+      ]
     },
     {
       "number": "3.3",
       "title": "Differentiation Rules",
       "book_page": 216,
       "file": "sections/3_3_differentiation_rules.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "State the constant, constant multiple, and power rules.",
+        "Apply the sum and difference rules to combine derivatives.",
+        "Use the product rule for finding the derivative of a product of functions.",
+        "Use the quotient rule for finding the derivative of a quotient of functions.",
+        "Extend the power rule to functions with negative exponents.",
+        "Combine the differentiation rules to find the derivative of a polynomial or rational function."
+      ],
+      "topic_keywords": [
+        "constant rule",
+        "power rule",
+        "sum and difference rules",
+        "constant multiple rule",
+        "product rule",
+        "quotient rule",
+        "extended power rule",
+        "tangent lines",
+        "combining differentiation rules"
+      ]
     },
     {
       "number": "3.4",
       "title": "Derivatives as Rates of Change",
       "book_page": 230,
       "file": "sections/3_4_derivatives_as_rates_of_change.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Determine a new value of a quantity from the old value and the amount of change.",
+        "Calculate the average rate of change and explain how it differs from the instantaneous rate of change.",
+        "Apply rates of change to displacement, velocity, and acceleration of an object moving along a straight line.",
+        "Predict the future population from the present value and the population growth rate.",
+        "Use derivatives to calculate marginal cost and revenue in a business situation."
+      ],
+      "topic_keywords": [
+        "amount of change formula",
+        "average rate of change",
+        "instantaneous rate of change",
+        "velocity, speed, and acceleration",
+        "motion along a line",
+        "population growth rate",
+        "marginal cost",
+        "marginal revenue and profit"
+      ]
     },
     {
       "number": "3.5",
       "title": "Derivatives of Trigonometric Functions",
       "book_page": 241,
       "file": "sections/3_5_derivatives_of_trigonometric_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Find the derivatives of the sine and cosine function.",
+        "Find the derivatives of the standard trigonometric functions.",
+        "Calculate the higher-order derivatives of the sine and cosine."
+      ],
+      "topic_keywords": [
+        "derivatives of sine and cosine",
+        "limit definition of the derivative",
+        "trigonometric limit identities",
+        "product rule",
+        "quotient rule",
+        "derivatives of tangent, cotangent, secant, cosecant",
+        "higher-order derivatives",
+        "simple harmonic motion"
+      ]
     },
     {
       "number": "3.6",
       "title": "The Chain Rule",
       "book_page": 250,
       "file": "sections/3_6_the_chain_rule.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "State the chain rule for the composition of two functions.",
+        "Apply the chain rule together with the power rule.",
+        "Apply the chain rule and the product/quotient rules correctly in combination when both are necessary.",
+        "Recognize the chain rule for a composition of three or more functions.",
+        "Describe the proof of the chain rule."
+      ],
+      "topic_keywords": [
+        "chain rule",
+        "composite functions",
+        "power rule for composition",
+        "chain rule with trigonometric functions",
+        "product and quotient rules combined with the chain rule",
+        "composition of three or more functions",
+        "leibniz notation",
+        "proof of the chain rule"
+      ]
     },
     {
       "number": "3.7",
       "title": "Derivatives of Inverse Functions",
       "book_page": 259,
       "file": "sections/3_7_derivatives_of_inverse_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Calculate the derivative of an inverse function.",
+        "Recognize the derivatives of the standard inverse trigonometric functions."
+      ],
+      "topic_keywords": [
+        "inverse function theorem",
+        "derivative of an inverse function",
+        "power rule for rational exponents",
+        "inverse trigonometric functions",
+        "derivative of arcsin",
+        "derivative of arctan",
+        "chain rule with inverse trig functions",
+        "tangent line to an inverse function"
+      ]
     },
     {
       "number": "3.8",
       "title": "Implicit Differentiation",
       "book_page": 268,
       "file": "sections/3_8_implicit_differentiation.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Find the derivative of a complicated function by using implicit differentiation.",
+        "Use implicit differentiation to determine the equation of a tangent line."
+      ],
+      "topic_keywords": [
+        "implicit differentiation",
+        "explicit vs implicit functions",
+        "chain rule for dy/dx",
+        "problem-solving strategy",
+        "tangent lines to implicit curves",
+        "second derivative implicitly",
+        "point-slope equation",
+        "product rule with implicit differentiation"
+      ]
     },
     {
       "number": "3.9",
       "title": "Derivatives of Exponential and Logarithmic Functions",
       "book_page": 275,
       "file": "sections/3_9_derivatives_of_exponential_and_logarithmic_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Find the derivative of exponential functions.",
+        "Find the derivative of logarithmic functions.",
+        "Use logarithmic differentiation to determine the derivative of a function."
+      ],
+      "topic_keywords": [
+        "derivative of e^x",
+        "derivative of exponential functions",
+        "derivative of natural logarithm",
+        "derivative of logarithmic functions",
+        "change of base",
+        "logarithmic differentiation",
+        "chain rule with exponentials and logarithms",
+        "power rule for real exponents"
+      ]
     },
     {
       "number": "4.1",
