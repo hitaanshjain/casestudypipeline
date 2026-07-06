@@ -462,80 +462,219 @@
       "title": "Related Rates",
       "book_page": 296,
       "file": "sections/4_1_related_rates.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Express changing quantities in terms of derivatives.",
+        "Find relationships among the derivatives in a given problem.",
+        "Use the chain rule to find the rate of change of one quantity that depends on the rate of change of other quantities."
+      ],
+      "topic_keywords": [
+        "related rates",
+        "differentiating with respect to time",
+        "chain rule",
+        "pythagorean theorem in related rates",
+        "trigonometric ratios in related rates",
+        "similar triangles",
+        "rate of change of volume",
+        "related-rates problem-solving strategy"
+      ]
     },
     {
       "number": "4.2",
       "title": "Linear Approximations and Differentials",
       "book_page": 308,
       "file": "sections/4_2_linear_approximations_and_differentials.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Describe the linear approximation to a function at a point.",
+        "Write the linearization of a given function.",
+        "Draw a graph that illustrates the use of differentials to approximate the change in a quantity.",
+        "Calculate the relative error and percentage error in using a differential approximation."
+      ],
+      "topic_keywords": [
+        "linear approximation",
+        "linearization",
+        "tangent line approximation",
+        "differential",
+        "propagated error",
+        "relative error",
+        "percentage error"
+      ]
     },
     {
       "number": "4.3",
       "title": "Maxima and Minima",
       "book_page": 317,
       "file": "sections/4_3_maxima_and_minima.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Define absolute extrema.",
+        "Define local extrema.",
+        "Explain how to find the critical points of a function over a closed interval.",
+        "Describe how to use critical points to locate absolute extrema over a closed interval."
+      ],
+      "topic_keywords": [
+        "absolute extrema",
+        "local extrema",
+        "critical number",
+        "extreme value theorem",
+        "fermat's theorem",
+        "closed interval method",
+        "endpoint extremum"
+      ]
     },
     {
       "number": "4.4",
       "title": "The Mean Value Theorem",
       "book_page": 329,
       "file": "sections/4_4_the_mean_value_theorem.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Explain the meaning of Rolle's theorem.",
+        "Describe the significance of the Mean Value Theorem.",
+        "State three important consequences of the Mean Value Theorem."
+      ],
+      "topic_keywords": [
+        "rolle's theorem",
+        "mean value theorem",
+        "secant line slope",
+        "continuity hypothesis",
+        "differentiability hypothesis",
+        "constant function corollary",
+        "constant difference theorem",
+        "increasing function test",
+        "decreasing function test"
+      ]
     },
     {
       "number": "4.5",
       "title": "Derivatives and the Shape of a Graph",
       "book_page": 339,
       "file": "sections/4_5_derivatives_and_the_shape_of_a_graph.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Explain how the sign of the first derivative affects the shape of a function's graph.",
+        "State the first derivative test for critical points.",
+        "Use concavity and inflection points to explain how the sign of the second derivative affects the shape of a function's graph.",
+        "Explain the concavity test for a function over an open interval.",
+        "Explain the relationship between a function and its first and second derivatives.",
+        "State the second derivative test for local extrema."
+      ],
+      "topic_keywords": [
+        "critical point",
+        "local extrema",
+        "first derivative test",
+        "increasing function",
+        "decreasing function",
+        "concavity",
+        "inflection point",
+        "second derivative test"
+      ]
     },
     {
       "number": "4.6",
       "title": "Limits at Infinity and Asymptotes",
       "book_page": 354,
       "file": "sections/4_6_limits_at_infinity_and_asymptotes.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Calculate the limit of a function as x increases or decreases without bound.",
+        "Recognize a horizontal asymptote on the graph of a function.",
+        "Estimate the end behavior of a function as x increases or decreases without bound.",
+        "Recognize an oblique asymptote on the graph of a function.",
+        "Analyze a function and its derivatives to draw its graph."
+      ],
+      "topic_keywords": [
+        "limits at infinity",
+        "horizontal asymptotes",
+        "end behavior",
+        "infinite limits at infinity",
+        "power function and polynomial end behavior",
+        "rational function asymptotes",
+        "vertical asymptotes",
+        "oblique asymptotes",
+        "curve-sketching strategy"
+      ]
     },
     {
       "number": "4.7",
       "title": "Applied Optimization Problems",
       "book_page": 381,
       "file": "sections/4_7_applied_optimization_problems.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Set up and solve optimization problems in several applied fields."
+      ],
+      "topic_keywords": [
+        "optimization problem",
+        "objective function",
+        "constraint equation",
+        "closed bounded interval",
+        "critical point",
+        "absolute maximum",
+        "absolute minimum",
+        "unbounded domain"
+      ]
     },
     {
       "number": "4.8",
       "title": "L'Hopital's Rule",
       "book_page": 394,
       "file": "sections/4_8_lhopitals_rule.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Recognize when to apply L'Hopital's rule.",
+        "Identify indeterminate forms produced by quotients, products, subtractions, and powers, and apply L'Hopital's rule in each case.",
+        "Describe the relative growth rates of functions."
+      ],
+      "topic_keywords": [
+        "indeterminate forms",
+        "l'hopital's rule",
+        "0/0 form",
+        "infinity/infinity form",
+        "0 times infinity form",
+        "infinity minus infinity form",
+        "exponential indeterminate forms",
+        "growth rates of functions"
+      ]
     },
     {
       "number": "4.9",
       "title": "Newton's Method",
       "book_page": 409,
       "file": "sections/4_9_newtons_method.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Describe the steps of Newton's method.",
+        "Explain what an iterative process means.",
+        "Recognize when Newton's method does not work.",
+        "Apply iterative processes to various situations."
+      ],
+      "topic_keywords": [
+        "newton's method",
+        "iteration formula",
+        "iterative process",
+        "tangent line approximation",
+        "root approximation",
+        "fixed point",
+        "convergence failure",
+        "2-cycle"
+      ]
     },
     {
       "number": "4.10",
       "title": "Antiderivatives",
       "book_page": 419,
       "file": "sections/4_10_antiderivatives.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Find the general antiderivative of a given function.",
+        "Explain the terms and notation used for an indefinite integral.",
+        "State the power rule for integrals.",
+        "Use antidifferentiation to solve simple initial-value problems."
+      ],
+      "topic_keywords": [
+        "antiderivative",
+        "indefinite integral",
+        "integrand",
+        "constant of integration",
+        "power rule for integrals",
+        "family of antiderivatives",
+        "sum and difference rules for integrals",
+        "constant multiple rule for integrals",
+        "differential equation",
+        "initial-value problem"
+      ]
     },
     {
       "number": "5.1",
