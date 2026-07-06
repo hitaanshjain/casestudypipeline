@@ -87,7 +87,7 @@ Rubric (generator-owned): the example's four dimensions, each scored 0 to 1 in s
 - `lo_explicit_match`: does a section LO explicitly state the tested skill (not merely a prerequisite of it)?
 - `exercise_pattern_match`: does the section contain worked examples of the same task shape the student could imitate?
 - `course_level_match`: does the section's course level match the problem's?
-  `confidence_score` = median of the four (this reproduces the example: median(0.45, 0.35, 0.40, 0.55) = 0.425; flagged as our inference of Peter's rule, sec 8). `mapping_confidence` bands, assumed and flagged: LOW < 0.5, MEDIUM 0.5 to 0.75, HIGH > 0.75. Phase 2 already reads these fields defensively, so a band correction from Peter is cheap.
+  `confidence_score` = median of the four (this reproduces the example: median(0.45, 0.35, 0.40, 0.55) = 0.425; flagged as our inference of Peter's rule, sec 8). The top-level rubric_scores are the PRIMARY's scores; on the no-primary path, the best fallback candidate's scores. `mapping_confidence` bands, assumed and flagged: LOW < 0.5, MEDIUM 0.5 to 0.75, HIGH > 0.75. Phase 2 already reads these fields defensively, so a band correction from Peter is cheap.
   `multipart_assessment` vocabulary, assumed and flagged: "single_part" | "complete" | "multipart_missing_parts" (only the last is observed; phase 2 triggers on missing-parts-like values defensively).
 
 ## 5. Shared rules (both prompts)

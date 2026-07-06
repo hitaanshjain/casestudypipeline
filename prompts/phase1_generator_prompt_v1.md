@@ -13,7 +13,7 @@ You are an expert instructor, textbook cartographer, and careful quantitative th
 
 <inputs>
 - problem_path: path to problem.txt, one source problem, possibly multi-part. It alone defines the skills in play.
-- references_path: path to the corpus root. It contains one subdirectory per book: `<book_key>/book_map.json` (book metadata: title, authors, license, attribution line, source URL, course_level, book_tag; plus a section index giving each section's number, title, learning objectives, topic keywords, and content filename) and the section content files the index names (usually under `sections/`).
+- references_path: path to the corpus root. It contains one subdirectory per book: `<book_key>/book_map.json` (book metadata: title, authors, license, license_url (may be empty), attribution line, source URL, course_level, book_tag; plus a section index giving each section's number, title, learning objectives, topic keywords, and content filename) and the section content files the index names (usually under `sections/`).
 - output_path: directory where you write every output file. Create it if it does not exist. Write nothing anywhere else.
 </inputs>
 
@@ -24,6 +24,7 @@ Generate the phase 1 package for the one problem at problem_path. The package is
 3. `supporting_01.md`, `supporting_02.md`, ...: extracts of the supporting sections, one file per SUPPORTING citation, numbered from 01 (steps G3, G4).
 4. `lo_mapping.json`: learning objectives, section citations with justifications and rubric scores, and sentinel fields reserved for the critic (steps G1, G3, G5).
 On failure you write `phase1_error.txt` instead, alone (see failure_rule).
+Early preflight: before writing ANY file, confirm that references_path contains at least one readable book_map.json; if it does not, the failure rule applies immediately.
 These files feed an automated pipeline; instructors and validators read them, students never see them. Method concealment does NOT apply here: name techniques, theorems, and methods freely and precisely.
 </mission>
 
@@ -145,7 +146,7 @@ Write `lo_mapping.json` with the FULL schema below: every field present, no fiel
 Fill rules:
 - Critic sentinels, NEVER touched by you: `"critique_score": null`, `"critique_findings": []`, `"primary_assessment": ""`, `"supporting_assessment": ""`, `"recommended_changes": []`, `"search_reasonable": null`, `"multipart_assessment": ""`, `"critique_status": "pending"`. A separate critic fills these later; a package with any of them altered fails validation.
 - Fixed values, kept verbatim: `"state": "FOUND"`, `"template_id": ""`, `"source": "dynamic"`, `"confidence_rubric_version": 1`, `"error_type": ""`, `"error_message": ""`.
-- `rubric_scores` (all four dimensions) and `confidence_score` carry your step G3 numbers in place of the 0.0 placeholders.
+- `rubric_scores` (all four dimensions) and `confidence_score` carry your step G3 numbers in place of the 0.0 placeholders. The top-level rubric_scores are the PRIMARY section's scores; on the no_primary_available path, use the best fallback candidate's scores.
 - `no_primary_available` stays false except on step G3's honesty-rule path (b); `no_coverage_reasoning` and `fallback_sections` stay "" and [] unless that path triggered.
 - `learning_objectives`: the placeholder stands for your G1 entries; each is an object with exactly the keys `part_id`, `learning_objective`, `mapped_section_keys`, `confidence`, `rationale`.
 - `sections`: one object per cited section, the PRIMARY entry first, then the SUPPORTING entries in supporting-file order (the Nth SUPPORTING entry is `supporting_0N.md`). Inside each entry, `learning_objectives` copies the section's learning objectives from the book map verbatim; `page_uuid` is "" and `artifact_ids` is [] always; `also_in_books` is [] unless the index shows the section in multiple books; `openstax_url` is a real section URL only when the book map's source URL lets you construct one, else "".
@@ -162,7 +163,7 @@ ERROR: <category>: <specific reason>. No phase 1 package generated.
 
 - category: a short noun phrase, one of: unsolvable problem, ambiguous problem, unreadable problem, unreadable corpus.
 - specific reason: one concrete clause naming exactly what failed (which part, which constraint, which path).
-Write no other files on this path.
+Write no other files on this path. If any draft files were already written on this run, delete them: phase1_error.txt must be the only file in output_path.
 NOT a failure: a corpus with no coverage of the problem's topic. That case ships a full package through step G3's honesty rule (weak PRIMARY or `no_primary_available`), with rich `missing_concepts`. Honest weakness is reported in the package; only the triggers above abort the run.
 </failure_rule>
 
