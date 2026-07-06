@@ -1,0 +1,89 @@
+{
+  "state": "FOUND",
+  "template_id": "",
+  "learning_objective": "Execute one simplex pivot on a maximization tableau (choose the entering variable, apply the minimum-ratio test, and update every row), read the resulting basic feasible solution off the updated tableau, determine whether that tableau is optimal by inspecting the objective row, and identify and justify the entering-variable rule used for the pivot.",
+  "learning_objectives": [
+    {
+      "part_id": "i",
+      "learning_objective": "Perform one full simplex pivot operation on a tableau (select the entering column and pivot row, normalize the pivot row, eliminate the entering column from every other row including the objective row) and display the complete updated tableau.",
+      "mapped_section_keys": [],
+      "confidence": 0.0,
+      "rationale": "No section in this corpus (single-variable OpenStax Calculus Volume 1) presents a simplex tableau, a pivot operation, or row-reduction bookkeeping of this kind, so no section is mapped to this part."
+    },
+    {
+      "part_id": "ii",
+      "learning_objective": "Read a basic feasible solution (values of every decision variable and the objective) directly from a simplex tableau by recognizing basic (unit-column) variables and setting nonbasic variables to zero.",
+      "mapped_section_keys": [],
+      "confidence": 0.0,
+      "rationale": "The corpus has no treatment of basic/nonbasic variables, unit columns, or tableau-based solution reading; this is linear-programming machinery absent from a single-variable calculus book."
+    },
+    {
+      "part_id": "iii",
+      "learning_objective": "Apply the simplex optimality criterion to a maximization tableau by checking the sign of every entry in the objective row.",
+      "mapped_section_keys": [],
+      "confidence": 0.0,
+      "rationale": "The corpus's only optimization content (4.7) certifies optimality via the extreme value theorem and derivative sign changes over an interval, not via reading signs in a simplex objective row, so no section covers this criterion."
+    },
+    {
+      "part_id": "iv",
+      "learning_objective": "Identify the simplex method's entering-variable selection rule (most negative objective-row coefficient) and justify a pivot choice retrospectively from the original tableau.",
+      "mapped_section_keys": [],
+      "confidence": 0.0,
+      "rationale": "No section defines an entering-variable or pivot-selection rule of any kind; the corpus's optimization method (differentiation and critical points) has no analogous selection step to map."
+    }
+  ],
+  "source_course_level": "linear_programming",
+  "rubric_scores": {
+    "topic_keyword_match": 0.25,
+    "lo_explicit_match": 0.1,
+    "exercise_pattern_match": 0.05,
+    "course_level_match": 0.1
+  },
+  "confidence_score": 0.1,
+  "mapping_confidence": "LOW",
+  "confidence_rubric_version": 1,
+  "no_primary_available": true,
+  "sections": [],
+  "books_searched": ["openstax_calculus_v1"],
+  "no_coverage_reasoning": "The only corpus book is OpenStax Calculus Volume 1, a single-variable calculus text; it contains no section on matrices, systems of linear equations, linear programming, the simplex method, tableaus, pivoting, or basic feasible solutions. Its one optimization section (4.7, Applied Optimization Problems) was opened and read in full: it solves optimization problems by substituting a constraint into an objective to get a single-variable function, then applying the extreme value theorem and derivative-based critical-point analysis over a closed or unbounded interval (gardens, travel time, box surface area). That is a different method from the simplex algorithm this problem tests (no tableau, no multiple simultaneous decision variables, no row operations, no entering/leaving-variable rule), so promoting it to PRIMARY would misrepresent it as teaching the tested skill when it only shares the word \"optimization\" and the general idea of maximizing/minimizing subject to a constraint. Section 1.2 (Basic Classes of Functions) was also checked for its \"linear functions and slope\" content and covers only single-variable lines y = mx + b, not systems of linear equations or matrices, so it is even further from the tested skill and is not listed as a fallback. Per the honesty rule, no_primary_available is set true rather than inflating 4.7's scores.",
+  "fallback_sections": [
+    {
+      "book_key": "openstax_calculus_v1",
+      "section_number": "4.7",
+      "section_title": "Applied Optimization Problems",
+      "reason": "Closest topical neighbor in the corpus: shares the vocabulary of an objective to maximize/minimize subject to a constraint, but solves single-variable problems via substitution and derivative critical points, never a tableau, matrix, pivot, or entering/leaving-variable rule, so it teaches none of the simplex skill actually tested."
+    }
+  ],
+  "error_type": "",
+  "error_message": "",
+  "source": "dynamic",
+  "critique_score": 0.0,
+  "critique_findings": [
+    "A1 Independent search (non-finding): re-read openstax_calculus_v1/book_map.json in full (45 sections, chapters 1-6, single-variable functions through integral applications); grepped all section titles, learning objectives, and topic keywords for matrix, system of equations, linear programming, simplex, tableau, pivot, and basic feasible solution terms and found zero matches anywhere in the one-book corpus. Opened the two candidates the mapper's no_coverage_reasoning names in full: Sec 4.7 (Applied Optimization Problems) solves single-variable optimization by substituting a constraint into one variable and applying the extreme value theorem plus critical points (confirmed against all three worked examples: garden area, island travel time, box surface area), never a tableau, matrix, or pivot; Sec 1.2's linear-function content is single-variable slope (y = mx + b), not systems of equations. No better or missed candidate section exists among the one book present; the mapper's no_primary_available = true call is correct.",
+    "A2 Anchor verification (non-finding): primary.md and every supporting_NN.md file are absent from output_path, consistent with no_primary_available = true and sections = []; every part's mapped_section_keys in learning_objectives is also []. There are no {#...} anchors anywhere in the package to collect or check for duplicates, and no justification text cites extract content, so there is nothing dangling to verify.",
+    "A3 Faithfulness (non-finding): no extract files exist (see A2 finding), so there is nothing to spot-check against the corpus section files for invented content.",
+    "A4 Bookkeeping: (a) non-finding, books_searched = [openstax_calculus_v1] matches exactly the one book_map.json subdirectory under references_path; the loose calculus-textbook.pdf sitting at the references root is not a book subdirectory and carries no book_map.json, so it correctly does not appear. (b) non-finding, no extracts exist so there are no Attribution required lines to check byte for byte. (c) re-scored the four rubric dimensions myself against the closest fallback candidate (Sec 4.7, since no true PRIMARY exists): topic_keyword_match approx 0.20-0.25 (tangential, shares only maximize/objective vocabulary; mapper's 0.25 holds), lo_explicit_match approx 0.05-0.10 (no explicit LO overlap; mapper's 0.1 holds), exercise_pattern_match approx 0.05 (mapper's 0.05 holds), course_level_match approx 0.05-0.10 (calculus_1 vs linear_programming; mapper's 0.1 holds); every dimension is within 0.15 of my independent score. confidence_score 0.1 is the median of 0.25, 0.1, 0.05, 0.1 (sorted 0.05, 0.1, 0.1, 0.25; median of the middle two = 0.1), matches. mapping_confidence = LOW is consistent with confidence_score 0.1 being under 0.5. All three non-findings.",
+    "A5 Coverage: with sections = [], no cited section teaches any part, so by the multipart_assessment field's own rule the correct value is multipart_missing_parts even though missing_concepts fully patches the gap (set accordingly below). Checked all four parts against my independent re-solve: the 7 missing_concepts entries (tableau structure, basic versus nonbasic variables, entering-variable rule, minimum-ratio test, pivot mechanics, optimality criterion, reading a basic feasible solution) jointly supply everything needed to solve parts (i) through (iv) as printed reference data; I found no additional gap and no false or garbled fact requiring a fix, so missing_concepts is left unchanged. Coverage content itself is a non-finding; the multipart_assessment value is the one required structural consequence.",
+    "A6 verified_answer.txt density (non-finding): every part shows full operator-bearing steps a reader could recompute independently. Part (i) works every row-reduction step (60/4 = 15 vs 90/2 = 45 ratio test, then the normalize-and-eliminate arithmetic for all three rows). Part (ii) derives basic versus nonbasic status from unit columns rather than asserting values. Part (iii) states the sign convention before applying it. Part (iv) names the compared coefficients (-5 vs -2). A closing substitution self-check re-verifies all five reported quantities (y1 = 15, y2 = 0, y3 = 0, y4 = 60, P = 75) against the original unpivoted constraints. Full per-part step density confirmed; this matches my own independent solution exactly, and the calibration gate (step C2) passed with zero mismatches across all four parts and the pre-pivot state.",
+    "Field-vocabulary note (structural finding): neither primary_assessment's nor supporting_assessment's two-value vocabulary has a native option for no PRIMARY exists because none qualifies, as distinct from a PRIMARY exists but is weak. Since A1 confirms no candidate section qualifies as PRIMARY or SUPPORTING anywhere in the one-book corpus, I am recording primary_assessment = appropriate (the no_primary_available = true decision is itself the correct, honest outcome, not a defect) and supporting_assessment = complete (no needed supporting citation is missing or omitted). Flagging this interpretation explicitly since the closed vocabulary reads as though it was designed for a weak-but-present PRIMARY case, not a genuine zero-coverage case.",
+    "recommended_changes rationale (structural finding): recommended_changes is populated, not empty, solely because multipart_assessment is forced to multipart_missing_parts by that field's own rule (see A5 finding); the one substantive recommendation is a corpus-expansion action, not a fix to the existing draft, since my A1 search found no in-corpus fix available."
+  ],
+  "missing_concepts": [
+    "Simplex tableau structure: every row except the last represents one constraint's coefficients for the decision and slack variables plus its right-hand-side constant; the last row represents the objective equation, written so the objective variable (here P) has coefficient 1 and the row's right-hand side is the objective's current value.",
+    "Basic versus nonbasic variables: a variable is basic in a simplex tableau when its column is a unit vector (a single 1 in exactly one row and 0 in every other row, including the objective row); every nonbasic variable is set to 0 when reading off the current solution.",
+    "Entering-variable rule (most-negative-coefficient rule): in a maximization tableau whose objective row is written as -c1*y1 - c2*y2 - ... + P = (current P), the entering variable is the nonbasic variable with the most negative objective-row coefficient, because that column offers the greatest rate of increase in the objective per unit increase of that variable.",
+    "Minimum-ratio test (leaving-variable rule): for the chosen entering column, divide each constraint row's right-hand-side by that row's entry in the entering column wherever the entry is positive; the row that gives the smallest nonnegative ratio is the pivot row, and its currently basic variable leaves the basis; this rule keeps every variable nonnegative after the pivot.",
+    "Pivot operation mechanics: divide every entry in the pivot row by the pivot element so the pivot position becomes 1, then, for every other row (including the objective row), subtract that row's entering-column entry times the new pivot row from itself, so every other entry in the entering column becomes 0.",
+    "Optimality criterion: a maximization tableau in the -c_j convention is optimal exactly when every entry in the objective row under the decision- and slack-variable columns is greater than or equal to 0; any remaining negative entry means a further pivot on that column could still increase the objective.",
+    "Reading a basic feasible solution from a tableau: after any pivot, each basic variable's value equals the right-hand-side entry of the row in which it is basic, each nonbasic variable equals 0, and the objective's current value equals the right-hand-side entry of the objective row."
+  ],
+  "primary_assessment": "appropriate",
+  "supporting_assessment": "complete",
+  "recommended_changes": [
+    "Add a linear algebra or operations-research source book to the corpus that teaches the simplex method (tableau setup, pivoting, entering and leaving variable rules, optimality criteria, reading basic feasible solutions); the current one-book corpus (single-variable OpenStax Calculus Volume 1) has zero coverage of this skill family and no in-corpus fix is possible.",
+    "Until such a book is added, keep no_primary_available true and do not promote openstax_calculus_v1 Sec 4.7 (Applied Optimization Problems) to PRIMARY or SUPPORTING: it solves single-variable optimization by substitution and critical points, a materially different method from the simplex tableau this problem tests."
+  ],
+  "search_reasonable": true,
+  "multipart_assessment": "multipart_missing_parts",
+  "critique_status": "completed"
+}
