@@ -681,56 +681,152 @@
       "title": "Approximating Areas",
       "book_page": 438,
       "file": "sections/5_1_approximating_areas.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Use sigma (summation) notation to calculate sums and powers of integers.",
+        "Use the sum of rectangular areas to approximate the area under a curve.",
+        "Use Riemann sums to approximate area."
+      ],
+      "topic_keywords": [
+        "sigma notation",
+        "summation properties",
+        "sum of integers formula",
+        "regular partition",
+        "left-endpoint approximation",
+        "right-endpoint approximation",
+        "riemann sum",
+        "upper sum",
+        "lower sum"
+      ]
     },
     {
       "number": "5.2",
       "title": "The Definite Integral",
       "book_page": 456,
       "file": "sections/5_2_the_definite_integral.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "State the definition of the definite integral.",
+        "Explain the terms integrand, limits of integration, and variable of integration.",
+        "Explain when a function is integrable.",
+        "Describe the relationship between the definite integral and net area.",
+        "Use geometry and the properties of definite integrals to evaluate them.",
+        "Calculate the average value of a function."
+      ],
+      "topic_keywords": [
+        "definite integral",
+        "riemann sum",
+        "integrand",
+        "limits of integration",
+        "integrable function",
+        "net signed area",
+        "total area",
+        "comparison theorem",
+        "average value of a function"
+      ]
     },
     {
       "number": "5.3",
       "title": "The Fundamental Theorem of Calculus",
       "book_page": 472,
       "file": "sections/5_3_the_fundamental_theorem_of_calculus.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Describe the meaning of the Mean Value Theorem for Integrals.",
+        "State the meaning of the Fundamental Theorem of Calculus, Part 1.",
+        "Use the Fundamental Theorem of Calculus, Part 1, to evaluate derivatives of integrals.",
+        "State the meaning of the Fundamental Theorem of Calculus, Part 2.",
+        "Use the Fundamental Theorem of Calculus, Part 2, to evaluate definite integrals.",
+        "Explain the relationship between differentiation and integration."
+      ],
+      "topic_keywords": [
+        "mean value theorem for integrals",
+        "average value of a function",
+        "fundamental theorem of calculus part 1",
+        "fundamental theorem of calculus part 2",
+        "evaluation theorem",
+        "variable upper limit of integration",
+        "chain rule with integrals",
+        "net signed area"
+      ]
     },
     {
       "number": "5.4",
       "title": "Integration Formulas and the Net Change Theorem",
       "book_page": 488,
       "file": "sections/5_4_integration_formulas_and_the_net_change_theorem.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Apply the basic integration formulas.",
+        "Explain the significance of the net change theorem.",
+        "Use the net change theorem to solve applied problems.",
+        "Apply the integrals of odd and even functions."
+      ],
+      "topic_keywords": [
+        "basic integration formulas",
+        "net change theorem",
+        "net displacement",
+        "total distance traveled",
+        "rate of change",
+        "even function",
+        "odd function",
+        "symmetric interval"
+      ]
     },
     {
       "number": "5.5",
       "title": "Substitution",
       "book_page": 506,
       "file": "sections/5_5_substitution.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Use substitution to evaluate indefinite integrals.",
+        "Use substitution to evaluate definite integrals."
+      ],
+      "topic_keywords": [
+        "substitution",
+        "change of variables",
+        "indefinite integral",
+        "definite integral",
+        "limits of integration",
+        "chain rule",
+        "u-substitution",
+        "antiderivative"
+      ]
     },
     {
       "number": "5.6",
       "title": "Integrals Involving Exponential and Logarithmic Functions",
       "book_page": 516,
       "file": "sections/5_6_integrals_involving_exponential_and_logarithmic_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Integrate functions involving exponential functions.",
+        "Integrate functions involving logarithmic functions."
+      ],
+      "topic_keywords": [
+        "exponential integration",
+        "integral of a^x",
+        "integral of 1/x",
+        "logarithmic integration",
+        "u-substitution",
+        "change of limits of integration",
+        "population growth model",
+        "price-demand function"
+      ]
     },
     {
       "number": "5.7",
       "title": "Integrals Resulting in Inverse Trigonometric Functions",
       "book_page": 526,
       "file": "sections/5_7_integrals_resulting_in_inverse_trigonometric_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Integrate functions resulting in inverse trigonometric functions."
+      ],
+      "topic_keywords": [
+        "inverse trigonometric functions",
+        "arcsine integral formula",
+        "arctangent integral formula",
+        "arcsecant integral formula",
+        "u-substitution",
+        "implicit differentiation",
+        "definite integral evaluation",
+        "antiderivative matching"
+      ]
     },
     {
       "number": "6.1",
