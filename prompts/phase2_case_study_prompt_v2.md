@@ -3,7 +3,7 @@
 
 Paste everything below into a fresh session with any capable LLM. Fill the input blocks: the five phase-1 files plus settings. The output is one compilable LaTeX document (or the single error line defined in the calibration gate).
 
-Lineage: master merge, July 6, 2026, of three sources. Backbone: phase2_case_study_prompt_v1.md (itself the phase-2 fork of universal_case_study_prompt_v5.md; the twelve invariants, LaTeX contract, and difficulty anchor are v5's). Grafted from Peter's finance worksheet prompt: countable difficulty gauges (per-question minute budgets, the 8-minute floor, the 6-task cap, the no-one-step-substitution rule, the step taxonomy) and answer-key line discipline. Grafted from Peter's Linear Algebra prompt: verified_answer's method as the house method for the key, the treat-the-source-as-a-model-never-a-template rule, the realistic-domain menu with the no-fantasy rule, and instructor-voice question phrasing. Rejections and reasons are logged in CLAUDE.md section 9.
+Lineage: master merge, July 6, 2026, of three sources, one per team member. Backbone: phase2_case_study_prompt_v1.md, Hitaansh's prompt (itself the phase-2 fork of universal_case_study_prompt_v5.md; the twelve invariants, LaTeX contract, and difficulty anchor are v5's). Grafted from intern prompt p2 (finance-worksheet style): countable difficulty gauges (per-question minute budgets, the 8-minute floor, the 6-task cap, the no-one-step-substitution rule, the step taxonomy), answer-key line discipline, and the compile-before-delivering step (made environment-conditional, see compile_verification). Grafted from intern prompt p3 (Linear Algebra, coffee-shop gold standard): verified_answer's method as the house method for the key, the treat-the-source-as-a-model-never-a-template rule, the realistic-domain menu with the no-fantasy rule, and instructor-voice question phrasing. Rejections and reasons are logged in CLAUDE.md section 9.
 
 ---
 
@@ -101,7 +101,7 @@ Generate a specific, decision-oriented title, 4 to 8 words, Title Case, like a c
 </title_rules>
 
 <latex_output_contract>
-Your entire output is ONE complete, compilable LaTeX document and nothing else. No commentary before or after the code, and no markdown code fences. The first characters of your output are \documentclass, with exactly two exceptions: the % WARNING banner (see weak_mapping_warning) precedes \documentclass when triggered, and the calibration % ERROR line replaces everything on the failure path.
+Your entire output is ONE complete, compilable LaTeX document and nothing else (plus the compiled PDF of that same source when <compile_verification> applies). No commentary before or after the code, and no markdown code fences. The first characters of your output are \documentclass, with exactly two exceptions: the % WARNING banner (see weak_mapping_warning) precedes \documentclass when triggered, and the calibration % ERROR line replaces everything on the failure path.
 
 Hard rules:
 - Compiles with pdflatex on standard TeX Live, first pass, zero errors. Packages allowed: geometry, amsmath, amssymb, enumitem, tcolorbox, xcolor, booktabs, array, fancyhdr.
@@ -157,6 +157,11 @@ Use exactly this preamble and these environments (fill in the footer by replacin
 \end{document}
 </latex_output_contract>
 
+<compile_verification>
+If your environment can execute commands and a TeX engine is available (tectonic or pdflatex), do not merely claim the document compiles: after the silent preflight, actually compile the finished source, fix any error, and recompile until it exits 0 on the first pass with zero errors. Deliver the .tex source (always the artifact of record) together with the compiled .pdf. Never report a compile result you did not run, and never hand over a PDF built from anything but the final source.
+If you are running as a plain chat model with no execution environment, skip this step and output the LaTeX source alone exactly as the output contract specifies; do not claim it was compiled.
+</compile_verification>
+
 <instructor_material>
 For instructor_pages placement, after \newpage produce: (1) an optional analyst's checklist of 4 to 6 sub-steps for stuck groups; (2) the answer key in a keybox per invariant 12, including the trap resolved with both numbers and the verdict paragraph; (3) the alignment block. For same_page placement, append the checklist and alignment block as LaTeX comments instead.
 
@@ -196,7 +201,7 @@ Before you output, verify every line; fix and re-verify on any failure. Do not n
 - % WARNING banner present if and only if a trigger fired.
 - No LaTeX copied from the section files; notation follows the PRIMARY section.
 - LaTeX: allowed packages only, ASCII only, percents escaped, grayscale, all math in math mode, no code fences, key placed per key_placement; all required content present including skill labels and the recommendation's ruled lines (page count was never a reason to cut anything).
-- Output is the LaTeX document alone (plus the % WARNING banner when triggered).
+- Output is the LaTeX document alone (plus the % WARNING banner when triggered); if execution was available, the source was actually compiled to exit 0 first pass per <compile_verification> and the delivered PDF came from the final source.
 </silent_preflight_check>
 
 <revision_rules>
