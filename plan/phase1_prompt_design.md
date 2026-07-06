@@ -78,7 +78,7 @@ Every field in the example file appears, same names, same nesting. Fill rules fo
 - `page_uuid`, `openstax_url` (per section): "" unless the book map supplies a real value; `artifact_ids`: []; `also_in_books`: [] unless the index shows the section in multiple books.
 - `source`: "dynamic"; `confidence_rubric_version`: 1.
 - `corpus`: the book's short tag from its book_map.json (e.g. "openstax_calc1").
-- `source_course_level`: the input problem's course level as judged by the generator, using the corpus's course_level vocabulary (e.g. "calculus_1").
+- `source_course_level`: the input problem's course level as judged by the generator. Use the corpus's course_level vocabulary (e.g. "calculus_1") when a term from it honestly fits the problem; otherwise state the problem's true course level in the same lowercase snake_case style (e.g. "linear_programming"), never mislabeling an off-corpus problem with a corpus term.
 - `fallback_sections`, `no_coverage_reasoning`, `error_type`, `error_message`: "" / [] unless triggered.
 
 Rubric (generator-owned): the example's four dimensions, each scored 0 to 1 in steps of 0.05 against written anchors in the prompt:

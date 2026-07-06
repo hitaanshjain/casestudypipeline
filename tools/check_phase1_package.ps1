@@ -69,6 +69,7 @@ if ($Stage -eq "generator") {
     if (($lo.mapping_confidence -eq "LOW") -or $noPrimary) {
         Check "missing_concepts non-empty on weak mapping" (($lo.missing_concepts -is [System.Array]) -and ($lo.missing_concepts.Count -ge 1)) ""
     }
+    Check "phase1_error.txt absent" (-not (Test-Path (Join-Path $PackagePath "phase1_error.txt"))) ""
 }
 
 $allAnchors = New-Object System.Collections.ArrayList
