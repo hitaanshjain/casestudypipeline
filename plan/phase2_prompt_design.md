@@ -1,6 +1,5 @@
 # Phase 2 Prompt Design (spec)
-### Status: awaiting Hitaansh sign-off  ·  July 2, 2026
-### Decisions behind this spec: CLAUDE.md sec 2 (two-phase directive), sec 9 (fence reversal, fresh numbers), sec 14 (settled answers 1-7)
+
 
 Phase 2 consumes the 5 files phase 1 produces for one source problem and emits two independent artifacts via two separate LLM calls: a case study worksheet (same product as our v5 cases) and a flashcard sheet. This spec defines both prompts precisely enough that they can be written, and later tested, without the chat history that produced it. Reference example throughout: /phase1example (simplex pivot problem mapped to Kuttler/Austin linear algebra sections).
 
