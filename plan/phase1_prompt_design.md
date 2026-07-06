@@ -1,10 +1,9 @@
 # Phase 1 Prompt Design (spec)
-### Status: signed off by Hitaansh, July 5, 2026
-### Decisions behind this spec: CLAUDE.md sec 2 (two-phase directive), sec 9 (July 5 phase 1 architecture entry), sec 14
 
 Phase 1 takes ONE source problem (problem.txt) and generates the five files Peter's IMathAS pipeline required humans to hand-supply, which are exactly the input contract of our phase 2 prompts (plan/phase2_prompt_design.md sec 1). It runs as TWO agentic prompts in sequence, in a harness with file tools (Claude Code or equivalent), searching a local corpus in references/. Reference example throughout: /phase1example (the simplex problem and Peter's five files for it).
 
 Settled decisions (Hitaansh, July 5, 2026):
+
 1. Corpus access: local textbook copies in a references/ directory in this repo. The prompts search files; no web access is assumed at run time.
 2. Two prompts: a GENERATOR (solve, search, extract, map) and a CRITIC (independent re-solve, adversarial audit). Mirrors the mapper/critic split visible inside Peter's lo_mapping.json.
 3. Schema: lo_mapping.json clones Peter's example schema field for field; inapplicable fields carry documented empty values (sec 4).
@@ -16,12 +15,15 @@ Settled decisions (Hitaansh, July 5, 2026):
 ## 1. Interfaces
 
 ### Run inputs (both prompts)
+
 - `problem_path`: path to problem.txt, one source problem, possibly multi-part. A human pins scope by choosing this problem (the fence reversal, CLAUDE.md sec 9).
 - `references_path`: path to the references/ corpus root.
 - `output_path`: directory where the five files are written. The critic additionally reads the generator's drafts from this directory.
 
 ### The references/ corpus contract
+
 One subdirectory per book: `references/<book_key>/` containing:
+
 - `book_map.json`: book metadata (title, author(s), license, attribution-required line, source URL or URL pattern, course_level, and a short book tag, e.g. "openstax_calc1", used in extract anchors and lo_mapping's `corpus` field) plus a section index: for each section its number, title, learning objectives, topic keywords, and content filename. This is the search surface; it deliberately mirrors the master book map Peter's Kuttler extract references (`books/first_course_linear_algebra_kuttler.json`).
 - `sections/<file>.md` (or .txt): the full content of each section.
 
@@ -30,6 +32,7 @@ Search discipline: the prompts read every book_map.json first (that set defines 
 First corpus to build: `references/openstax_calculus_v1/` (prep is its own task; source is the OpenStax Calculus Volume 1 PDF already in the repo or the OpenStax web version; enough chapters that section choice is a real decision, target the core Calc 1 chapters 1 through 6). WARNING carried from CLAUDE.md sec 2 and backlog 8: confirm OpenStax license terms, and decide whether references/ is committed or gitignored before pushing textbook copies to the public remote.
 
 ### Output contract (the five files, names fixed by phase 2's input contract)
+
 - `primary.md`: extract of the single best-matching section (house extract format, sec 2 step 4).
 - `supporting_01.md`, `supporting_02.md`, ...: SUPPORTING section extracts, same format. Default 2; 1 to 3 allowed when the corpus genuinely offers fewer or more useful sections (phase 2 accepts a varying count).
 - `lo_mapping.json`: Peter's schema (sec 4). Generator writes the mapper half; critic fills the critique fields.
@@ -69,6 +72,7 @@ Fresh session, no generator context. Mandated steps, in order:
 ## 4. lo_mapping.json schema (cloned from /phase1example)
 
 Every field in the example file appears, same names, same nesting. Fill rules for fields that do not apply to our runs:
+
 - `state`: "FOUND" when a package ships (only value observed in the example; error runs produce phase1_error.txt instead of a package).
 - `template_id`: "" (our problems do not come from Peter's template bank).
 - `page_uuid`, `openstax_url` (per section): "" unless the book map supplies a real value; `artifact_ids`: []; `also_in_books`: [] unless the index shows the section in multiple books.
@@ -78,16 +82,18 @@ Every field in the example file appears, same names, same nesting. Fill rules fo
 - `fallback_sections`, `no_coverage_reasoning`, `error_type`, `error_message`: "" / [] unless triggered.
 
 Rubric (generator-owned): the example's four dimensions, each scored 0 to 1 in steps of 0.05 against written anchors in the prompt:
+
 - `topic_keyword_match`: overlap between the problem's topic vocabulary and the section's topic keywords.
 - `lo_explicit_match`: does a section LO explicitly state the tested skill (not merely a prerequisite of it)?
 - `exercise_pattern_match`: does the section contain worked examples of the same task shape the student could imitate?
 - `course_level_match`: does the section's course level match the problem's?
-`confidence_score` = median of the four (this reproduces the example: median(0.45, 0.35, 0.40, 0.55) = 0.425; flagged as our inference of Peter's rule, sec 8). `mapping_confidence` bands, assumed and flagged: LOW < 0.5, MEDIUM 0.5 to 0.75, HIGH > 0.75. Phase 2 already reads these fields defensively, so a band correction from Peter is cheap.
-`multipart_assessment` vocabulary, assumed and flagged: "single_part" | "complete" | "multipart_missing_parts" (only the last is observed; phase 2 triggers on missing-parts-like values defensively).
+  `confidence_score` = median of the four (this reproduces the example: median(0.45, 0.35, 0.40, 0.55) = 0.425; flagged as our inference of Peter's rule, sec 8). `mapping_confidence` bands, assumed and flagged: LOW < 0.5, MEDIUM 0.5 to 0.75, HIGH > 0.75. Phase 2 already reads these fields defensively, so a band correction from Peter is cheap.
+  `multipart_assessment` vocabulary, assumed and flagged: "single_part" | "complete" | "multipart_missing_parts" (only the last is observed; phase 2 triggers on missing-parts-like values defensively).
 
 ## 5. Shared rules (both prompts)
 
 Ground-truth hierarchy for phase 1:
+
 1. The section files in references/ beat model memory: never cite, quote, or extract content not present in the files.
 2. book_map.json beats section files for metadata (titles, licenses, attribution, URLs).
 3. problem.txt alone defines the tested skills; sections cannot add or subtract skills.
@@ -104,6 +110,7 @@ Format rules: ASCII throughout; valid JSON (no trailing commas, no comments); ma
 ## 7. Test plan (Calc 1 only, per settled decision 5)
 
 Prep: build `references/openstax_calculus_v1/` (book_map.json + section files). Then, fresh sessions throughout:
+
 1. **Happy path**: one Calc 1 source problem (written fresh, not copied from the corpus; taco-truck-adjacent difficulty). Run generator, then critic. Static checks: five files present; lo_mapping.json parses and carries every schema field; every cited anchor resolves into the extracts; extract claims spot-check against the corpus source; attribution lines match the book map; verified_answer.txt hand-verified by us; critique fields populated with at least one non-empty finding or an explicit non-finding.
 2. **Negative control A (calibration)**: corrupt one number in the generator's verified_answer.txt, run the critic; it must emit the specified error line and no critique. A gate that never fires is decoration.
 3. **Negative control B (coverage)**: run /phase1example/problem.txt (simplex) against the calc-only corpus; must produce an honest no-coverage/LOW result with real missing_concepts, not confident fake citations. We get this control for free.
@@ -113,6 +120,7 @@ Prep: build `references/openstax_calculus_v1/` (book_map.json + section files). 
 Log the standard caveats: harness agents are semi-fresh (CLAUDE.md loads), one model family, single runs.
 
 ## 8. Open items (accepted, not blockers)
+
 - `confidence_score` = median-of-rubric is inferred from one example; the LOW/MEDIUM/HIGH bands, the `state` vocabulary beyond "FOUND", and the `multipart_assessment` vocabulary are documented assumptions. Confirm with Peter when convenient; phase 2 reads all of them defensively, so corrections are cheap.
 - Corpus prep method (PDF extraction vs crawling the OpenStax web version) is decided at implementation time; the contract only fixes book_map.json + sections/.
 - Whether references/ is committed or gitignored is undecided; it inherits backlog 8's licensing exposure question (OpenStax NC caution) and must be settled before pushing textbook copies.
