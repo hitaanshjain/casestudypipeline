@@ -139,40 +139,121 @@
       "title": "A Preview of Calculus",
       "book_page": 106,
       "file": "sections/2_1_a_preview_of_calculus.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Describe the tangent problem and how it led to the idea of a derivative.",
+        "Explain how the idea of a limit is involved in solving the tangent problem.",
+        "Recognize a tangent to a curve at a point as the limit of secant lines.",
+        "Identify instantaneous velocity as the limit of average velocity over a small time interval.",
+        "Describe the area problem and how it was solved by the integral.",
+        "Explain how the idea of a limit is involved in solving the area problem.",
+        "Recognize how the ideas of limit, derivative, and integral led to the studies of infinite series and multivariable calculus."
+      ],
+      "topic_keywords": [
+        "tangent problem",
+        "secant line",
+        "tangent line",
+        "derivative",
+        "average velocity",
+        "instantaneous velocity",
+        "limit",
+        "area problem",
+        "integral calculus"
+      ]
     },
     {
       "number": "2.2",
       "title": "The Limit of a Function",
       "book_page": 116,
       "file": "sections/2_2_the_limit_of_a_function.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Using correct notation, describe the limit of a function.",
+        "Use a table of values to estimate the limit of a function or to identify when the limit does not exist.",
+        "Use a graph to estimate the limit of a function or to identify when the limit does not exist.",
+        "Define one-sided limits and provide examples.",
+        "Explain the relationship between one-sided and two-sided limits.",
+        "Using correct notation, describe an infinite limit.",
+        "Define a vertical asymptote."
+      ],
+      "topic_keywords": [
+        "limits",
+        "one-sided limits",
+        "infinite limits",
+        "vertical asymptotes",
+        "limit notation",
+        "table of functional values",
+        "does not exist (dne)",
+        "intuitive definition of a limit"
+      ]
     },
     {
       "number": "2.3",
       "title": "The Limit Laws",
       "book_page": 140,
       "file": "sections/2_3_the_limit_laws.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Recognize the basic limit laws.",
+        "Use the limit laws to evaluate the limit of a function.",
+        "Evaluate the limit of a function by factoring.",
+        "Use the limit laws to evaluate the limit of a polynomial or rational function.",
+        "Evaluate the limit of a function by factoring or by using conjugates.",
+        "Evaluate the limit of a function by using the squeeze theorem."
+      ],
+      "topic_keywords": [
+        "limit laws",
+        "sum and difference laws",
+        "product and quotient laws",
+        "power and root laws",
+        "polynomial and rational functions",
+        "factoring and canceling",
+        "conjugate multiplication",
+        "indeterminate form",
+        "squeeze theorem",
+        "trigonometric limits"
+      ]
     },
     {
       "number": "2.4",
       "title": "Continuity",
       "book_page": 155,
       "file": "sections/2_4_continuity.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Explain the three conditions for continuity at a point.",
+        "Describe three kinds of discontinuities.",
+        "Define continuity on an interval.",
+        "State the theorem for limits of composite functions.",
+        "Provide an example of the intermediate value theorem."
+      ],
+      "topic_keywords": [
+        "continuity",
+        "discontinuity",
+        "removable discontinuity",
+        "jump discontinuity",
+        "infinite discontinuity",
+        "continuity on an interval",
+        "composite function theorem",
+        "intermediate value theorem"
+      ]
     },
     {
       "number": "2.5",
       "title": "The Precise Definition of a Limit",
       "book_page": 169,
       "file": "sections/2_5_the_precise_definition_of_a_limit.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Describe the epsilon-delta definition of a limit.",
+        "Apply the epsilon-delta definition to find the limit of a function.",
+        "Describe the epsilon-delta definitions of one-sided limits and infinite limits.",
+        "Use the epsilon-delta definition to prove the limit laws."
+      ],
+      "topic_keywords": [
+        "epsilon-delta definition",
+        "limit proofs",
+        "one-sided limits",
+        "infinite limits",
+        "triangle inequality",
+        "sum law for limits",
+        "limit does not exist"
+      ]
     },
     {
       "number": "3.1",
