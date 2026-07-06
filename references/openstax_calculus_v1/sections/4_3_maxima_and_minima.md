@@ -24,6 +24,11 @@ and smallest values.
 
 ### Absolute Extrema
 
+Consider the function f(x) = x^2 + 1 over the interval (-infinity, infinity). As x -> +/-infinity, f(x) -> infinity,
+so the function does not have a largest value. However, since x^2 + 1 >= 1 for all real numbers x and x^2 + 1 = 1
+when x = 0, the function has a smallest value, 1, when x = 0. We say that 1 is the absolute minimum of
+f(x) = x^2 + 1 and that it occurs at x = 0. We say that f(x) = x^2 + 1 does not have an absolute maximum.
+
 ### Definition: absolute maximum and absolute minimum
 Let f be a function defined over an interval I and let c be in I. We say f has an absolute maximum on I at c if
 f(c) >= f(x) for all x in I. We say f has an absolute minimum on I at c if f(c) <= f(x) for all x in I. If f has an
