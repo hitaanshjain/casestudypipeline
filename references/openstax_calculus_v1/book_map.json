@@ -833,72 +833,200 @@
       "title": "Areas between Curves",
       "book_page": 540,
       "file": "sections/6_1_areas_between_curves.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Determine the area of a region between two curves by integrating with respect to the independent variable.",
+        "Find the area of a compound region.",
+        "Determine the area of a region between two curves by integrating with respect to the dependent variable."
+      ],
+      "topic_keywords": [
+        "area between curves",
+        "integration with respect to x",
+        "integration with respect to y",
+        "compound region",
+        "absolute value of a difference",
+        "points of intersection",
+        "riemann sum",
+        "definite integral"
+      ]
     },
     {
       "number": "6.2",
       "title": "Determining Volumes by Slicing",
       "book_page": 551,
       "file": "sections/6_2_determining_volumes_by_slicing.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Determine the volume of a solid by integrating a cross-section (the slicing method).",
+        "Find the volume of a solid of revolution using the disk method.",
+        "Find the volume of a solid of revolution with a cavity using the washer method."
+      ],
+      "topic_keywords": [
+        "slicing method",
+        "cross-sectional area",
+        "solid of revolution",
+        "disk method",
+        "washer method",
+        "axis of revolution",
+        "outer radius",
+        "inner radius",
+        "volume by integration"
+      ]
     },
     {
       "number": "6.3",
       "title": "Volumes of Revolution: Cylindrical Shells",
       "book_page": 569,
       "file": "sections/6_3_volumes_of_revolution_cylindrical_shells.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Calculate the volume of a solid of revolution by using the method of cylindrical shells.",
+        "Compare the different methods for calculating a volume of revolution."
+      ],
+      "topic_keywords": [
+        "cylindrical shells",
+        "shell radius",
+        "shell height",
+        "flat plate approximation",
+        "disk method",
+        "washer method",
+        "method selection",
+        "revolution about a line"
+      ]
     },
     {
       "number": "6.4",
       "title": "Arc Length of a Curve and Surface Area",
       "book_page": 582,
       "file": "sections/6_4_arc_length_of_a_curve_and_surface_area.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Determine the length of a curve, y = f(x), between two points.",
+        "Determine the length of a curve, x = g(y), between two points.",
+        "Find the surface area of a solid of revolution."
+      ],
+      "topic_keywords": [
+        "arc length",
+        "smooth function",
+        "surface of revolution",
+        "frustum",
+        "lateral surface area",
+        "mean value theorem",
+        "u-substitution",
+        "definite integral evaluation"
+      ]
     },
     {
       "number": "6.5",
       "title": "Physical Applications",
       "book_page": 594,
       "file": "sections/6_5_physical_applications.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Determine the mass of a one-dimensional object from its linear density function.",
+        "Determine the mass of a two-dimensional circular object from its radial density function.",
+        "Calculate the work done by a variable force acting along a line.",
+        "Calculate the work done in pumping a liquid from one height to another.",
+        "Find the hydrostatic force against a submerged vertical plate."
+      ],
+      "topic_keywords": [
+        "mass density",
+        "linear density function",
+        "radial density function",
+        "work integral",
+        "spring constant",
+        "pumping problem",
+        "hydrostatic pressure",
+        "hydrostatic force",
+        "weight density"
+      ]
     },
     {
       "number": "6.6",
       "title": "Moments and Centers of Mass",
       "book_page": 610,
       "file": "sections/6_6_moments_and_centers_of_mass.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Find the center of mass of objects distributed along a line.",
+        "Locate the center of mass of a thin plate.",
+        "Use symmetry to help locate the centroid of a thin plate.",
+        "Apply the theorem of Pappus for volume."
+      ],
+      "topic_keywords": [
+        "center of mass",
+        "moment",
+        "centroid",
+        "lamina",
+        "symmetry principle",
+        "theorem of pappus",
+        "point masses",
+        "volume of revolution"
+      ]
     },
     {
       "number": "6.7",
       "title": "Integrals, Exponential Functions, and Logarithms",
       "book_page": 626,
       "file": "sections/6_7_integrals_exponential_functions_and_logarithms.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Write the definition of the natural logarithm as an integral.",
+        "Recognize the derivative of the natural logarithm.",
+        "Integrate functions involving the natural logarithmic function.",
+        "Define the number e through an integral.",
+        "Recognize the derivative and integral of the exponential function.",
+        "Prove properties of logarithms and exponential functions using integrals.",
+        "Express general logarithmic and exponential functions in terms of natural logarithms and exponentials."
+      ],
+      "topic_keywords": [
+        "natural logarithm",
+        "integral definition of ln",
+        "derivative of natural logarithm",
+        "properties of logarithms",
+        "definition of e",
+        "exponential function",
+        "general exponential function",
+        "general logarithm",
+        "change of base formula"
+      ]
     },
     {
       "number": "6.8",
       "title": "Exponential Growth and Decay",
       "book_page": 636,
       "file": "sections/6_8_exponential_growth_and_decay.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Use the exponential growth model in applications, including population growth and compound interest.",
+        "Explain the concept of doubling time.",
+        "Use the exponential decay model in applications, including radioactive decay and Newton's law of cooling.",
+        "Explain the concept of half-life."
+      ],
+      "topic_keywords": [
+        "exponential growth model",
+        "exponential decay model",
+        "doubling time",
+        "half-life",
+        "population growth",
+        "continuously compounded interest",
+        "newton's law of cooling",
+        "radiocarbon dating",
+        "differential equation"
+      ]
     },
     {
       "number": "6.9",
       "title": "Calculus of the Hyperbolic Functions",
       "book_page": 646,
       "file": "sections/6_9_calculus_of_the_hyperbolic_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Apply the formulas for derivatives and integrals of the hyperbolic functions.",
+        "Apply the formulas for the derivatives of the inverse hyperbolic functions and their associated integrals.",
+        "Describe the common applied conditions of a catenary curve."
+      ],
+      "topic_keywords": [
+        "hyperbolic functions",
+        "hyperbolic identities",
+        "derivatives of hyperbolic functions",
+        "integrals of hyperbolic functions",
+        "inverse hyperbolic functions",
+        "derivatives of inverse hyperbolic functions",
+        "integrals of inverse hyperbolic functions",
+        "catenary curve"
+      ]
     }
   ]
 }
