@@ -51,23 +51,23 @@ Check "exactly one PRIMARY (zero only if no_primary_available)" (($primaryCount 
 $supRoleCount = @($lo.sections | Where-Object { $_.role -eq "SUPPORTING" }).Count
 Check "supporting files match SUPPORTING roles" ($supporting.Count -eq $supRoleCount) "files=$($supporting.Count) roles=$supRoleCount"
 
-Check "books_searched non-empty" (@($lo.books_searched).Count -ge 1) ""
+Check "books_searched non-empty" (($lo.books_searched -is [System.Array]) -and ($lo.books_searched.Count -ge 1)) ""
 
 if ($Stage -eq "generator") {
     Check "critique_status pending" ($lo.critique_status -eq "pending") "$($lo.critique_status)"
     Check "critique_score null" ($null -eq $lo.critique_score) ""
-    Check "critique_findings empty" (@($lo.critique_findings).Count -eq 0) ""
+    Check "critique_findings empty" (($lo.critique_findings -is [System.Array]) -and ($lo.critique_findings.Count -eq 0)) ""
     Check "assessments blank" (($lo.primary_assessment -eq "") -and ($lo.supporting_assessment -eq "") -and ($lo.multipart_assessment -eq "")) ""
-    Check "recommended_changes empty" (@($lo.recommended_changes).Count -eq 0) ""
+    Check "recommended_changes empty" (($lo.recommended_changes -is [System.Array]) -and ($lo.recommended_changes.Count -eq 0)) ""
     Check "search_reasonable null" ($null -eq $lo.search_reasonable) ""
 } else {
     Check "critique_status completed" ($lo.critique_status -eq "completed") "$($lo.critique_status)"
     Check "critique_score is a number" (($lo.critique_score -is [int]) -or ($lo.critique_score -is [int64]) -or ($lo.critique_score -is [double]) -or ($lo.critique_score -is [decimal])) ""
-    Check "at least one critique finding" (@($lo.critique_findings).Count -ge 1) ""
+    Check "at least one critique finding" (($lo.critique_findings -is [System.Array]) -and ($lo.critique_findings.Count -ge 1)) ""
     Check "assessments filled" (($lo.primary_assessment -ne "") -and ($lo.supporting_assessment -ne "") -and ($lo.multipart_assessment -ne "")) ""
     Check "search_reasonable is boolean" ($lo.search_reasonable -is [bool]) ""
     if (($lo.mapping_confidence -eq "LOW") -or $noPrimary) {
-        Check "missing_concepts non-empty on weak mapping" (@($lo.missing_concepts).Count -ge 1) ""
+        Check "missing_concepts non-empty on weak mapping" (($lo.missing_concepts -is [System.Array]) -and ($lo.missing_concepts.Count -ge 1)) ""
     }
 }
 
