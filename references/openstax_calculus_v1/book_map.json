@@ -18,40 +18,121 @@
       "title": "Review of Functions",
       "book_page": 8,
       "file": "sections/1_1_review_of_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Use functional notation to evaluate a function.",
+        "Determine the domain and range of a function.",
+        "Draw the graph of a function.",
+        "Find the zeros of a function.",
+        "Recognize a function from a table of values.",
+        "Make new functions from two or more given functions.",
+        "Describe the symmetry properties of a function."
+      ],
+      "topic_keywords": [
+        "functions",
+        "domain and range",
+        "function notation",
+        "piecewise-defined functions",
+        "vertical line test",
+        "zeros and intercepts",
+        "increasing and decreasing functions",
+        "function composition",
+        "even and odd functions"
+      ]
     },
     {
       "number": "1.2",
       "title": "Basic Classes of Functions",
       "book_page": 30,
       "file": "sections/1_2_basic_classes_of_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Calculate the slope of a linear function and interpret its meaning.",
+        "Recognize the degree of a polynomial.",
+        "Find the roots of a quadratic polynomial.",
+        "Describe the graphs of basic odd and even polynomial functions.",
+        "Identify a rational function.",
+        "Describe the graphs of power and root functions.",
+        "Explain the difference between algebraic and transcendental functions.",
+        "Graph a piecewise-defined function.",
+        "Sketch the graph of a function that has been shifted, stretched, or reflected from its initial graph position."
+      ],
+      "topic_keywords": [
+        "linear functions and slope",
+        "polynomials and degree",
+        "quadratic formula",
+        "power and root functions",
+        "rational functions",
+        "algebraic vs transcendental functions",
+        "piecewise-defined functions",
+        "function transformations"
+      ]
     },
     {
       "number": "1.3",
       "title": "Trigonometric Functions",
       "book_page": 53,
       "file": "sections/1_3_trigonometric_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Convert angle measures between degrees and radians.",
+        "Recognize the triangular and circular definitions of the basic trigonometric functions.",
+        "Write the basic trigonometric identities.",
+        "Identify the graphs and periods of the trigonometric functions.",
+        "Describe the shift of a sine or cosine graph from the equation of the function."
+      ],
+      "topic_keywords": [
+        "radian and degree measure",
+        "unit circle definitions",
+        "six trigonometric functions",
+        "trigonometric identities",
+        "right triangle ratios",
+        "periodic functions",
+        "amplitude and phase shift"
+      ]
     },
     {
       "number": "1.4",
       "title": "Inverse Functions",
       "book_page": 65,
       "file": "sections/1_4_inverse_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Determine the conditions for when a function has an inverse.",
+        "Use the horizontal line test to recognize when a function is one-to-one.",
+        "Find the inverse of a given function.",
+        "Draw the graph of an inverse function.",
+        "Evaluate inverse trigonometric functions."
+      ],
+      "topic_keywords": [
+        "inverse functions",
+        "one-to-one functions",
+        "horizontal line test",
+        "restricted domain",
+        "inverse trigonometric functions",
+        "graphing inverses"
+      ]
     },
     {
       "number": "1.5",
       "title": "Exponential and Logarithmic Functions",
       "book_page": 80,
       "file": "sections/1_5_exponential_and_logarithmic_functions.md",
-      "learning_objectives": [],
-      "topic_keywords": []
+      "learning_objectives": [
+        "Identify the form of an exponential function.",
+        "Explain the difference between the graphs of x^b and b^x.",
+        "Recognize the significance of the number e.",
+        "Identify the form of a logarithmic function.",
+        "Explain the relationship between exponential and logarithmic functions.",
+        "Describe how to calculate a logarithm to a different base.",
+        "Identify the hyperbolic functions, their graphs, and basic identities."
+      ],
+      "topic_keywords": [
+        "exponential functions",
+        "laws of exponents",
+        "the number e",
+        "logarithmic functions",
+        "properties of logarithms",
+        "change of base",
+        "hyperbolic functions",
+        "inverse hyperbolic functions"
+      ]
     },
     {
       "number": "2.1",
