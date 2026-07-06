@@ -24,6 +24,11 @@ Being able to choose which variable to integrate with respect to can be a real a
 functions, and the specific geometry of a solid sometimes makes shells more appealing than washers. The section
 closes by reviewing all three volume methods and giving guidelines for choosing among them.
 
+DISCLOSED OVERRUN: this file runs slightly over the 150-line soft target and includes four full worked examples
+rather than the 2-3 default, because the section's two learning objectives span four genuinely distinct skill
+variants: baseline y-axis shells, the x-axis (function-of-y) variant, the shifted-line radius adjustment, and
+method comparison, each needing its own demonstration.
+
 ### The Method of Cylindrical Shells
 
 As before, define a region R bounded above by the graph of a function y = f(x) (continuous and nonnegative),

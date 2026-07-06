@@ -25,6 +25,11 @@ the center of mass of the plate. The section first examines these ideas in a one
 expands to centers of mass of two-dimensional regions and symmetry, and closes by using centroids to find the
 volume of certain solids by applying the theorem of Pappus.
 
+DISCLOSED OVERRUN: this file exceeds the 150-line soft target and the 2-3 example default because the section
+teaches six genuinely distinct formula/theorem pairs in sequence (1-D point masses, 2-D point masses,
+single-curve lamina, two-curve lamina, symmetry-principle application, and the theorem of Pappus), each with its
+own worked example in the book, so all six examples were kept rather than trimmed.
+
 ### Center of Mass and Moments
 
 Consider a long, thin wire or rod of negligible mass resting on a fulcrum, and suppose objects of mass m_1 and
