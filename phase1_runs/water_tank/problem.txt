@@ -1,0 +1,11 @@
+A municipal water utility is reviewing overnight refill operations at its hilltop storage tank. Starting at midnight (t = 0), water flows into the tank at a rate of R(t) = 300t - 30t^2 gallons per hour, where t is measured in hours and the model is valid for 0 <= t <= 8.
+
+Working from this model, complete the following tasks in order:
+
+(i) Find the time at which the inflow rate is greatest during the refill window, and compute the inflow rate at that time.
+
+(ii) Compute the total volume of water added to the tank from t = 0 to t = 8.
+
+(iii) The tank's overflow protocol engages if more than 5,000 gallons enter during the 8-hour window. Using your result from (ii), state whether the protocol engages.
+
+(iv) A technician estimates the total volume by multiplying the peak rate from (i) by 8 hours. Explain why this estimate disagrees with your result from (ii), state which is larger, and identify the property of R(t) that causes the discrepancy.

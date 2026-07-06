@@ -1,0 +1,119 @@
+{
+  "state": "FOUND",
+  "template_id": "",
+  "learning_objective": "Determine a rate function's maximum value via critical-point analysis, compute the net accumulated total via the net change theorem, compare it to a decision threshold, and explain why estimating that total from the peak rate overstates it.",
+  "learning_objectives": [
+    {
+      "part_id": "i",
+      "learning_objective": "Find the critical point of R(t) on [0,8], compare it against both endpoints using the closed-interval method, and report the maximum inflow rate and the time it occurs.",
+      "mapped_section_keys": ["openstax_calculus_v1:4.3"],
+      "confidence": 0.85,
+      "rationale": "Sec 4.3's closed-interval method (evaluate endpoints, evaluate critical points, compare) directly matches the technique this part needs, and its Example 4.13 is a directly imitable worked instance."
+    },
+    {
+      "part_id": "ii",
+      "learning_objective": "Compute the total volume added over [0,8] by evaluating the definite integral of R(t), using the net change theorem to frame the total-from-rate relationship and the evaluation theorem to carry out the antiderivative subtraction.",
+      "mapped_section_keys": ["openstax_calculus_v1:5.4", "openstax_calculus_v1:5.3"],
+      "confidence": 0.85,
+      "rationale": "Sec 5.4 states the net change theorem and its gasoline-consumption example is the direct task-shape analog; Sec 5.3's evaluation theorem supplies the antiderivative-then-subtract mechanics used to evaluate the integral."
+    },
+    {
+      "part_id": "iii",
+      "learning_objective": "Compare the computed total volume to the 5,000-gallon threshold and state whether the overflow protocol engages.",
+      "mapped_section_keys": ["openstax_calculus_v1:5.4"],
+      "confidence": 0.8,
+      "rationale": "A direct numeric application of the total already computed via Sec 5.4's net change theorem against a stated threshold; no technique beyond part (ii) is required."
+    },
+    {
+      "part_id": "iv",
+      "learning_objective": "Compute the technician's peak-rate-times-duration estimate, compare it to the true integral-based total, and explain the discrepancy in terms of R(t) being a non-constant rate whose average value is below its peak.",
+      "mapped_section_keys": ["openstax_calculus_v1:5.4", "openstax_calculus_v1:5.3"],
+      "confidence": 0.75,
+      "rationale": "Sec 5.4's net change theorem frames why a possibly non-constant rate must be integrated rather than read off at a single instant; Sec 5.3's Mean Value Theorem for Integrals formalizes the peak-versus-average-value distinction that explains why the estimate overcounts."
+    }
+  ],
+  "source_course_level": "calculus_1",
+  "rubric_scores": {
+    "topic_keyword_match": 0.75,
+    "lo_explicit_match": 0.85,
+    "exercise_pattern_match": 0.85,
+    "course_level_match": 0.9
+  },
+  "confidence_score": 0.85,
+  "mapping_confidence": "HIGH",
+  "confidence_rubric_version": 1,
+  "no_primary_available": false,
+  "sections": [
+    {
+      "book_key": "openstax_calculus_v1",
+      "section_number": "5.4",
+      "section_title": "Integration Formulas and the Net Change Theorem",
+      "page_uuid": "",
+      "openstax_url": "",
+      "role": "PRIMARY",
+      "justification": "Sec 5.4 teaches the Net Change Theorem (total change equals the integral of a rate of change, F(b)-F(a) = integral of F'(x) from a to b), which is the defining skill this problem tests across parts (ii)-(iv): converting a time-varying rate function into an accumulated total. Its worked example (How Many Gallons of Gasoline Are Consumed, integrating a gal/hr rate over a fixed hour window) is directly isomorphic in task shape to part (ii)'s inflow-rate-to-total-volume computation. It does NOT cover how to locate a function's maximum value (needed for part (i); that is Sec 4.3), nor does it formally state the evaluation theorem used to carry out the antiderivative subtraction, or the average-value concept that explains part (iv)'s discrepancy (both supplied by Sec 5.3).",
+      "learning_objectives": [
+        "Apply the basic integration formulas.",
+        "Explain the significance of the net change theorem.",
+        "Use the net change theorem to solve applied problems.",
+        "Apply the integrals of odd and even functions."
+      ],
+      "also_in_books": [],
+      "corpus": "openstax_calc1",
+      "artifact_ids": []
+    },
+    {
+      "book_key": "openstax_calculus_v1",
+      "section_number": "4.3",
+      "section_title": "Maxima and Minima",
+      "page_uuid": "",
+      "openstax_url": "",
+      "role": "SUPPORTING",
+      "justification": "Sec 4.3 develops exactly the machinery part (i) needs: the definition of a critical number, the Extreme Value Theorem, and the closed-interval method (evaluate endpoints, evaluate critical points, compare) for locating absolute extrema, mirrored by a directly imitable worked example (Example 4.13, finding an absolute maximum by this same endpoints-plus-critical-points comparison). It does NOT cover integration, the net change theorem, or how to convert a rate function into an accumulated total, which are the skills parts (ii) through (iv) test.",
+      "learning_objectives": [
+        "Define absolute extrema.",
+        "Define local extrema.",
+        "Explain how to find the critical points of a function over a closed interval.",
+        "Describe how to use critical points to locate absolute extrema over a closed interval."
+      ],
+      "also_in_books": [],
+      "corpus": "openstax_calc1",
+      "artifact_ids": []
+    },
+    {
+      "book_key": "openstax_calculus_v1",
+      "section_number": "5.3",
+      "section_title": "The Fundamental Theorem of Calculus",
+      "page_uuid": "",
+      "openstax_url": "",
+      "role": "SUPPORTING",
+      "justification": "Sec 5.3 states the Evaluation Theorem (Fundamental Theorem of Calculus, Part 2), the antiderivative-then-subtract mechanics part (ii)'s definite integral requires (demonstrated in its own worked example), and the Mean Value Theorem for Integrals, which formalizes a function's average value over an interval as the single constant rate that would produce the same net change; this precisely explains part (iv)'s discrepancy, since the technician's peak-times-duration estimate implicitly assumes the peak rate equals the average rate, when for a non-constant function the average value is strictly below the peak. It does NOT frame the applied, rate-to-accumulated-total interpretation against a physical decision threshold, which is Sec 5.4's contribution.",
+      "learning_objectives": [
+        "Describe the meaning of the Mean Value Theorem for Integrals.",
+        "State the meaning of the Fundamental Theorem of Calculus, Part 1.",
+        "Use the Fundamental Theorem of Calculus, Part 1, to evaluate derivatives of integrals.",
+        "State the meaning of the Fundamental Theorem of Calculus, Part 2.",
+        "Use the Fundamental Theorem of Calculus, Part 2, to evaluate definite integrals.",
+        "Explain the relationship between differentiation and integration."
+      ],
+      "also_in_books": [],
+      "corpus": "openstax_calc1",
+      "artifact_ids": []
+    }
+  ],
+  "books_searched": ["openstax_calculus_v1"],
+  "no_coverage_reasoning": "",
+  "fallback_sections": [],
+  "error_type": "",
+  "error_message": "",
+  "source": "dynamic",
+  "critique_score": null,
+  "critique_findings": [],
+  "missing_concepts": [],
+  "primary_assessment": "",
+  "supporting_assessment": "",
+  "recommended_changes": [],
+  "search_reasonable": null,
+  "multipart_assessment": "",
+  "critique_status": "pending"
+}
