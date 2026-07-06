@@ -29,7 +29,8 @@ about whether a problem calls for a definite integral or an indefinite integral.
 ### Basic Integration Formulas
 
 Recall the integration formulas established when antiderivatives were introduced, each following directly from
-the matching differentiation formula:
+the matching differentiation formula (the book's section 5.4 cross-references this table from section 4.10 rather
+than reprinting it; it is restated here in full so this file stands alone):
 - d/dx(k) = 0, so the integral of k dx = kx + C.
 - d/dx(x^n) = n x^(n-1), so the integral of x^n dx = x^(n+1)/(n+1) + C, for n != -1.
 - d/dx(ln|x|) = 1/x, so the integral of 1/x dx = ln|x| + C.

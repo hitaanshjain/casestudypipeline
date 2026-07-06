@@ -57,6 +57,8 @@ sum_{i=1}^{200} i^2 = 200(201)(401)/6 = 2,686,700 and sum_{i=1}^{200} i = 200(20
 2,686,700 - 6(20,100) + 9(200) = 2,686,700 - 120,600 + 1,800 = 2,567,900.
 b. Using the difference rule and the squared/cubed formulas with n=6: sum_{i=1}^{6} (i^3-i^2) =
 sum_{i=1}^{6} i^3 - sum_{i=1}^{6} i^2 = 6^2(7)^2/4 - 6(7)(13)/6 = 1764/4 - 546/6 = 441 - 91 = 350.
+(The book's Example 5.3 applies these same rules to sum the function values x^3 over 1..10, giving 3025;
+omitted here as redundant with the cube-sum formula use above.)
 
 ### Approximating area with rectangles
 Let f(x) be a continuous, nonnegative function defined on a closed interval [a,b]; we want to approximate the
@@ -134,3 +136,4 @@ f(x) = 10 - x^2 is decreasing on [1,2], the minimum value on each subinterval oc
 the lower sum is obtained using right endpoints: f(1.25) = 10 - 1.5625 = 8.4375, f(1.5) = 10 - 2.25 = 7.75,
 f(1.75) = 10 - 3.0625 = 6.9375, f(2) = 10 - 4 = 6. The lower sum is
 0.25*[8.4375 + 7.75 + 6.9375 + 6] = 0.25*29.125 = 7.28125, which is an underestimate of the true area.
+(The book prints this result rounded as 7.28; 7.28125 is the exact value of the printed summands.)
