@@ -1,0 +1,377 @@
+{
+  "book_key": "openstax_calculus_v1",
+  "book_tag": "openstax_calc1",
+  "title": "Calculus Volume 1",
+  "authors": [
+    "Gilbert Strang, Massachusetts Institute of Technology",
+    "Edwin \"Jed\" Herman, University of Wisconsin-Stevens Point"
+  ],
+  "license": "Creative Commons Attribution Non-Commercial ShareAlike 4.0 International License (CC BY-NC-SA 4.0)",
+  "license_url": "",
+  "attribution_required": "Access for free at openstax.org.",
+  "source_url": "https://openstax.org/books/calculus-volume-1",
+  "course_level": "calculus_1",
+  "pdf_page_offset": 8,
+  "sections": [
+    {
+      "number": "1.1",
+      "title": "Review of Functions",
+      "book_page": 8,
+      "file": "sections/1_1_review_of_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "1.2",
+      "title": "Basic Classes of Functions",
+      "book_page": 30,
+      "file": "sections/1_2_basic_classes_of_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "1.3",
+      "title": "Trigonometric Functions",
+      "book_page": 53,
+      "file": "sections/1_3_trigonometric_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "1.4",
+      "title": "Inverse Functions",
+      "book_page": 65,
+      "file": "sections/1_4_inverse_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "1.5",
+      "title": "Exponential and Logarithmic Functions",
+      "book_page": 80,
+      "file": "sections/1_5_exponential_and_logarithmic_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "2.1",
+      "title": "A Preview of Calculus",
+      "book_page": 106,
+      "file": "sections/2_1_a_preview_of_calculus.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "2.2",
+      "title": "The Limit of a Function",
+      "book_page": 116,
+      "file": "sections/2_2_the_limit_of_a_function.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "2.3",
+      "title": "The Limit Laws",
+      "book_page": 140,
+      "file": "sections/2_3_the_limit_laws.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "2.4",
+      "title": "Continuity",
+      "book_page": 155,
+      "file": "sections/2_4_continuity.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "2.5",
+      "title": "The Precise Definition of a Limit",
+      "book_page": 169,
+      "file": "sections/2_5_the_precise_definition_of_a_limit.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.1",
+      "title": "Defining the Derivative",
+      "book_page": 188,
+      "file": "sections/3_1_defining_the_derivative.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.2",
+      "title": "The Derivative as a Function",
+      "book_page": 203,
+      "file": "sections/3_2_the_derivative_as_a_function.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.3",
+      "title": "Differentiation Rules",
+      "book_page": 216,
+      "file": "sections/3_3_differentiation_rules.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.4",
+      "title": "Derivatives as Rates of Change",
+      "book_page": 230,
+      "file": "sections/3_4_derivatives_as_rates_of_change.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.5",
+      "title": "Derivatives of Trigonometric Functions",
+      "book_page": 241,
+      "file": "sections/3_5_derivatives_of_trigonometric_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.6",
+      "title": "The Chain Rule",
+      "book_page": 250,
+      "file": "sections/3_6_the_chain_rule.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.7",
+      "title": "Derivatives of Inverse Functions",
+      "book_page": 259,
+      "file": "sections/3_7_derivatives_of_inverse_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.8",
+      "title": "Implicit Differentiation",
+      "book_page": 268,
+      "file": "sections/3_8_implicit_differentiation.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "3.9",
+      "title": "Derivatives of Exponential and Logarithmic Functions",
+      "book_page": 275,
+      "file": "sections/3_9_derivatives_of_exponential_and_logarithmic_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.1",
+      "title": "Related Rates",
+      "book_page": 296,
+      "file": "sections/4_1_related_rates.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.2",
+      "title": "Linear Approximations and Differentials",
+      "book_page": 308,
+      "file": "sections/4_2_linear_approximations_and_differentials.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.3",
+      "title": "Maxima and Minima",
+      "book_page": 317,
+      "file": "sections/4_3_maxima_and_minima.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.4",
+      "title": "The Mean Value Theorem",
+      "book_page": 329,
+      "file": "sections/4_4_the_mean_value_theorem.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.5",
+      "title": "Derivatives and the Shape of a Graph",
+      "book_page": 339,
+      "file": "sections/4_5_derivatives_and_the_shape_of_a_graph.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.6",
+      "title": "Limits at Infinity and Asymptotes",
+      "book_page": 354,
+      "file": "sections/4_6_limits_at_infinity_and_asymptotes.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.7",
+      "title": "Applied Optimization Problems",
+      "book_page": 381,
+      "file": "sections/4_7_applied_optimization_problems.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.8",
+      "title": "L'Hopital's Rule",
+      "book_page": 394,
+      "file": "sections/4_8_lhopitals_rule.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.9",
+      "title": "Newton's Method",
+      "book_page": 409,
+      "file": "sections/4_9_newtons_method.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "4.10",
+      "title": "Antiderivatives",
+      "book_page": 419,
+      "file": "sections/4_10_antiderivatives.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.1",
+      "title": "Approximating Areas",
+      "book_page": 438,
+      "file": "sections/5_1_approximating_areas.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.2",
+      "title": "The Definite Integral",
+      "book_page": 456,
+      "file": "sections/5_2_the_definite_integral.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.3",
+      "title": "The Fundamental Theorem of Calculus",
+      "book_page": 472,
+      "file": "sections/5_3_the_fundamental_theorem_of_calculus.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.4",
+      "title": "Integration Formulas and the Net Change Theorem",
+      "book_page": 488,
+      "file": "sections/5_4_integration_formulas_and_the_net_change_theorem.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.5",
+      "title": "Substitution",
+      "book_page": 506,
+      "file": "sections/5_5_substitution.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.6",
+      "title": "Integrals Involving Exponential and Logarithmic Functions",
+      "book_page": 516,
+      "file": "sections/5_6_integrals_involving_exponential_and_logarithmic_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "5.7",
+      "title": "Integrals Resulting in Inverse Trigonometric Functions",
+      "book_page": 526,
+      "file": "sections/5_7_integrals_resulting_in_inverse_trigonometric_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.1",
+      "title": "Areas between Curves",
+      "book_page": 540,
+      "file": "sections/6_1_areas_between_curves.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.2",
+      "title": "Determining Volumes by Slicing",
+      "book_page": 551,
+      "file": "sections/6_2_determining_volumes_by_slicing.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.3",
+      "title": "Volumes of Revolution: Cylindrical Shells",
+      "book_page": 569,
+      "file": "sections/6_3_volumes_of_revolution_cylindrical_shells.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.4",
+      "title": "Arc Length of a Curve and Surface Area",
+      "book_page": 582,
+      "file": "sections/6_4_arc_length_of_a_curve_and_surface_area.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.5",
+      "title": "Physical Applications",
+      "book_page": 594,
+      "file": "sections/6_5_physical_applications.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.6",
+      "title": "Moments and Centers of Mass",
+      "book_page": 610,
+      "file": "sections/6_6_moments_and_centers_of_mass.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.7",
+      "title": "Integrals, Exponential Functions, and Logarithms",
+      "book_page": 626,
+      "file": "sections/6_7_integrals_exponential_functions_and_logarithms.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.8",
+      "title": "Exponential Growth and Decay",
+      "book_page": 636,
+      "file": "sections/6_8_exponential_growth_and_decay.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    },
+    {
+      "number": "6.9",
+      "title": "Calculus of the Hyperbolic Functions",
+      "book_page": 646,
+      "file": "sections/6_9_calculus_of_the_hyperbolic_functions.md",
+      "learning_objectives": [],
+      "topic_keywords": []
+    }
+  ]
+}
