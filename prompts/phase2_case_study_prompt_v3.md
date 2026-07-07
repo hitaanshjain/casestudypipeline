@@ -20,14 +20,13 @@ Settings:
 <playbook>[Optional: a vetted subject playbook from the team library. If present it constrains style (P3 to P7 below); the scope fence still comes from the files.]</playbook>
 </inputs>
 
-<ground_truth_hierarchy>
-When the files and your own knowledge disagree:
-1. <verified_answer> beats your own solution of the source problem.
-2. When multiple valid solution methods exist, the method shown in <verified_answer> is the house method: the case's answer key uses that method's reasoning and sequence, rewritten for the new scenario. Alternative methods may be mentioned only in instructor material, never required of students.
-3. When <lo_mapping> is supplied, the critique_findings inside it beat the mapper's section justifications in that same file.
-4. Section content (primary and supporting) beats your memory for definitions, notation, and vocabulary.
-5. <question> alone defines which skills are taught. Nothing else adds skills.
-</ground_truth_hierarchy>
+<file_authority>
+Each file is the authority for its own purpose; when files or your own knowledge collide, the file that owns the axis wins.
+- <verified_answer> is the MATHEMATICAL authority. Its quantities define correctness for the source problem, and its method is the house method: when multiple valid solution methods exist, the case's answer key follows its reasoning and sequence, rewritten for the new scenario; alternative methods may be mentioned only in instructor material, never required of students. No file's prose ever overrides its math.
+- <primary_section> is the CONCEPT authority. Definitions, notation, vocabulary, the concept's standard presentation, and the evidence of what students have already been taught come from it; <supporting_sections> extend that evidence. Both beat your memory. The concept authority never adds skills: it governs how ideas are stated, not which are tested.
+- <question> is the SKILL authority. It alone defines which skills the case exercises and benchmarks the difficulty. Nothing else adds skills.
+- <lo_mapping> (when supplied) is the MAPPING authority: learning-objective citations, section roles, and confidence come from it, and the critique_findings inside it beat the mapper's own section justifications in that same file.
+</file_authority>
 
 <calibration_gate>
 Do this FIRST, before anything else, silently. Solve <question> in full, every part, on your own. Compare every quantity you obtain against <verified_answer>.
@@ -46,7 +45,7 @@ Operationally:
 - When <lo_mapping> is absent: derive the gap list yourself. List every fact, formula, convention, or critical value the <question>'s skills require that no supplied section teaches, and print each one in the student data block under the same framing rules. This derivation is mandatory, not best-effort; a hidden prerequisite is a scope-fence violation.
 - Any concept found in neither the sections nor the printed reference data is banned from the case.
 - The case exercises the same skills <question> tests, on new numbers. It may not require additional skills.
-- Treat <question> as a model, never a template: entirely new scenario, entirely new numbers, everything rewritten. Only the skills carry over. Nothing in the student-facing case may be recognizable as a reskin of the source problem's surface story.
+- Treat <question> as a model, never a template: entirely new scenario, entirely new numbers, everything rewritten. Only the skills and concepts carry over: if the source is an integration problem, the case is a brand-new scenario that requires integration, never the source problem retold as a story or lightly reskinned. Nothing in the student-facing case may be recognizable as coming from the source problem's surface.
 </scope_fence>
 
 <invariant_principles>
@@ -57,20 +56,20 @@ These hold for every subject. Every rule you derive must be an instance of one o
 3. THE MISCONCEPTION TRAP. Every subject has characteristic student misconceptions. Plant the one with decision stakes as a plausible claim (best: a group member's claim to settle), show both the wrong number and the right number, and make the gap matter: the trap number must itself be clean and plausible-looking, and the gap must flip or nearly flip the verdict. If the gap is immaterial to the decision, change parameters until it is.
 4. FULL-STRENGTH CONCEPTS. Use each concept in its non-degenerate form, the version that shows why the concept exists, not the trivial special case a lazy problem would use.
 5. MINIMAL FAITHFUL INSTANCE. Use the smallest problem size that preserves the concept's essential structure, with numbers worked backward from clean answers: decide the round answer first, then build the data.
-6. GRAIN-SIZE TIME BUDGET. The case fills 15 to 20 minutes for a group of 3 to 5 students at the stated audience level. Choose concept count by the subject's natural grain: chunky concepts mean one concept explored in layers; fine-grained concepts mean two interlocking. Countable gauges: a strong student cannot finish in under 8 minutes; a struggling student finishes in 15 to 20 with careful work. Typical per-question budget across the arc: setup 4 to 5 minutes, main computation or comparison 5 to 6, decision and interpretation 5 to 7; with a fourth question, rebalance so the total still lands in 15 to 20.
+6. GRAIN-SIZE TIME BUDGET. The case fills 15 to 20 minutes for a group of 3 to 5 students at the stated audience level. Choose concept count by the subject's natural grain: chunky concepts mean one concept explored in layers; fine-grained concepts mean two interlocking. Countable gauges: a strong student cannot finish in under 8 minutes; a struggling student finishes in 15 to 20 with careful work. Per-question budget across the arc: setup 4 to 5 minutes, main computation or comparison 5 to 6, decision and interpretation 5 to 7.
 7. CONTEXT MUST CONSTRAIN (STRIP TEST). Delete the story and replace quantities with "number one, number two." If the bare exercise survives unchanged, the context is decoration; rework until the data, units, thresholds, and decision genuinely arise from the situation. One or two inert distractor facts are allowed only if obviously flavor.
 8. METHOD CONCEALMENT, WITH ONE SANCTIONED EXCEPTION. The worksheet title carries the topic prefix (see title_rules); that prefix is the ONLY student-facing place the topic or technique family may be named. Everywhere else, concealment holds: question text, hints, data block, and mini-titles never name or paraphrase the technique. Recognizing which tool applies is still part of the task. Concept labels live in instructor material. Printed reference data is framed as scenario facts, never named methods.
 9. SCAFFOLD, DO NOT DILUTE. Rigor is fixed at course level. Accessibility comes from clean numbers, plain language, bold task-describing mini-titles, one-line hints, and an optional checklist for stuck groups, never from removing the math. Hints nudge at the scenario level and never name or paraphrase the technique. Bad hint: "set the derivative equal to zero." Good hint: "when does the crowd stop growing, and what happens just after?"
 10. HONEST VERDICTS. Decide the verdict BEFORE building any data: proceed, do not proceed, not yet, or option B. Treat "proceed" as the choice that needs justification; if the scenario works equally well either way, pick one of the others. Then work the numbers backward (invariant 5) so the data supports that verdict. A generator that always says yes teaches students to stop reasoning.
 11. ONE GENUINE DISCUSSION ELEMENT. Exactly one element requires group discussion, about judgment, never about a computation. Default: the trap as a teammate's claim. Alternative: a sensitivity question. Open discussion, closed checkable answer. The final recommendation is written by the group to the protagonist, 2 to 3 sentences, on the ruled lines provided; it is the decision deliverable, not a second discussion element.
-12. VERIFY EVERYTHING. After drafting, re-derive every answer step by step and record that arithmetic in the "% VERIFICATION" comment block (see output contract). If any answer is ugly, change parameters and redo. The instructor key shows setup and boxed final answer per part, one major step per line, skill labeled per part, following <verified_answer>'s method per the ground-truth hierarchy.
+12. VERIFY EVERYTHING. After drafting, re-derive every answer step by step and record that arithmetic in the "% VERIFICATION" comment block (see output contract). If any answer is ugly, change parameters and redo. The instructor key shows setup and boxed final answer per part, one major step per line, skill labeled per part, following <verified_answer>'s method per file_authority.
 </invariant_principles>
 
 <derivation_step>
 Derive the playbook FROM THE FILES before any case writing. If <playbook> is supplied, it constrains style for P3 to P7, but P1, P2, and P8 always come from the files.
 
 P1. SCOPE FENCE. From the <question>'s learning objective (take it from <lo_mapping> when supplied, else infer it from <question> against the sections' learning objectives), restate exactly which concepts are in play, and name the adjacent concepts you must NOT use because they appear in neither the sections nor the reference data you will print.
-P2. GRAIN SIZE. Read <question>'s part structure; it often maps directly onto compute, interpret, decide, and a judgment question. Decide how the case's 2 to 4 interlocking questions realize that arc, and say why. Assign each question its share of the invariant-6 minute budget.
+P2. GRAIN SIZE. Read <question>'s part structure; it often maps directly onto compute, interpret, decide, and a judgment question. Decide how the case's exactly 3 interlocking questions (subparts per question_quality) realize that arc, and say why. Assign each question its share of the invariant-6 minute budget.
 P3. FULL STRENGTH. The source problem's actual task is the benchmark. State the degenerate version a lazy case would use and the full-strength version this case must use instead.
 P4. CLEAN NUMBERS. State the convention, and make it subject-relative: if the topic's arithmetic naturally produces fractions, define which denominators count as clean, then engineer the data so the entire worked path stays clean. State any constants you fix.
 P5. THE TRAP. Name the two or three misconceptions students most commonly hold about exactly these skills. Pick the one with decision stakes, state the wrong-path computation a student would do, and confirm it produces a clean number materially different from the correct path (invariant 3: the gap must flip or nearly flip the verdict).
@@ -84,7 +83,8 @@ Write the playbook internally, generate the case obeying it, and append the full
 <question_quality>
 Countable floors that every draft must clear (these operationalize invariants 4 and 6):
 - No numbered question may be answerable by identifying values and substituting them into a single formula. At least two questions require two or more distinct mathematical steps. Distinct steps include: identifying the relevant information, choosing the method, setting up an equation, model, table, comparison, or expression, substituting values, calculating, comparing results, and interpreting the result in context.
-- A question may include up to 2 short subparts, labeled (a) and (b), only when needed to hit the time budget. Never more than 6 total student tasks across the whole case. Counting rule: a numbered question without subparts counts as one task; a question with subparts contributes one task per subpart instead of counting itself.
+- The case contains exactly 3 numbered questions, realizing the setup, main-analysis, decision arc of invariant 2.
+- A question may include up to 2 short subparts, labeled (a) and (b), only when needed to hit the time budget. Never more than 5 total student tasks across the whole case. Counting rule: a numbered question without subparts counts as one task; a question with subparts contributes one task per subpart instead of counting itself.
 - If a question lands too easy, deepen it with exactly one of: a comparison, a justification, a second calculation step, a sensitivity check, a break-even value, or an interpretation in context. Never add difficulty through messy numbers, advanced notation, tedious arithmetic that distracts from the concept, or concepts outside the scope fence.
 - Question prompts are written in an instructor's voice and demand reasoning about the scenario, never drill phrasing and never childish wording or excessive narrative. Good shapes (keep them scenario-level; never name the technique): "Recommend a plan and defend it with your results." "Predict what happens if this rate continues." "Explain why your recommendation is reasonable." The collaboration element must require reasoning, not just agreement.
 </question_quality>
@@ -101,17 +101,17 @@ Bold mini-titles per question describe the TASK ("Reconstruct the Morning Sales,
 </title_rules>
 
 <latex_output_contract>
-Your entire output is ONE complete, compilable LaTeX document and nothing else (plus the compiled PDF of that same source when <compile_verification> applies). No commentary before or after the code, and no markdown code fences. The first characters of your output are \documentclass, with exactly three exceptions: the % WARNING banner (see mapping_status) precedes \documentclass when triggered, the % NOTE line (see mapping_status) precedes \documentclass when <lo_mapping> is absent, and the calibration % ERROR line replaces everything on the failure path.
+You author ONE complete, compilable LaTeX document. What you RETURN follows the delivery rule in <compile_verification>: an agentic run returns the compiled PDF only, writing the final .tex to disk beside it; a plain chat run returns the LaTeX source text alone. Either way, no commentary and no markdown code fences. The source's first characters are \documentclass, with exactly three exceptions: the % WARNING banner (see mapping_status) precedes \documentclass when triggered, the % NOTE line (see mapping_status) precedes \documentclass when <lo_mapping> is absent, and the calibration % ERROR line replaces everything on the failure path.
 
 Hard rules:
 - Compiles with pdflatex on standard TeX Live, first pass, zero errors. Packages allowed: geometry, amsmath, amssymb, enumitem, tcolorbox, xcolor, booktabs, array, fancyhdr.
 - Grayscale only, print-safe. ASCII only in the source: \times not a times sign, \ge not a geq sign, -- for ranges, \$ for dollars, \% for every literal percent. Before emitting, sweep the source for the common non-ASCII offenders: unicode minus, en and em dashes, greater/less-or-equal signs, multiplication sign, curly quotes and apostrophes, ellipsis.
 - All math in math mode, in questions and key alike: exponents and fractions always render typeset, and a raw caret or plain-text expression like (1.07)^3 must never appear outside math mode. Boxed final answers in the key with \boxed{...}. Tables compact and centered.
 - Student sheet, in order: NAME line (left, small), centered title with a thin rule, scenario paragraph, data block (databox and/or compact table; this is where the P8 reference data lives), questions with bold mini-titles and one-line hints, group recommendation prompt followed by three ruled lines for the group's 2-to-3-sentence answer.
-- ONE-PAGE RULE (hard): the student worksheet fits on ONE page, always. Under instructor_pages that means everything before the \newpage; under same_page it means the entire handout, answer key included. Instructor material (after the \newpage) may run as long as it needs. Fit is ENGINEERED, never faked: size the case inside the budgets below so one page is the natural outcome, and when a draft overflows, apply this order until it fits: (1) tighten wording everywhere; (2) compress spacing and table layout; (3) shorten the scenario toward its 90-word floor; (4) cut an optional visual or an inert distractor row; (5) remove one subpart or drop from 4 questions to 3 (staying above the question_quality floors), then re-verify all numbers. Never delete the data block, the trap, the hints, the ruled recommendation lines, a boxed answer, or (same_page) the key's skill labels and line discipline; if those cannot fit, the case is too big: shrink the case, not the content.
-- Sizing guide (targets that make the one-page rule achievable): scenario paragraph 90 to 130 words, 3 or 4 questions, one line per hint, data block about 6 rows or fewer plus the reference-data box if P8 requires one, subparts and task cap per <question_quality>.
+- ONE-PAGE RULE (hard): the student worksheet fits on ONE page, always. Under instructor_pages that means everything before the \newpage; under same_page it means the entire handout, answer key included. Instructor material (after the \newpage) may run as long as it needs. Fit is ENGINEERED, never faked: size the case inside the budgets below so one page is the natural outcome, and when a draft overflows, apply this order until it fits: (1) tighten wording everywhere; (2) compress spacing and table layout; (3) shorten the scenario toward its 90-word floor; (4) cut an optional visual or an inert distractor row; (5) remove one subpart (staying above the question_quality floors), then re-verify all numbers. Never delete the data block, the trap, the hints, the ruled recommendation lines, a boxed answer, or (same_page) the key's skill labels and line discipline; if those cannot fit, the case is too big: shrink the case, not the content.
+- Sizing guide (targets that make the one-page rule achievable): scenario paragraph 90 to 130 words, exactly 3 questions, one line per hint, data block about 6 rows or fewer plus the reference-data box if P8 requires one, subparts and the 5-task cap per <question_quality>.
 - key_placement = instructor_pages: student sheet first (one page, hard), then \newpage, then instructor material.
-- key_placement = same_page: the \section*{Answer Key} follows the questions directly in the same one-page handout, under a thin full-width rule, each solution concise with setup and boxed final answer, keeping the key's line discipline and skill labels.
+- key_placement = same_page: the \section*{Answer Key} follows the questions directly in the same one-page handout, under a thin full-width rule, each solution concise with setup and boxed final answer, keeping the key's line discipline and skill labels, and ending with one small gray attribution credit line at the bottom of the page (see instructor_material), since the PDF is the artifact instructors receive.
 - No answer-writing space other than the NAME line and the three ruled lines under the group recommendation prompt.
 - At the very end of the source, immediately before \end{document}, in this order: (1) a "% VERIFICATION" comment block that re-derives every boxed answer in one or two terse comment lines each; (2) a "% ATTRIBUTION" comment block per <instructor_material>; (3) the "% DERIVED PLAYBOOK" block per <derivation_step>.
 
@@ -160,7 +160,7 @@ Use exactly this preamble and these environments (fill in the footer by replacin
 
 <compile_verification>
 The pipeline's compile stage (tectonic or pdflatex) is the authoritative producer of the final PDF; the .tex source you emit is always the artifact of record.
-If your own environment can execute commands and a TeX engine is available, do not merely claim the document compiles: after the silent preflight, actually compile the finished source, fix any error, and recompile until it exits 0 on the first pass with zero errors. Then inspect the rendered PDF for layout defects (overfull lines, broken tables, a databox split badly across pages, missing rules) and verify the one-page rule against the actual page count: the student sheet ends before page 2 (instructor_pages), or the whole handout is exactly one page (same_page). Fix violations in the source using the one-page resolution order before delivering; required content is never cut to fix layout. Deliver the .tex source together with the compiled .pdf. Never report a compile result you did not run, and never hand over a PDF built from anything but the final source.
+If your own environment can execute commands and a TeX engine is available, do not merely claim the document compiles: after the silent preflight, actually compile the finished source, fix any error, and recompile until it exits 0 on the first pass with zero errors. Then inspect the rendered PDF for layout defects (overfull lines, broken tables, a databox split badly across pages, missing rules) and verify the one-page rule against the actual page count: the student sheet ends before page 2 (instructor_pages), or the whole handout is exactly one page (same_page). Fix violations in the source using the one-page resolution order before delivering; required content is never cut to fix layout. Delivery: return ONLY the compiled .pdf as your artifact, and write the final .tex to disk beside it with the same basename so the pipeline's verification stages can diff the source; never paste the source into your reply. Never report a compile result you did not run, and never hand over a PDF built from anything but the final source.
 If you are running as a plain chat model with no execution environment, skip this step and output the LaTeX source alone exactly as the output contract specifies; do not claim it was compiled.
 </compile_verification>
 
@@ -171,7 +171,7 @@ Answer key format, per part, regardless of placement:
 - Mini-title matching the question, then setup or formula line, substitution line, simplification line, boxed final answer line: each major calculation step on its own line, never a long inline chain, and never unrelated steps combined into one sentence.
 - If a question has subparts, the key labels match (a) and (b).
 - If a question requires interpretation, the interpretation gets its own final line in scenario terms.
-- The reasoning and sequence follow <verified_answer>'s method (ground-truth hierarchy rule 2), rewritten for the case's scenario and numbers.
+- The reasoning and sequence follow <verified_answer>'s method (the mathematical authority in file_authority), rewritten for the case's scenario and numbers.
 - Compact notation is fine; long explanations are not. The key stays readable, never fine print.
 
 The alignment block cites the REAL grounding, taken from the files, never from memory:
@@ -185,6 +185,8 @@ The alignment block cites the REAL grounding, taken from the files, never from m
 % ATTRIBUTION block: one credit line per distinct book drawn on, built from the sections' "Attribution required" metadata lines. If no supplied file carries attribution metadata, emit exactly:
 % ATTRIBUTION: no attribution metadata present in the input files.
 Never invent a credit and never omit the block.
+
+Because the delivered artifact is the PDF, the credit must also be VISIBLE in the PDF whenever attribution metadata exists: under instructor_pages it appears in the alignment block; under same_page print it as one small gray line at the bottom of the handout, e.g. {\footnotesize\color{gray} Adapted from "A First Course in Linear Algebra" by Ken Kuttler, used under CC BY 4.0.}
 </instructor_material>
 
 <mapping_status>
@@ -206,7 +208,7 @@ Before you output, verify every line; fix and re-verify on any failure. Do not n
 - Trap present with both numbers clean, the gap material to the decision.
 - Hints nudge at the scenario level; outside the title's topic prefix, no technique named or paraphrased anywhere student-facing.
 - Anti-imitation guard honored: the scenario's domain and decision shape are not borrowed from the taco-truck anchor, and the domain was chosen because it fits the problem, not because it appears in the P6 menu.
-- Question quality floors hold: no one-step substitution question, at least two questions with two or more distinct steps, at most 6 student tasks by the counting rule, per-question minute budgets sum to 15 to 20, a strong student needs more than 8 minutes.
+- Question quality floors hold: exactly 3 numbered questions, no one-step substitution question, at least two questions with two or more distinct steps, at most 5 student tasks by the counting rule, per-question minute budgets sum to 15 to 20, a strong student needs more than 8 minutes.
 - Every answer re-derived, correct, clean, and recorded in the % VERIFICATION block; the key follows <verified_answer>'s method, one major step per line, interpretations on their own lines.
 - Title format is exactly [Topic]: [Generated Case Title] with the topic sourced per title_rules.
 - % ATTRIBUTION block present (or the exact no-metadata line); attribution lines also in the alignment block when metadata exists.
@@ -214,7 +216,7 @@ Before you output, verify every line; fix and re-verify on any failure. Do not n
 - No LaTeX copied from the section files; notation follows the PRIMARY section.
 - LaTeX: allowed packages only, ASCII only, percents escaped, grayscale, all math in math mode, no code fences, key placed per key_placement; all required content present including skill labels and the recommendation's ruled lines.
 - One-page rule holds: the case was sized to fit the student sheet (instructor_pages) or the whole handout (same_page) on one page, using the resolution order if a draft overflowed, and no required content was deleted to get there.
-- Output is the LaTeX document alone (plus the % WARNING banner or % NOTE line per mapping_status); if execution was available, the source was actually compiled to exit 0 first pass per <compile_verification> and the delivered PDF came from the final source.
+- Delivery matches the mode: agentic run = the compiled PDF is the only returned artifact, the final .tex (with its % WARNING banner or % NOTE line per mapping_status) written to disk beside it, compiled to exit 0 first pass per <compile_verification>; plain chat = the LaTeX source text alone (plus banner or NOTE), with no compile claim. When attribution metadata exists, the credit is visible in the PDF.
 </silent_preflight_check>
 
 <revision_rules>
