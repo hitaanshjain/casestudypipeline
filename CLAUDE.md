@@ -164,9 +164,9 @@ Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshj
 /prompts/phase2_case_study_prompt_v2.md     superseded by v3; archive candidate
 /prompts/phase2_case_study_prompt_v1.md     superseded by v2; move to prompts/archive/ when archives are added
 /prompts/phase2_flashcards_prompt_v1.md     CURRENT, file-driven path (phase 2 flashcards)
-/prompts/p1  /prompts/p2  /prompts/p3       raw merge sources for v2 (p1 = Hitaansh's v1 flattened, p2 and p3 = the two other interns' prompts); archive candidates
+/prompts/p1                                 Rohan's Stage 2 prompt (July 7 update; earlier held Hitaansh's flattened v1); p2/p3 (the July 6 merge sources) deleted July 7, recoverable from git history
 /prompts/universal_case_study_prompt_v5.md  CURRENT, manual subject/subtopic path
-/prompts/universal_case_study_prompt_v4.md  superseded; move to prompts/archive/ when archives are added
+/prompts/universal_case_study_prompt_v4.md  DELETED July 7 (superseded by v5; recoverable from git history)
 /plan/phase2_prompt_design.md               phase 2 design spec (signed off July 2)
 /plan/phase1_prompt_design.md               phase 1 design spec (signed off July 5)
 /plan/phase1_implementation_plan.md         phase 1 build plan, 16 tasks (July 5)
