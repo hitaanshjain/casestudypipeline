@@ -128,6 +128,7 @@ Forensic/failure case studies are an established engineering pedagogy (Delatte's
 10. SHOW PETER the phase 2 demo: Copper Kettle case + flashcards PDFs (ready; framing notes: the source-top warning banner is a feature, and the calibration gate is the "did the model understand my problem" answer).
 11. Phase 2 hardening: truly fresh-session and cross-provider re-tests, now ON THE v2 MASTER (first v2 test: regenerate Copper Kettle from /phase1example plus the calibration negative control); one-time pdflatex parity spot-check on a TeX Live machine (tectonic is XeTeX-based).
 12. Harvest the phase 2 corrupted-verified_answer negative control into the future fixture suite (feeds item 6); phase 1's calibration and coverage controls (phase1_runs/water_tank_corrupted, phase1_runs/simplex_coverage) are now built and join it.
+13a. Workflow skills (July 6): five project skills captured in .claude/skills/ (verifying-case-math, shipping-prompt-contracts, triaging-reviews-with-evidence, extracting-faithful-corpora, maintaining-project-memory), auto-discovered by future Claude Code sessions in this repo. DRAFTS per Hitaansh's retiring-engineer handoff request: written from this project's real history but NOT baseline-tested per the writing-skills TDD discipline (no pressure-scenario runs); test before treating as bulletproof.
 13. Housekeeping, none blocking (final review triaged all to backlog): .claude/settings.local.json is harness-generated and already ignored via the machine's global gitignore (add to repo .gitignore only if other contributors matter); compound "and"-joined topic keywords appear in about 11 sections across chapters 1-4 (harmless: read by an LLM, not a tokenizer); validator nuance: a null sections array is caught indirectly via the section-entry-keys check, not by a named check (harden if the validator grows); 3.3's 15-example length trims only if search quality measurably suffers; both prompts carry a harmless lineage pointer to plan/phase1_prompt_design.md.
 
 ## 14. ACTIVE TASK: phase 1 COMPLETE (built and tested July 6, 2026)
@@ -164,6 +165,7 @@ Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshj
 /phase1_runs/simplex_coverage/              coverage negative control (honest no-coverage package)
 /tools/check_phase1_package.ps1             package validator, tracked via git add -f (tools/ otherwise gitignored)
 /cases/tests/test_phase1_e2e_water_tank_case.{tex,pdf}  phase 1 e2e demo (Frost Night, via phase 2)
+/.claude/skills/                            five workflow skills (July 6 handoff): verifying-case-math, shipping-prompt-contracts, triaging-reviews-with-evidence, extracting-faithful-corpora, maintaining-project-memory (drafts, see backlog 13a)
 /prompts/archive/                           NOT YET IN REPO: v1, v2, v3 prompt files still to add
 /cases/food_bank_case_calc1.md  /cases/food_bank_case.tex  /cases/food_bank_case.pdf
 /cases/community_garden_case_calc1.md
