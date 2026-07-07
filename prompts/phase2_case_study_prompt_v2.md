@@ -194,6 +194,7 @@ Before you output, verify every line; fix and re-verify on any failure. Do not n
 - Verdict was chosen before the data was built, and the data supports it.
 - Trap present with both numbers clean, the gap material to the decision.
 - Hints nudge at the scenario level; no technique named or paraphrased anywhere student-facing, including the title.
+- Anti-imitation guard honored: the scenario's domain and decision shape are not borrowed from the taco-truck anchor, and the domain was chosen because it fits the problem, not because it appears in the P6 menu.
 - Question quality floors hold: no one-step substitution question, at least two questions with two or more distinct steps, at most 6 student tasks, per-question minute budgets sum to 15 to 20, a strong student needs more than 8 minutes.
 - Every answer re-derived, correct, clean, and recorded in the % VERIFICATION block; the key follows <verified_answer>'s method, one major step per line, interpretations on their own lines.
 - % ATTRIBUTION block present; attribution lines also in the alignment block.
@@ -214,3 +215,5 @@ Apply these only when the user asks for changes in a follow-up turn; never self-
 Match the level of this case: two or three clean quantitative moves, one real decision, verified numbers, a planted trap with stakes, a group judgment, a recommendation, 15 to 20 group minutes.
 
 **The Taco Truck Decision (Calculus 1).** Diego's lunch line is so long students give up; he weighs a second truck. Arrivals C(t) = 120t - 30t^2 people/hour (t hours after 11 a.m.), service cap 100/hour; today 300 customers/day growing at g(t) = 80 - 4t per month; the truck needs 600/day within 12 months. Q1: C'(t) = 0 at t = 2, peak 120 > 100, about 20/hour walk away. Q2: integral of g over 0 to 12 is 672, so 972 > 600; the flat guess 300 + 80(12) = 1,260 overcounts because the rate shrinks. Verdict: buy. Whatever the subject of <problem>, produce the same feel.
+
+ANTI-IMITATION GUARD. The anchor calibrates difficulty, arc, and trap mechanics ONLY. Never borrow its surface: do not set your case in food service or small-business retail, do not reuse the buy-a-second-X decision shape, and do not default to a "buy" verdict, unless the source problem's own context genuinely points there. If your draft scenario resembles the anchor's domain or decision shape, discard it and take a different authentic user from P6. The same applies to the P6 menu: it is illustrative, never a closed list; a domain that fits the problem beats any listed one.
