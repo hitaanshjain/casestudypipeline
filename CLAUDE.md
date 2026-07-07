@@ -7,9 +7,10 @@
 1. After any significant decision, design change, or completed task, update CLAUDE.md
    (decisions log in section 9, case library in section 6, backlog in section 13)
    in the SAME response, before ending your turn. Do not wait to be asked.
-2. After any change to files, stage and commit with git and a clear message
-   describing what changed and why. Never leave the working tree dirty at the end
-   of a task.
+2. After any change to files, stage and commit with git. Commit messages are ONE
+   line only: a single clear sentence naming what changed, no multi-line body and
+   no trailers (no Co-Authored-By, no "Generated with") unless Hitaansh explicitly
+   asks otherwise. Never leave the working tree dirty at the end of a task.
 3. If a decision contradicts something already logged, record the reversal and the
    reason rather than silently overwriting.
 
