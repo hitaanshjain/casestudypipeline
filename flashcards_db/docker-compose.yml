@@ -1,0 +1,21 @@
+services:
+  flashcards-db:
+    image: mysql:8.4
+    container_name: flashcards-db
+    environment:
+      MYSQL_ROOT_PASSWORD: change_me_root
+      MYSQL_DATABASE: flashcards
+      MYSQL_USER: flashcards_user
+      MYSQL_PASSWORD: change_me_user
+    ports:
+      - "3306:3306"
+    volumes:
+      - flashcards_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pchange_me_root"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+volumes:
+  flashcards_data:
