@@ -28,7 +28,7 @@ Try: `SELECT * FROM flashcard_full;` or the queries in `demo_queries.sql`.
 subject > textbook > chapter (one row per textbook SECTION, e.g. "1.1") >
 learning_objective > concept > flashcard. A flashcard has a `card_type`
 (`concept_example` or `problem_solution`), and front/back content as blobs with
-`front_format`/`back_format` tags (`json` today; `gif` or `json` later without any
+`front_format`/`back_format` tags (`json` today; `gif` later without any
 schema change). At most one card of each type per concept (enforced by the DB).
 Currently only concept_example cards are populated.
 
