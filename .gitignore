@@ -5,6 +5,7 @@
 .DS_Store
 _reference/
 runs/
-tools/.superpowers/
+tools/
 __pycache__/
 *.pyc
+spot_check.html
