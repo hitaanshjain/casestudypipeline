@@ -1,5 +1,5 @@
 card_file,concept_name,section_number,lo_text,confidence,note
-001_Functions.pptx,Functions,1.1,Use functional notation to evaluate a function.,clear,
+001_Functions.pptx,Functions,1.1,Use functional notation to evaluate a function.,judgment,"Card teaches what a function IS (assigns each input exactly one output), not notation-evaluation; 1.1 has no definition objective. Shares its objective with 003_Function_Notation, which is the genuinely clear fit."
 002_Domain_And_Range.pptx,Domain And Range,1.1,Determine the domain and range of a function.,clear,
 003_Function_Notation.pptx,Function Notation,1.1,Use functional notation to evaluate a function.,clear,
 004_Average_Rate.pptx,Average Rate,3.4,Calculate the average rate of change and explain how it differs from the instantaneous rate of change.,judgment,"Deck is filed under the chapter-1 folder but no 1.1-1.5 objective covers average rate of change; the only objective naming it is 3.4, taught well before derivatives are introduced there."
