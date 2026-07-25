@@ -1,6 +1,9 @@
 """Tests for tools/import_concept_flashcards.py. Run: python -m pytest tools/ -v"""
 import collections
 import json
+import os
+import re
+import subprocess
 import sys
 import zipfile
 from pathlib import Path
@@ -196,9 +199,72 @@ def test_generated_sql_has_one_concept_and_one_card_per_deck():
     assert "'latex'" not in cards
 
 
+def _build_sql_in_subprocess(hash_seed):
+    """Run build_sql() in a fresh interpreter with the given PYTHONHASHSEED.
+
+    Emits the SQL to stdout from a -c invocation rather than touching
+    flashcards_db/init/03_concept_cards.sql, so the committed file is never
+    a side effect of running this test.
+    """
+    script = (
+        "import sys; sys.path.insert(0, %r); "
+        "import import_concept_flashcards as imp; "
+        "sys.stdout.write(imp.build_sql())" % str(imp.REPO / "tools")
+    )
+    env = dict(os.environ)
+    env["PYTHONHASHSEED"] = hash_seed
+    env["PYTHONIOENCODING"] = "utf-8"
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=str(imp.REPO),
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
+    )
+    return hashlib.sha256(result.stdout.encode("utf-8")).hexdigest()
+
+
 def test_sql_generation_is_deterministic():
-    assert hashlib.sha256(imp.build_sql().encode("utf-8")).hexdigest() == \
-           hashlib.sha256(imp.build_sql().encode("utf-8")).hexdigest()
+    """Cross-process: two interpreters with different PYTHONHASHSEED must
+    agree, or hash-randomization-sensitive iteration (set/dict order) would
+    slip past a same-process comparison."""
+    assert _build_sql_in_subprocess("0") == _build_sql_in_subprocess("1")
+
+
+def _concept_ordinals(sql, lo_id):
+    """Ordinals for a given lo_id's concept rows, in the order they appear
+    in the generated SQL (which is deck_paths() order)."""
+    concepts = sql.split("INSERT INTO concept")[1].split(";")[0]
+    ordinals = []
+    for m in re.finditer(r"\(\d+, (\d+), '.*?', (\d+)\)", concepts):
+        if int(m.group(1)) == lo_id:
+            ordinals.append(int(m.group(2)))
+    return ordinals
+
+
+def test_ordinals_increment_within_a_shared_lo_and_reset_for_others():
+    mapping = imp.load_mapping()
+    decks_by_lo = collections.defaultdict(list)
+    for path in imp.deck_paths():
+        row = mapping[path.name]
+        decks_by_lo[(row["section_number"], row["lo_text"])].append(path.name)
+
+    shared_keys = [key for key, decks in decks_by_lo.items() if len(decks) > 1]
+    assert shared_keys, "expected at least one learning objective with multiple mapped decks"
+
+    import generate_flashcards_seed as seed
+    index = seed.lo_index(_book())
+    sql = imp.build_sql()
+
+    shared_key = shared_keys[0]
+    shared_ordinals = _concept_ordinals(sql, index[shared_key])
+    assert shared_ordinals == list(range(1, len(decks_by_lo[shared_key]) + 1))
+
+    other_key = next(key for key in decks_by_lo if key != shared_key)
+    other_ordinals = _concept_ordinals(sql, index[other_key])
+    assert other_ordinals[0] == 1
 
 
 def test_seed_no_longer_ships_placeholder_cards():
