@@ -272,3 +272,94 @@ def test_seed_no_longer_ships_placeholder_cards():
     assert "INSERT INTO concept" not in seed_sql
     assert "INSERT INTO flashcard" not in seed_sql
     assert "INSERT INTO learning_objective" in seed_sql
+
+
+def test_only_known_shape_tags_appear_in_every_slide():
+    """count_content_shapes (the completeness guard) only recognizes sp and pic
+    shapes; if a deck ever used a different shape type it would be silently
+    dropped from both the guard and the extracted JSON. Assert the corpus
+    never uses anything else, so a future deck fails loudly instead."""
+    allowed = {"nvGrpSpPr", "grpSpPr", "sp", "pic"}
+    for path in imp.deck_paths():
+        with zipfile.ZipFile(path) as zf:
+            for slide in ("slide1", "slide2"):
+                tree = imp._shape_tree(zf, slide)
+                tags = {el.tag.split("}")[1] for el in tree}
+                assert tags <= allowed, "%s %s has unknown shape tags: %s" % (
+                    path.name, slide, tags - allowed)
+
+
+def test_committed_concept_cards_sql_matches_generator():
+    """Guards against editing flashcard_lo_mapping.csv without regenerating:
+    without this, 23 green tests on build_sql() in memory would say nothing
+    about what 03_concept_cards.sql on disk actually contains."""
+    committed = (imp.REPO / "flashcards_db" / "init" / "03_concept_cards.sql").read_text(
+        encoding="utf-8")
+    assert committed == imp.build_sql()
+
+
+def test_committed_seed_sql_matches_generator():
+    """Twin of the above for 02_seed.sql against generate_flashcards_seed.build_sql()."""
+    import generate_flashcards_seed as seed
+    committed = (imp.REPO / "flashcards_db" / "init" / "02_seed.sql").read_text(
+        encoding="utf-8")
+    generated, _n_chapters, _n_los = seed.build_sql()
+    assert committed == generated
+
+
+def _sql_unescape(s):
+    """Reverse generate_flashcards_seed.sql_str / import_concept_flashcards' matching
+    escaping: '' -> ' and \\\\ -> \\."""
+    return s.replace("''", "'").replace("\\\\", "\\")
+
+
+_ROW_INT_INT_STR_INT = re.compile(
+    r"^\s*\((\d+), (\d+), '((?:''|\\\\|[^'\\])*)', (\d+)\)[,;]?\s*$"
+)
+
+
+def _parse_int_int_str_int_rows(sql_text, table_name):
+    """Rows shaped (id, other_id, 'text', ordinal), one per line, from the named
+    table's INSERT block. Used for both concept and learning_objective rows,
+    which share this shape. Parses text only, never calls a generator."""
+    block = sql_text.split("INSERT INTO %s" % table_name, 1)[1].split(";", 1)[0]
+    rows = []
+    for line in block.splitlines():
+        m = _ROW_INT_INT_STR_INT.match(line)
+        if m:
+            rows.append((int(m.group(1)), int(m.group(2)), _sql_unescape(m.group(3)),
+                         int(m.group(4))))
+    return rows
+
+
+def test_committed_sql_files_agree_on_lo_id_bindings():
+    """lo_id is baked into 03_concept_cards.sql as an integer literal at
+    generation time, resolved against a separate run of the seed generator.
+    They only agree if both were regenerated together. Parse both COMMITTED
+    files (never call the generators) and confirm each concept row's lo_id
+    resolves, in 02_seed.sql, to the lo_text the mapping CSV names for that
+    deck; this is the semantic check the FK constraint cannot make."""
+    seed_sql = (imp.REPO / "flashcards_db" / "init" / "02_seed.sql").read_text(
+        encoding="utf-8")
+    cards_sql = (imp.REPO / "flashcards_db" / "init" / "03_concept_cards.sql").read_text(
+        encoding="utf-8")
+
+    lo_text_by_id = {row[0]: row[2]
+                     for row in _parse_int_int_str_int_rows(seed_sql, "learning_objective")}
+    assert len(lo_text_by_id) == 195
+
+    concept_rows = _parse_int_int_str_int_rows(cards_sql, "concept")
+    assert len(concept_rows) == 75
+
+    mapping = imp.load_mapping()
+    expected_lo_text_by_name = {row["concept_name"]: row["lo_text"] for row in mapping.values()}
+    assert len(expected_lo_text_by_name) == 75  # concept names are globally unique
+
+    for cid, lo_id, name, ordinal in concept_rows:
+        assert lo_id in lo_text_by_id, (
+            "concept %r (id %d) cites lo_id %d, absent from 02_seed.sql" % (name, cid, lo_id))
+        assert lo_text_by_id[lo_id] == expected_lo_text_by_name[name], (
+            "%r: 03_concept_cards.sql points lo_id %d at %r, but "
+            "flashcard_lo_mapping.csv names %r for this deck"
+            % (name, lo_id, lo_text_by_id[lo_id], expected_lo_text_by_name[name])
+        )
