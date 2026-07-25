@@ -136,6 +136,10 @@ def load_mapping():
         if card in mapping:
             raise ValueError("duplicate mapping row for %s" % card)
         mapping[card] = {
+            # concept_name is a review aid and cross-check only (see
+            # test_mapping_concept_names_match_the_decks); build_sql() takes the
+            # concept name from the deck's own title, so editing this column
+            # changes nothing in the generated SQL.
             "concept_name": row["concept_name"],
             "section_number": row["section_number"].strip(),
             "lo_text": row["lo_text"],
@@ -191,8 +195,16 @@ def build_sql():
 
 def main():
     sql = build_sql()
+    concepts_block = sql.split("INSERT INTO concept")[1].split(";")[0]
+    cards_block = sql.split("INSERT INTO flashcard")[1].split(";")[0]
+    n_concepts = concepts_block.count("\n  (")
+    n_cards = cards_block.count("\n  (")
+    assert n_concepts == 75 and n_cards == 75, (
+        "corpus changed: expected 75 concepts and 75 cards, got %d and %d"
+        % (n_concepts, n_cards)
+    )
     OUT.write_text(sql, encoding="utf-8", newline="\n")
-    print("concepts=75 cards=75 bytes=%d" % len(sql.encode("utf-8")))
+    print("concepts=%d cards=%d bytes=%d" % (n_concepts, n_cards, len(sql.encode("utf-8"))))
 
 
 if __name__ == "__main__":
