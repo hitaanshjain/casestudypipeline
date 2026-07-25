@@ -1,4 +1,5 @@
 """Tests for tools/import_concept_flashcards.py. Run: python -m pytest tools/ -v"""
+import collections
 import sys
 import zipfile
 from pathlib import Path
@@ -101,9 +102,10 @@ def test_every_math_block_is_decodable_svg():
     for path in imp.deck_paths():
         with zipfile.ZipFile(path) as zf:
             for slide in ("slide1", "slide2"):
-                for block in imp.extract_side(zf, slide)["blocks"]:
+                blocks = imp.extract_side(zf, slide)["blocks"]
+                for block_idx, block in enumerate(blocks):
                     if block["type"] == "math_svg":
-                        assert block["value"].startswith("<svg"), path.name
+                        assert block["value"].startswith("<svg"), "%s %s block %d" % (path.name, slide, block_idx)
 
 
 def test_extract_deck_names_the_concept_from_the_front_title():
@@ -114,5 +116,12 @@ def test_extract_deck_names_the_concept_from_the_front_title():
 
 
 def test_all_concept_names_are_unique():
-    names = [imp.extract_deck(p)["concept"] for p in imp.deck_paths()]
-    assert len(set(names)) == len(names), "duplicate concept names break UNIQUE(lo_id, name)"
+    decks = imp.deck_paths()
+    concept_to_decks = {}
+    for path in decks:
+        concept = imp.extract_deck(path)["concept"]
+        if concept not in concept_to_decks:
+            concept_to_decks[concept] = []
+        concept_to_decks[concept].append(path.name)
+    duplicates = {name: decks for name, decks in concept_to_decks.items() if len(decks) > 1}
+    assert not duplicates, "duplicate concept names break UNIQUE(lo_id, name): %s" % duplicates
