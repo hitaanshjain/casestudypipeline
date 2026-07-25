@@ -165,3 +165,44 @@ def test_concept_names_are_unique_within_each_learning_objective():
         key = (row["section_number"], row["lo_text"], row["concept_name"])
         assert key not in seen, "%s collides on UNIQUE(lo_id, name)" % card
         seen.add(key)
+
+
+import hashlib
+
+
+def test_lo_index_is_shared_between_both_generators():
+    import generate_flashcards_seed as seed
+    index = seed.lo_index(_book())
+    assert len(index) == 195
+    assert index[("1.1", "Use functional notation to evaluate a function.")] == 1
+
+
+def test_card_json_round_trips_and_is_utf8():
+    doc = imp.card_json(imp.extract_deck(DECK_MATH)["back"])
+    assert isinstance(doc, bytes)
+    parsed = json.loads(doc.decode("utf-8"))
+    assert parsed["title"] == "Worked Example"
+    assert parsed["blocks"][0]["value"].endswith("(x−2).")
+
+
+def test_generated_sql_has_one_concept_and_one_card_per_deck():
+    sql = imp.build_sql()
+    assert sql.count("(1, 1, 'concept_example'") == 1
+    concepts = sql.split("INSERT INTO concept")[1].split(";")[0]
+    cards = sql.split("INSERT INTO flashcard")[1].split(";")[0]
+    assert concepts.count("\n  (") == 75
+    assert cards.count("\n  (") == 75
+    assert "'json'" in cards
+    assert "'latex'" not in cards
+
+
+def test_sql_generation_is_deterministic():
+    assert hashlib.sha256(imp.build_sql().encode("utf-8")).hexdigest() == \
+           hashlib.sha256(imp.build_sql().encode("utf-8")).hexdigest()
+
+
+def test_seed_no_longer_ships_placeholder_cards():
+    seed_sql = (imp.REPO / "flashcards_db" / "init" / "02_seed.sql").read_text(encoding="utf-8")
+    assert "INSERT INTO concept" not in seed_sql
+    assert "INSERT INTO flashcard" not in seed_sql
+    assert "INSERT INTO learning_objective" in seed_sql

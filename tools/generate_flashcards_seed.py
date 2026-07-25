@@ -12,50 +12,24 @@ OUT = REPO / "flashcards_db" / "init" / "02_seed.sql"
 
 SUBJECT_NAME = "Calculus"
 
-# Sample concept/example cards (spec: plan/flashcards_db_design.md sec 4).
-# Math hand-verified:
-#   f(x)=3x^2+2x-1 -> f(2)=3*4+4-1=15;  sqrt(x-3) needs x>=3;  x^2 range [0,inf).
-# Keyed by (section_number, exact LO text) -> list of (concept_name, front, back).
-SAMPLE_CARDS = {
-    ("1.1", "Use functional notation to evaluate a function."): [
-        (
-            "Evaluating a function at a value",
-            r"\textbf{Evaluating a function.} For a function $f(x)$, the value $f(a)$ "
-            r"is found by substituting $x=a$ everywhere $x$ appears in the rule, then "
-            r"simplifying.",
-            r"\textbf{Worked example.} Let $f(x)=3x^2+2x-1$. Then "
-            r"$f(2)=3(2)^2+2(2)-1=12+4-1=15$.",
-        ),
-    ],
-    ("1.1", "Determine the domain and range of a function."): [
-        (
-            "Domain of a function",
-            r"\textbf{Domain.} The domain of a function is the set of all inputs $x$ "
-            r"for which the rule produces a real output. Common restrictions: no "
-            r"division by zero, no square root of a negative number.",
-            r"\textbf{Worked example.} Let $f(x)=\sqrt{x-3}$. We need $x-3\ge 0$, "
-            r"so $x\ge 3$: the domain is $[3,\infty)$.",
-        ),
-        (
-            "Range of a function",
-            r"\textbf{Range.} The range of a function is the set of all output values "
-            r"it actually produces as $x$ runs over the whole domain.",
-            r"\textbf{Worked example.} Let $f(x)=x^2$ on domain $(-\infty,\infty)$. "
-            r"Squares are never negative, and every $y\ge 0$ is reached (take "
-            r"$x=\sqrt{y}$), so the range is $[0,\infty)$.",
-        ),
-    ],
-}
-
 
 def sql_str(s):
     """Escape a Python string as a single-quoted MySQL literal."""
     return "'" + s.replace("\\", "\\\\").replace("'", "''") + "'"
 
 
-def sql_blob(s):
-    """UTF-8 text as a MySQL hex blob literal (no escaping pitfalls)."""
-    return "0x" + s.encode("utf-8").hex()
+def lo_index(book):
+    """(section_number, lo_text) -> learning_objective id, 1-based in book order.
+
+    Shared with tools/import_concept_flashcards.py so both generators agree.
+    """
+    index = {}
+    lo_id = 0
+    for sec in book["sections"]:
+        for lo in sec["learning_objectives"]:
+            lo_id += 1
+            index[(sec["number"], lo)] = lo_id
+    return index
 
 
 def main():
@@ -81,8 +55,8 @@ def main():
         "",
     ]
 
+    index = lo_index(book)
     chapter_rows, lo_rows = [], []
-    lo_id_by_key = {}
     lo_id = 0
     for ch_id, sec in enumerate(book["sections"], start=1):
         chap_num = int(sec["number"].split(".")[0])
@@ -91,8 +65,7 @@ def main():
             f" {sql_str(sec['title'])})"
         )
         for ordinal, lo in enumerate(sec["learning_objectives"], start=1):
-            lo_id += 1
-            lo_id_by_key[(sec["number"], lo)] = lo_id
+            lo_id = index[(sec["number"], lo)]
             lo_rows.append(f"  ({lo_id}, {ch_id}, {sql_str(lo)}, {ordinal})")
 
     lines.append(
@@ -106,34 +79,8 @@ def main():
     )
     lines.append("")
 
-    concept_rows, card_rows = [], []
-    cid = 0
-    for (sec_num, lo_text), cards in SAMPLE_CARDS.items():
-        parent_lo = lo_id_by_key[(sec_num, lo_text)]  # KeyError = LO text drifted
-        for ordinal, (name, front, back) in enumerate(cards, start=1):
-            cid += 1
-            concept_rows.append(
-                f"  ({cid}, {parent_lo}, {sql_str(name)}, {ordinal})"
-            )
-            card_rows.append(
-                f"  ({cid}, {cid}, 'concept_example', {sql_blob(front)}, 'latex',"
-                f" {sql_blob(back)}, 'latex')"
-            )
-
-    lines.append(
-        "INSERT INTO concept (id, lo_id, name, ordinal) VALUES\n"
-        + ",\n".join(concept_rows) + ";"
-    )
-    lines.append("")
-    lines.append(
-        "INSERT INTO flashcard (id, concept_id, card_type, front_content,"
-        " front_format, back_content, back_format) VALUES\n"
-        + ",\n".join(card_rows) + ";"
-    )
-    lines.append("")
-
     OUT.write_text("\n".join(lines), encoding="utf-8", newline="\n")
-    print(f"chapters={len(chapter_rows)} los={lo_id} concepts={cid} cards={cid}")
+    print(f"chapters={len(chapter_rows)} los={lo_id}")
     assert len(chapter_rows) == 45, "corpus changed: update spec expectations"
 
 
