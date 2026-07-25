@@ -21,7 +21,10 @@ UNION ALL SELECT 'orphan_concepts', COUNT(*), 0 FROM concept c
 SELECT COUNT(*) AS los_without_any_card
 FROM learning_objective lo LEFT JOIN concept c ON c.lo_id = lo.id WHERE c.id IS NULL;
 
--- Spread across the book, sanity check against the folder counts 15/9/16/16/9/10.
+-- Spread across the book, sanity check against 14/8/17/18/8/10 (not the raw
+-- folder counts 15/9/16/16/9/10: three decks map cross-chapter, per
+-- tools/flashcard_lo_mapping.csv: 004_Average_Rate to 3.4, 022_Limits_At_Infinity
+-- to 4.6, 062_Indefinite_Integrals to 4.10).
 SELECT ch.chapter_number, COUNT(*) AS cards
 FROM flashcard f JOIN concept co ON f.concept_id = co.id
 JOIN learning_objective lo ON co.lo_id = lo.id
