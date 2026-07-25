@@ -124,10 +124,14 @@ derived per card:
 
 Output is `tools/flashcard_lo_mapping.csv` with columns: `card_file`,
 `concept_name`, `section_number`, `lo_text`, `confidence`, `note`. Every
-`judgment` row carries a note explaining the call. Known cases needing judgment:
-named theorems OpenStax folds into unnamed LOs (`042_Extreme_Value_Theorem`,
-`044_Rolles_Theorem`) and concepts with no LO of their own
-(`039_Higher_Derivatives`).
+`judgment` row carries a note explaining the call. CORRECTED post-execution
+(see CLAUDE.md sec 9): this section originally named `039_Higher_Derivatives`
+and `044_Rolles_Theorem` as known judgment cases, but execution proved both
+have named objectives (3.2 "Explain the meaning of a higher-order
+derivative." and 4.4 "Explain the meaning of Rolle's theorem.") and both
+shipped `clear`. The only named-theorem judgment case is
+`042_Extreme_Value_Theorem`, which OpenStax folds into an unnamed 4.3
+objective about locating absolute extrema on a closed interval.
 
 Many-to-one is expected and legal: `028_Power_Rule` and
 `029_Constant_Multiple_Rule` both belong to section 3.3's "State the constant,
