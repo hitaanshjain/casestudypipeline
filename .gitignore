@@ -6,3 +6,5 @@
 _reference/
 runs/
 tools/.superpowers/
+__pycache__/
+*.pyc
