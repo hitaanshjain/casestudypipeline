@@ -99,3 +99,18 @@ def count_content_shapes(zf, slide):
         elif tag == "pic":
             n += 1
     return n
+
+
+def extract_deck(path):
+    """One deck as {"concept": front title, "front": side, "back": side}."""
+    with zipfile.ZipFile(path) as zf:
+        front = extract_side(zf, "slide1")
+        back = extract_side(zf, "slide2")
+        for slide, side in (("slide1", front), ("slide2", back)):
+            expected = count_content_shapes(zf, slide)
+            if expected != len(side["blocks"]) + 1:
+                raise ValueError(
+                    "%s %s: %d source shapes but %d blocks + title"
+                    % (path.name, slide, expected, len(side["blocks"]))
+                )
+    return {"concept": front["title"], "front": front, "back": back}

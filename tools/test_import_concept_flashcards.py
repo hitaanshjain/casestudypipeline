@@ -68,3 +68,51 @@ def test_deck_paths_finds_all_seventy_five_sorted():
     assert paths[0].name == "001_Functions.pptx"
     assert paths[-1].name == "075_Center_Of_Mass.pptx"
     assert [p.name for p in paths] == sorted(p.name for p in paths)
+
+
+def test_every_deck_has_exactly_two_slides():
+    for path in imp.deck_paths():
+        with zipfile.ZipFile(path) as zf:
+            slides = [n for n in zf.namelist()
+                      if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
+        assert len(slides) == 2, path.name
+
+
+def test_no_deck_uses_grouped_shapes():
+    """Grouped shapes would hide content from the flat spTree walk."""
+    for path in imp.deck_paths():
+        with zipfile.ZipFile(path) as zf:
+            for slide in ("slide1", "slide2"):
+                assert b"<p:grpSp>" not in zf.read("ppt/slides/%s.xml" % slide), path.name
+
+
+def test_all_150_sides_extract_with_no_dropped_content():
+    for path in imp.deck_paths():
+        with zipfile.ZipFile(path) as zf:
+            for slide in ("slide1", "slide2"):
+                side = imp.extract_side(zf, slide)
+                assert side["title"], "%s %s has no title" % (path.name, slide)
+                expected = imp.count_content_shapes(zf, slide)
+                assert expected == len(side["blocks"]) + 1, "%s %s" % (path.name, slide)
+                assert side["blocks"], "%s %s has no blocks" % (path.name, slide)
+
+
+def test_every_math_block_is_decodable_svg():
+    for path in imp.deck_paths():
+        with zipfile.ZipFile(path) as zf:
+            for slide in ("slide1", "slide2"):
+                for block in imp.extract_side(zf, slide)["blocks"]:
+                    if block["type"] == "math_svg":
+                        assert block["value"].startswith("<svg"), path.name
+
+
+def test_extract_deck_names_the_concept_from_the_front_title():
+    deck = imp.extract_deck(DECK_MATH)
+    assert deck["concept"] == "Domain And Range"
+    assert deck["front"]["title"] == "Domain And Range"
+    assert deck["back"]["title"] == "Worked Example"
+
+
+def test_all_concept_names_are_unique():
+    names = [imp.extract_deck(p)["concept"] for p in imp.deck_paths()]
+    assert len(set(names)) == len(names), "duplicate concept names break UNIQUE(lo_id, name)"
