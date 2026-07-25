@@ -1,5 +1,6 @@
 """Tests for tools/import_concept_flashcards.py. Run: python -m pytest tools/ -v"""
 import collections
+import json
 import sys
 import zipfile
 from pathlib import Path
@@ -125,3 +126,42 @@ def test_all_concept_names_are_unique():
         concept_to_decks[concept].append(path.name)
     duplicates = {name: decks for name, decks in concept_to_decks.items() if len(decks) > 1}
     assert not duplicates, "duplicate concept names break UNIQUE(lo_id, name): %s" % duplicates
+
+
+def _book():
+    path = imp.REPO / "references" / "openstax_calculus_v1" / "book_map.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def test_mapping_covers_every_deck_exactly_once():
+    mapping = imp.load_mapping()
+    assert len(mapping) == 75
+    assert set(mapping) == {p.name for p in imp.deck_paths()}
+
+
+def test_mapping_concept_names_match_the_decks():
+    mapping = imp.load_mapping()
+    for path in imp.deck_paths():
+        assert mapping[path.name]["concept_name"] == imp.extract_deck(path)["concept"]
+
+
+def test_every_mapped_lo_exists_in_that_section():
+    valid = {(s["number"], lo) for s in _book()["sections"]
+             for lo in s["learning_objectives"]}
+    for card, row in imp.load_mapping().items():
+        assert (row["section_number"], row["lo_text"]) in valid, card
+
+
+def test_confidence_vocabulary_is_closed_and_judgments_are_explained():
+    for card, row in imp.load_mapping().items():
+        assert row["confidence"] in ("clear", "judgment"), card
+        if row["confidence"] == "judgment":
+            assert row["note"].strip(), "%s is flagged but unexplained" % card
+
+
+def test_concept_names_are_unique_within_each_learning_objective():
+    seen = set()
+    for card, row in imp.load_mapping().items():
+        key = (row["section_number"], row["lo_text"], row["concept_name"])
+        assert key not in seen, "%s collides on UNIQUE(lo_id, name)" % card
+        seen.add(key)

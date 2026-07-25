@@ -4,12 +4,14 @@ Deterministic: same decks + same mapping in, byte-identical SQL out.
 Spec: plan/concept_flashcard_import_design.md
 Run from repo root:  python tools/import_concept_flashcards.py
 """
+import csv
 import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 DECKS = REPO / "OpenStax_Calculus_Volume_1_Concept_Only_Flashcards"
+MAPPING = Path(__file__).resolve().parent / "flashcard_lo_mapping.csv"
 
 NS = {
     "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
@@ -114,3 +116,22 @@ def extract_deck(path):
                     % (path.name, slide, expected, len(side["blocks"]))
                 )
     return {"concept": front["title"], "front": front, "back": back}
+
+
+def load_mapping():
+    """The authored card-to-LO mapping, keyed by deck filename."""
+    with MAPPING.open(encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    mapping = {}
+    for row in rows:
+        card = row["card_file"].strip()
+        if card in mapping:
+            raise ValueError("duplicate mapping row for %s" % card)
+        mapping[card] = {
+            "concept_name": row["concept_name"],
+            "section_number": row["section_number"].strip(),
+            "lo_text": row["lo_text"],
+            "confidence": row["confidence"].strip(),
+            "note": row["note"] or "",
+        }
+    return mapping
