@@ -4,7 +4,7 @@ card_file,concept_name,section_number,lo_text,confidence,note
 003_Function_Notation.pptx,Function Notation,1.1,Use functional notation to evaluate a function.,clear,
 004_Average_Rate.pptx,Average Rate,3.4,Calculate the average rate of change and explain how it differs from the instantaneous rate of change.,judgment,"Deck is filed under the chapter-1 folder but no 1.1-1.5 objective covers average rate of change; the only objective naming it is 3.4, taught well before derivatives are introduced there."
 005_Transformations.pptx,Transformations,1.2,"Sketch the graph of a function that has been shifted, stretched, or reflected from its initial graph position.",clear,
-006_Composition.pptx,Composition,1.1,Make new functions from two or more given functions.,clear,
+006_Composition.pptx,Composition,1.1,Make new functions from two or more given functions.,judgment,"The word composition appears nowhere in this objective, and the objective also covers generic arithmetic combination of functions, so it is not specific to composition."
 007_Inverse_Functions.pptx,Inverse Functions,1.4,Find the inverse of a given function.,clear,
 008_Linear_Functions.pptx,Linear Functions,1.2,Calculate the slope of a linear function and interpret its meaning.,clear,
 009_Power_Functions.pptx,Power Functions,1.2,Describe the graphs of power and root functions.,clear,
@@ -50,7 +50,7 @@ card_file,concept_name,section_number,lo_text,confidence,note
 049_Second_Derivative_Test.pptx,Second Derivative Test,4.5,State the second derivative test for local extrema.,clear,
 050_LHpitals_Rule.pptx,L’Hôpital’s Rule,4.8,Recognize when to apply L'Hopital's rule.,clear,
 051_Optimization.pptx,Optimization,4.7,Set up and solve optimization problems in several applied fields.,clear,
-052_Related_Rates.pptx,Related Rates,4.1,Find relationships among the derivatives in a given problem.,clear,
+052_Related_Rates.pptx,Related Rates,4.1,Find relationships among the derivatives in a given problem.,judgment,"None of 4.1's three objectives literally names related rates; this is the most general of the three and was chosen over the other two by section-title context alone."
 053_Linear_Approximation.pptx,Linear Approximation,4.2,Describe the linear approximation to a function at a point.,clear,
 054_Differentials.pptx,Differentials,4.2,Draw a graph that illustrates the use of differentials to approximate the change in a quantity.,judgment,"Deck defines the dx/dy notation itself; the only 4.2 objective naming differentials frames them for graphing the approximation, not for the basic definition the card teaches."
 055_Newtons_Method.pptx,Newton’s Method,4.9,Describe the steps of Newton's method.,clear,
