@@ -189,6 +189,7 @@ Git: initialized July 2, 2026, branch main, remote origin = github.com/hitaanshj
 /tools/flashcard_lo_mapping.csv             the 75 deck-to-LO mappings with confidence flags, the human review gate (July 24)
 /tools/verify_flashcard_import.sql          verification ledger for the concept flashcard import (July 24)
 /tools/check_blob_round_trip.py             blob integrity check, source decks vs stored JSON hashes (July 24)
+/tools/render_flashcards.py                 renders stored cards from MySQL to a standalone HTML page (July 28); --section / --theme / --out; output flashcards.html is gitignored
 /OpenStax_Calculus_Volume_1_Concept_Only_Flashcards/  the 75 source .pptx decks (8.3MB); deliberately NOT tracked in git (sec 9 archiving decision); to be archived to the team Google Drive
 /plan/phase1_prompt_design.md               phase 1 design spec (signed off July 5)
 /plan/phase1_implementation_plan.md         phase 1 build plan, 16 tasks (July 5)
