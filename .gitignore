@@ -9,3 +9,4 @@ tools/
 __pycache__/
 *.pyc
 spot_check.html
+flashcard_preview.html
