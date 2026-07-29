@@ -435,3 +435,87 @@ def test_g12_rejects_an_empty_latex_string():
     card = good_card()
     card["back"]["rows"][0]["segments"] = [{"t": "math", "latex": "   "}]
     assert "G12" in errors_for(card)
+
+
+# Fix round 1 (quality review, three defects in the brief's own code):
+# FIX 1 (Critical): G09's reverse direction used raw substring matching
+# instead of tokenized identifiers, so an undefined symbol could hide inside
+# the spelling of an unrelated key entry. FIX 2 (Minor): \mathrm{...} and
+# \operatorname{...} were stripped exactly like \text{...}, so multi-letter
+# symbols such as PV/FV/NPV were invisible to latex_identifiers in both
+# directions. FIX 3 (Minor): G12's brace-escape check only looked one
+# character back, misjudging braces preceded by an even number of backslashes.
+
+def test_g09_reverse_direction_uses_tokenized_identifiers_not_substrings():
+    """FIX 1. Before the fix, a bare 'a' in the formula was treated as
+    "covered" merely because the letter 'a' is a substring of the key
+    symbol's own spelling ('a' inside "\\frac{d}{dx}", from \\frac itself),
+    even though \\frac is a universal macro and defines nothing. The reverse
+    direction must compare against the key symbols' TOKENIZED identifiers,
+    not do a raw substring search."""
+    card = good_card()
+    card["front"]["central"]["latex"] = \
+        "\\frac{d}{dx}\\left(x^{n}\\right)=nx^{n-1}+a"
+    errs = errors_for(card)
+    assert "G09" in errs
+
+
+def test_latex_identifiers_keeps_mathrm_and_operatorname_as_one_token():
+    """FIX 2. \\mathrm{...} and \\operatorname{...} name one multi-letter
+    symbol (PV, NPV, ...); they must not be stripped like \\text{...}, and
+    their contents must not be tokenized into separate bare letters."""
+    found = chk.latex_identifiers("\\mathrm{PV}=\\operatorname{NPV}(r)")
+    assert "\\mathrm{PV}" in found
+    assert "\\operatorname{NPV}" in found
+    assert "P" not in found and "V" not in found and "N" not in found
+
+
+def test_g12_treats_an_even_backslash_run_as_a_real_unescaped_brace():
+    """FIX 3. "\\\\{a" is a LaTeX linebreak (\\\\, two literal backslashes)
+    followed by a genuinely unescaped, unmatched brace, not an escaped
+    brace. Only an ODD run of backslashes escapes the brace that follows."""
+    card = good_card()
+    card["front"]["central"] = {"latex": "\\\\{a"}
+    assert "G12" in errors_for(card)
+
+
+def test_sanity_frac_key_still_covers_d_and_x():
+    """Sanity check 1 from the fix-round instructions."""
+    found = chk.latex_identifiers("\\frac{d}{dx}")
+    assert found == {"d", "x"}
+
+
+def test_sanity_good_card_central_still_produces_zero_g09_errors():
+    """Sanity check 2: good_card()'s own central/key pairing, unchanged,
+    must still produce zero G09 errors after both fixes."""
+    assert "G09" not in errors_for(good_card())
+
+
+def test_sanity_integral_notation_key_symbols_produce_zero_g09_errors():
+    """Sanity check 3: \\int_{a}^{b} f(x)\\,dx with key symbols
+    \\int_{a}^{b}, a, b, f(x), dx must produce zero G09 errors."""
+    card = good_card()
+    card["front"]["central"] = {"latex": "\\int_{a}^{b} f(x)\\,dx"}
+    card["front"]["variable_key"] = [
+        {"symbol": "\\int_{a}^{b}", "meaning": "definite integral from a to b"},
+        {"symbol": "a", "meaning": "lower bound"},
+        {"symbol": "b", "meaning": "upper bound"},
+        {"symbol": "f(x)", "meaning": "integrand"},
+        {"symbol": "dx", "meaning": "differential of x"},
+    ]
+    assert "G09" not in errors_for(card)
+
+
+def test_sanity_mathrm_pv_only_fires_g09_for_v_and_r():
+    """Sanity check 4: central \\mathrm{PV}=V\\cdot r with key symbol
+    \\mathrm{PV} only must FIRE G09 for the undefined V and r, not just
+    avoid raising an exception."""
+    card = good_card()
+    card["front"]["central"] = {"latex": "\\mathrm{PV}=V\\cdot r"}
+    card["front"]["variable_key"] = [
+        {"symbol": "\\mathrm{PV}", "meaning": "present value"},
+    ]
+    result = chk.check_card(card)
+    g09_lines = [line for line in result if line.startswith("ERROR G09:")]
+    assert any("'V'" in line for line in g09_lines), g09_lines
+    assert any("'r'" in line for line in g09_lines), g09_lines

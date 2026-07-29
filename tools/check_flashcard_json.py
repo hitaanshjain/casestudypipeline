@@ -321,7 +321,8 @@ UNIVERSAL_MACROS = frozenset({
     "\\to", "\\infty", "\\ldots", "\\cdots", "\\sin", "\\cos", "\\tan",
     "\\sec", "\\csc", "\\cot", "\\log", "\\ln", "\\exp",
 })
-TEXT_GROUP_RE = re.compile(r"\\(?:text|mathrm|operatorname)\{[^{}]*\}")
+TEXT_STRIP_RE = re.compile(r"\\text\{[^{}]*\}")
+NAMED_GROUP_RE = re.compile(r"\\(?:mathrm|operatorname)\{[^{}]*\}")
 TOKEN_RE = re.compile(r"\\[a-zA-Z]+|[A-Za-z]")
 UNICODE_MATH_RE = re.compile(
     "[\u2070-\u209f\u00b2\u00b3\u00b9\u2212\u00d7\u00f7]|\\^")
@@ -336,10 +337,19 @@ def latex_identifiers(latex):
     """Definable identifiers in a LaTeX string.
 
     Single letters and topic-specific macros count. Universal notation and any
-    letters inside \\text{...} do not: those are words, not variables.
+    letters inside \\text{...} do not: those are words, not variables. A
+    \\mathrm{...} or \\operatorname{...} group counts as ONE whole identifier
+    (e.g. \\mathrm{PV}), not as separate letters, since multi-letter finance
+    and stats symbols like PV, FV, NPV are conventionally written that way.
     """
-    stripped = TEXT_GROUP_RE.sub(" ", latex)
+    stripped = TEXT_STRIP_RE.sub(" ", latex)
     found = set()
+
+    def _capture_named_group(match):
+        found.add(match.group(0))
+        return " "                   # blanked so inner letters are not
+                                      # also tokenized individually below
+    stripped = NAMED_GROUP_RE.sub(_capture_named_group, stripped)
     for token in TOKEN_RE.findall(stripped):
         if token.startswith("\\") and token in UNIVERSAL_MACROS:
             continue
@@ -376,8 +386,11 @@ def g09_symbol_coverage(card, errors):
             _err(errors, "G09",
                  "variable_key defines %r, which does not appear in front.central"
                  % symbol)
+    defined = set()
+    for symbol in symbols:
+        defined |= latex_identifiers(symbol)
     for ident in sorted(latex_identifiers(formula)):
-        if not any(ident in symbol for symbol in symbols):
+        if ident not in defined:
             _err(errors, "G09",
                  "%r appears in front.central but no variable_key entry covers it"
                  % ident)
@@ -429,6 +442,16 @@ def g11_unicode_ban(card, errors):
                 scan("back row %d segment %d" % (r, i), segment.get("v", ""))
 
 
+def _preceding_backslash_count(text, i):
+    """How many consecutive backslash characters sit right before index i."""
+    count = 0
+    j = i - 1
+    while j >= 0 and text[j] == "\\":
+        count += 1
+        j -= 1
+    return count
+
+
 def g12_latex_sanity(card, errors):
     """Structural sanity only: a full parse needs KaTeX, which is not installed."""
     for latex in _all_latex(card["front"]) + _all_latex(card["back"]):
@@ -437,9 +460,16 @@ def g12_latex_sanity(card, errors):
             continue
         depth = 0
         for i, ch in enumerate(latex):
-            if ch == "{" and (i == 0 or latex[i - 1] != "\\"):
+            if ch not in "{}":
+                continue
+            # A brace is escaped only when an ODD number of backslashes
+            # precede it: \{ is one escaped brace, \\{ is a literal
+            # backslash (\\) followed by a real, unescaped brace.
+            if _preceding_backslash_count(latex, i) % 2 == 1:
+                continue
+            if ch == "{":
                 depth += 1
-            elif ch == "}" and (i == 0 or latex[i - 1] != "\\"):
+            else:
                 depth -= 1
             if depth < 0:
                 break
