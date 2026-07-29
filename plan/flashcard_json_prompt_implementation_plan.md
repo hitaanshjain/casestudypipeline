@@ -620,6 +620,36 @@ git commit -m "Add the flashcard JSON structural gates for row count, bold row, 
   `g09_symbol_coverage`, `g10_notation_consistency`, `g11_unicode_ban`,
   `g12_latex_sanity`.
 
+**Amendment, July 28, from the Task 3 review.** The `g09_symbol_coverage` body
+below uses `ident in symbol`, a raw character-substring test, and that is a hole
+in the exact gate meant to close this class of miss. Measured: a card defining
+only `\mathrm{PV}` with central latex `\mathrm{PV}=V\cdot r` produces ZERO G09
+errors for the undefined bare `V`, because the character `V` occurs inside the
+string `\mathrm{PV}`. G10 already does it right by calling `latex_identifiers`
+on the key symbol; G09 must match. Build the union of
+`latex_identifiers(symbol)` across the key and test membership against that.
+The forward direction (a key symbol must appear literally in the formula) is
+correct and stays.
+
+Two related fixes from the same review:
+
+- `latex_identifiers` strips `\mathrm{...}` and `\operatorname{...}` exactly
+  like `\text{...}`, so multi-letter symbols such as `PV`, `FV`, `NPV` are
+  invisible in both directions and can never be required or detected. Since
+  Intro Finance is a named target subject, keep stripping `\text{...}` as
+  genuine prose, but return each `\mathrm{...}` / `\operatorname{...}` as ONE
+  whole identifier token.
+- G12 looks only one character back for a brace escape, so it misjudges braces
+  preceded by an even number of backslashes: `\\{a` passes with zero errors.
+  Count consecutive backslashes and treat the brace as escaped only on an odd
+  count.
+
+Four cases must be pinned by tests, because later tasks depend on them: key
+`\frac{d}{dx}` still covers `d` and `x`; `good_card()` still passes G09;
+`\int_{a}^{b} f(x)\,dx` keyed by `\int_{a}^{b}`, `a`, `b`, `f(x)`, `dx` passes
+(Task 7's Definite Integral card depends on this); and `\mathrm{PV}=V\cdot r`
+keyed only by `\mathrm{PV}` now fires.
+
 - [ ] **Step 1: Write the failing tests**
 
 Append to `tools/test_check_flashcard_json.py`:
