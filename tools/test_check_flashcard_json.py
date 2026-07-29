@@ -253,10 +253,22 @@ def test_g06_rejects_no_bold_row():
     assert "G06" in errors_for(card)
 
 
+def test_g06_rejects_two_bold_rows():
+    card = good_card()
+    # good_card()'s last row is already bold; adding a second bold row
+    # must trip the count branch ("N rows are bold").
+    card["back"]["rows"][0]["bold"] = True
+    assert "G06" in errors_for(card)
+
+
 def test_g06_rejects_bold_on_a_middle_row():
     card = good_card()
     card["back"]["rows"][0]["bold"] = True
+    card["back"]["rows"][-1]["bold"] = False
+    result = chk.check_card(card)
     assert "G06" in errors_for(card)
+    assert any("row 1 is bold, the bold row must be the last (row 4)" in line
+               for line in result)
 
 
 def test_g07_rejects_non_contiguous_aligned_rows():
@@ -280,6 +292,49 @@ def test_g07_accepts_zero_aligned_rows():
     assert "G07" not in errors_for(card)
 
 
+def _set_aligned(card, flags):
+    for row, flag in zip(card["back"]["rows"], flags):
+        row["aligned"] = flag
+    return card
+
+
+def _g07_line_count(card):
+    return sum(1 for line in chk.check_card(card) if line.startswith("ERROR G07:"))
+
+
+def test_g07_exact_count_late_start_reaching_the_end():
+    # [F, F, T, T]: contiguous block, starts late, reaches the last row.
+    card = _set_aligned(good_card(), [False, False, True, True])
+    assert _g07_line_count(card) == 0
+
+
+def test_g07_exact_count_interior_gap():
+    # [T, F, T, T]: interior gap, one error line, non-contiguity message.
+    card = _set_aligned(good_card(), [True, False, True, True])
+    assert _g07_line_count(card) == 1
+
+
+def test_g07_exact_count_contiguous_but_ends_early():
+    # [T, T, F, F]: contiguous, but the block stops before the last row.
+    # Must be exactly ONE line (the "must run to the last row" message),
+    # not two: the block IS contiguous, so the non-contiguity message
+    # would be false.
+    card = _set_aligned(good_card(), [True, True, False, False])
+    assert _g07_line_count(card) == 1
+
+
+def test_g07_exact_count_all_unaligned():
+    # [F, F, F, F]: zero aligned rows is valid.
+    card = _set_aligned(good_card(), [False, False, False, False])
+    assert _g07_line_count(card) == 0
+
+
+def test_g07_exact_count_all_aligned():
+    # [T, T, T, T]: fully aligned, contiguous, reaches the last row.
+    card = _set_aligned(good_card(), [True, True, True, True])
+    assert _g07_line_count(card) == 0
+
+
 def test_g08_rejects_missing_key_when_central_is_latex():
     card = good_card()
     del card["front"]["variable_key"]
@@ -289,6 +344,13 @@ def test_g08_rejects_missing_key_when_central_is_latex():
 def test_g08_rejects_key_present_when_central_is_text():
     card = good_card()
     card["front"]["central"] = {"text": "A rate of change measured at a point."}
+    assert "G08" in errors_for(card)
+
+
+def test_g08_rejects_empty_key_present_when_central_is_text():
+    card = good_card()
+    card["front"]["central"] = {"text": "A rate of change measured at a point."}
+    card["front"]["variable_key"] = []
     assert "G08" in errors_for(card)
 
 

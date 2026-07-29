@@ -274,10 +274,11 @@ def g07_aligned_rows(card, errors):
     if not any(flags):
         return                                  # zero aligned rows is valid
     first = flags.index(True)
-    if not all(flags[first:]):
+    last = len(flags) - 1 - flags[::-1].index(True)
+    if not all(flags[first:last + 1]):
         _err(errors, "G07", "aligned rows are not contiguous: %s"
              % "".join("A" if f else "." for f in flags))
-    if flags and not flags[-1]:
+    elif last != len(flags) - 1:
         _err(errors, "G07",
              "the aligned block must run to the last row, but row %d is not aligned"
              % len(flags))
@@ -293,7 +294,7 @@ def g08_variable_key_presence(card, errors):
                  "front.central is latex, so variable_key is required and non-empty")
             return
     else:
-        if key:
+        if "variable_key" in front:
             _err(errors, "G08",
                  "front.central is text, so variable_key must be absent")
         return
