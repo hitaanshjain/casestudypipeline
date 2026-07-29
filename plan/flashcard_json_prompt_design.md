@@ -272,9 +272,18 @@ the gate is reported as `SKIPPED`, never as `PASS`.
 
 ### Negative controls
 
-Every gate must be made to fire at least once on purpose. Fixtures live in
-`tools/fixtures/flashcard_json/`, one bad file per gate, each asserted to exit 2
-with its specific error id. A gate that never fires is decoration.
+Every gate must be made to fire at least once on purpose. A gate that never
+fires is decoration.
+
+**Amendment, July 28**: this first read "one bad file per gate". Split in two,
+because the two things being tested are different. Every gate gets a negative
+**unit test** that asserts its id fires, and a meta-test walks G01 through G14
+and fails if any gate has no such test, so the coverage claim is itself
+enforced rather than asserted. Four representative bad **fixtures** live in
+`tools/fixtures/flashcard_json/`, one per gate family (structural, notation,
+prose, corpus), and exist to test the CLI's exit-2 path end to end. Fourteen
+near-identical JSON files would test the same CLI path fourteen times while
+adding nothing the unit tests do not already cover.
 
 ## 5. Legacy compatibility
 
