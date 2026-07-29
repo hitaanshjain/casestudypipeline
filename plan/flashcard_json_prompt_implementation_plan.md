@@ -330,7 +330,41 @@ def check_card(card):
 Run: `python -m pytest tools/test_check_flashcard_json.py -q`
 Expected: 9 passed.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Make G01 type-aware, not just presence-aware**
+
+**Amendment, July 28, from the Task 1 review.** The Step 3 code above checks
+that required keys are *present* and never that their values have the right
+*type*. A validator whose entire job is gating untrusted LLM output must not
+crash on that output. Three reproductions found in review:
+
+- `card["front"] = None` raises `AttributeError` inside `g01_shape` itself, at
+  `card.get("front", {}).get("central")`. The `{}` default only fires when the
+  key is absent, not when it is present and null, so the "front is not an
+  object" error that was already queued never reaches the caller.
+- `card["front"]["main_description"] = None` passes `g01_shape`, then crashes
+  `g03_word_budgets` at `words(None)`.
+- `card["back"]["problem"] = {"t": "text", "v": "hi"}` passes `g01_shape`, then
+  crashes `g03_word_budgets`, because iterating a dict yields string keys.
+
+`g01_shape` must emit an `ERROR G01:` line and return False, never raise, for
+any of: `source` / `front` / `back` / `front.central` present but not a dict;
+`front.variable_key` / `back.problem` / `back.rows` present but not a list;
+`concept`, `source.book_tag`, `source.section`, `source.lo_text`,
+`front.title`, `front.subtitle`, `front.main_description`,
+`front.supporting_description`, `front.footer`, `back.title`, `back.footer`
+present but not a string. Guard the `central` one-of check so it runs only when
+both `front` and `central` are dicts.
+
+Tests must cover all three reproductions plus at least two more wrong-type
+cases, each asserting both that `check_card` does not raise and that G01 fires,
+plus one test that walks several nested paths setting each to `None` in turn and
+asserts a list comes back every time.
+
+This same presence-only pattern would otherwise recur in Tasks 2 to 4; because
+G01 now returns False on a type error, the later gates keep their "assume the
+shape holds" contract honestly.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add -f tools/check_flashcard_json.py tools/test_check_flashcard_json.py
@@ -349,6 +383,25 @@ git commit -m "Add the flashcard JSON validator with its shape, contract string,
 - Consumes: `check_card`, `good_card`, `errors_for` from Task 1.
 - Produces: gate functions `g05_row_count`, `g06_bold_row`, `g07_aligned_rows`,
   `g08_variable_key_presence`, all appended to `GATES`.
+
+**Amendment, July 28, carried from the Task 1 re-review.** Task 1's G01 now
+type-checks containers but not their contents, and four crash inputs survive:
+
+- `back.problem = [{"t": "text", "v": "hi"}, "raw string"]` raises in
+  `g03_word_budgets` at `s.get("t")`
+- `back.problem = [None]` or `[1, 2, 3]` raises the same way
+- `back.problem = [{"t": "text", "v": 123}]` raises at `words(...)`
+- `front.central = {"text": 123}` or `{"text": None}` raises at `words(...)`
+
+This task iterates rows and segments, so it must close them. Extend
+`g01_shape` to also validate, emitting `ERROR G01:` and returning False rather
+than raising: every element of `back.problem` and of each `row["segments"]` is
+a dict; each segment's `t` is `"text"` or `"math"`; a text segment's `v` and a
+math segment's `latex` are strings; each element of `back.rows` is a dict; each
+element of `front.variable_key` is a dict whose `symbol` and `meaning` are
+strings; and `front.central.text` / `front.central.latex`, when present, are
+strings. Add a test per input above, each asserting both that `check_card`
+returns a list and that G01 fires.
 
 - [ ] **Step 1: Write the failing tests**
 
