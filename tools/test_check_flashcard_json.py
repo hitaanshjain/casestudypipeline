@@ -365,3 +365,73 @@ def test_g08_rejects_overlong_meaning():
     card = good_card()
     card["front"]["variable_key"][1]["meaning"] = " ".join(["word"] * 9)
     assert "G08" in errors_for(card)
+
+
+def test_latex_identifiers_finds_variables_and_operators():
+    found = chk.latex_identifiers("\\frac{d}{dx}\\left(x^{n}\\right)=nx^{n-1}")
+    assert {"d", "x", "n"} <= found
+
+
+def test_latex_identifiers_ignores_universal_notation():
+    found = chk.latex_identifiers("a+b=c\\cdot d")
+    assert "\\cdot" not in found
+    assert "\\left" not in found
+
+
+def test_latex_identifiers_ignores_letters_inside_text():
+    found = chk.latex_identifiers("\\text{slope} = m")
+    assert found == {"m"}
+
+
+def test_g09_rejects_an_undefined_symbol():
+    card = good_card()
+    card["front"]["variable_key"] = [
+        {"symbol": "n", "meaning": "constant exponent"}]  # x and d/dx undefined
+    assert "G09" in errors_for(card)
+
+
+def test_g09_rejects_a_key_symbol_absent_from_the_formula():
+    card = good_card()
+    card["front"]["variable_key"][2] = {"symbol": "y", "meaning": "output value"}
+    assert "G09" in errors_for(card)
+
+
+def test_g10_rejects_a_back_symbol_never_introduced():
+    card = good_card()
+    card["back"]["rows"][0]["segments"] = [
+        {"t": "math", "latex": "k=5"}]  # k appears nowhere on the front
+    assert "G10" in errors_for(card)
+
+
+def test_g10_accepts_a_symbol_introduced_by_the_problem_line():
+    """f is introduced in back.problem, not in the variable key."""
+    assert "G10" not in errors_for(good_card())
+
+
+def test_g11_rejects_unicode_superscript_in_prose():
+    card = good_card()
+    card["back"]["problem"][0]["v"] = "Differentiate x⁵ "
+    assert "G11" in errors_for(card)
+
+
+def test_g11_rejects_unicode_minus_in_prose():
+    card = good_card()
+    card["front"]["main_description"] = "Powers can be −2 or larger."
+    assert "G11" in errors_for(card)
+
+
+def test_g11_allows_caret_and_underscore_inside_latex():
+    """LaTeX uses ^ and _ normally. The ban covers prose only."""
+    assert "G11" not in errors_for(good_card())
+
+
+def test_g12_rejects_unbalanced_braces():
+    card = good_card()
+    card["front"]["central"] = {"latex": "\\frac{d}{dx"}
+    assert "G12" in errors_for(card)
+
+
+def test_g12_rejects_an_empty_latex_string():
+    card = good_card()
+    card["back"]["rows"][0]["segments"] = [{"t": "math", "latex": "   "}]
+    assert "G12" in errors_for(card)

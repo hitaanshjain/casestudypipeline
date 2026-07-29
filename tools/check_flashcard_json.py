@@ -312,9 +312,145 @@ def g08_variable_key_presence(card, errors):
                  % (symbol, words(entry.get("meaning", "")), KEY_MEANING_MAX_WORDS))
 
 
+# Notation every student already reads, so it is never required in the key.
+UNIVERSAL_MACROS = frozenset({
+    "\\cdot", "\\times", "\\div", "\\pm", "\\mp", "\\frac", "\\left", "\\right",
+    "\\big", "\\Big", "\\bigg", "\\Bigg", "\\quad", "\\qquad", "\\,", "\\;",
+    "\\text", "\\mathrm", "\\displaystyle", "\\boldsymbol", "\\bm", "\\sqrt",
+    "\\begin", "\\end", "\\aligned", "\\approx", "\\neq", "\\leq", "\\geq",
+    "\\to", "\\infty", "\\ldots", "\\cdots", "\\sin", "\\cos", "\\tan",
+    "\\sec", "\\csc", "\\cot", "\\log", "\\ln", "\\exp",
+})
+TEXT_GROUP_RE = re.compile(r"\\(?:text|mathrm|operatorname)\{[^{}]*\}")
+TOKEN_RE = re.compile(r"\\[a-zA-Z]+|[A-Za-z]")
+UNICODE_MATH_RE = re.compile(
+    "[\u2070-\u209f\u00b2\u00b3\u00b9\u2212\u00d7\u00f7]|\\^")
+
+# Fields whose value is prose the student reads as words, not as mathematics.
+PROSE_FIELDS = (("front", "title"), ("front", "subtitle"),
+                ("front", "main_description"), ("front", "supporting_description"),
+                ("front", "footer"), ("back", "title"), ("back", "footer"))
+
+
+def latex_identifiers(latex):
+    """Definable identifiers in a LaTeX string.
+
+    Single letters and topic-specific macros count. Universal notation and any
+    letters inside \\text{...} do not: those are words, not variables.
+    """
+    stripped = TEXT_GROUP_RE.sub(" ", latex)
+    found = set()
+    for token in TOKEN_RE.findall(stripped):
+        if token.startswith("\\") and token in UNIVERSAL_MACROS:
+            continue
+        found.add(token)
+    return found
+
+
+def _all_latex(node):
+    """Every latex string anywhere inside a front or back block."""
+    out = []
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key == "latex" and isinstance(value, str):
+                out.append(value)
+            else:
+                out.extend(_all_latex(value))
+    elif isinstance(node, list):
+        for item in node:
+            out.extend(_all_latex(item))
+    return out
+
+
+def g09_symbol_coverage(card, errors):
+    """Every symbol in the central formula is defined exactly once, and back."""
+    front = card["front"]
+    central = front.get("central", {})
+    if "latex" not in central:
+        return
+    key = front.get("variable_key") or []
+    symbols = [entry.get("symbol", "") for entry in key]
+    formula = central["latex"]
+    for symbol in symbols:
+        if symbol and symbol not in formula:
+            _err(errors, "G09",
+                 "variable_key defines %r, which does not appear in front.central"
+                 % symbol)
+    for ident in sorted(latex_identifiers(formula)):
+        if not any(ident in symbol for symbol in symbols):
+            _err(errors, "G09",
+                 "%r appears in front.central but no variable_key entry covers it"
+                 % ident)
+
+
+def g10_notation_consistency(card, errors):
+    """Nothing appears on the back that the front or an earlier row never named."""
+    front, back = card["front"], card["back"]
+    known = set()
+    central = front.get("central", {})
+    if "latex" in central:
+        known |= latex_identifiers(central["latex"])
+    for entry in front.get("variable_key") or []:
+        known |= latex_identifiers(entry.get("symbol", ""))
+    for latex in _all_latex(back.get("problem", [])):
+        known |= latex_identifiers(latex)
+    for i, row in enumerate(back.get("rows", []), 1):
+        used = set()
+        for latex in _all_latex(row):
+            used |= latex_identifiers(latex)
+        for ident in sorted(used - known):
+            _err(errors, "G10",
+                 "back row %d uses %r, which the front and earlier rows never introduce"
+                 % (i, ident))
+        known |= used                    # a row may introduce for later rows
+
+
+def g11_unicode_ban(card, errors):
+    """No Unicode superscript, subscript, minus, or caret in prose."""
+    def scan(where, text):
+        hit = UNICODE_MATH_RE.search(text or "")
+        if hit:
+            _err(errors, "G11",
+                 "%s contains %r, which belongs in a latex segment"
+                 % (where, hit.group(0)))
+    for block, field in PROSE_FIELDS:
+        scan("%s.%s" % (block, field), card[block].get(field, ""))
+    for entry in card["front"].get("variable_key") or []:
+        scan("variable_key meaning", entry.get("meaning", ""))
+    central = card["front"].get("central", {})
+    if "text" in central:
+        scan("front.central.text", central["text"])
+    for i, segment in enumerate(card["back"].get("problem", []), 1):
+        if segment.get("t") == "text":
+            scan("back.problem segment %d" % i, segment.get("v", ""))
+    for r, row in enumerate(card["back"].get("rows", []), 1):
+        for i, segment in enumerate(row.get("segments", []), 1):
+            if segment.get("t") == "text":
+                scan("back row %d segment %d" % (r, i), segment.get("v", ""))
+
+
+def g12_latex_sanity(card, errors):
+    """Structural sanity only: a full parse needs KaTeX, which is not installed."""
+    for latex in _all_latex(card["front"]) + _all_latex(card["back"]):
+        if not latex.strip():
+            _err(errors, "G12", "empty latex string")
+            continue
+        depth = 0
+        for i, ch in enumerate(latex):
+            if ch == "{" and (i == 0 or latex[i - 1] != "\\"):
+                depth += 1
+            elif ch == "}" and (i == 0 or latex[i - 1] != "\\"):
+                depth -= 1
+            if depth < 0:
+                break
+        if depth != 0:
+            _err(errors, "G12", "unbalanced braces in latex %r" % latex)
+
+
 GATES = [g02_contract_strings, g03_word_budgets, g04_title_length,
          g05_row_count, g06_bold_row, g07_aligned_rows,
-         g08_variable_key_presence]
+         g08_variable_key_presence, g09_symbol_coverage,
+         g10_notation_consistency, g11_unicode_ban, g12_latex_sanity]
 
 
 def check_card(card):
