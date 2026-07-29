@@ -154,6 +154,30 @@ def fetch(card_ids=None, section=None):
     return cards
 
 
+def bad_card(where, detail, path=None):
+    """Message for card JSON the renderer cannot read.
+
+    --file exists to preview prompt output BEFORE it is imported, so malformed
+    input is the likeliest thing this program will ever be handed. A traceback
+    would say KeyError; this says which card, which side, and what to run.
+    """
+    return ("Cannot render %s: %s.\n"
+            "That is a card contract problem, not a rendering one. Check it:\n"
+            "  python tools/check_flashcard_json.py %s"
+            % (where, detail, path or "<card.json>"))
+
+
+def render_card_side(card, side, theme, scale):
+    """One side of one card, with a readable failure instead of a traceback."""
+    try:
+        return render_side(card[side], theme, scale)
+    except (KeyError, TypeError, AttributeError, IndexError) as exc:
+        path = card.get("path")
+        sys.exit(bad_card(
+            "the %s of %s" % (side, path or "database card %s" % card["id"]),
+            "%s %s" % (type(exc).__name__, exc), path))
+
+
 def load_files(patterns):
     """Cards read from disk, so prompt output can be previewed before import.
 
@@ -168,18 +192,36 @@ def load_files(patterns):
             sys.exit("No file matched %s" % pattern)
         for path in matches:
             try:
-                doc = json.loads(path.read_text(encoding="utf-8"))
-            except (OSError, ValueError) as exc:
-                sys.exit("Cannot read %s as card JSON: %s" % (path, exc))
+                text = path.read_text(encoding="utf-8")
+            except OSError as exc:
+                sys.exit("Cannot open %s: %s" % (path, exc))
+            try:
+                doc = json.loads(text)
+            except ValueError as exc:
+                # The likeliest prompt failure of all: one perfect card wrapped
+                # in a friendly sentence. The validator says the same thing.
+                sys.exit(bad_card(path, "it is not valid JSON (%s)" % exc, path))
+            if not isinstance(doc, dict):
+                sys.exit(bad_card(path, "the file is not a JSON object", path))
+            front, back = doc.get("front"), doc.get("back")
+            if not isinstance(front, dict) or not isinstance(back, dict):
+                sys.exit(bad_card(path, "the card has no front and back objects",
+                                  path))
             # format_version rides on the wrapper, but render_side dispatches
-            # per side, so each side carries a copy.
+            # per side, so each side carries a copy. fetch() has no equivalent
+            # step yet, which is why the database cannot serve a v2 card.
             version = doc.get("format_version")
+            source = doc.get("source")
             cards.append({
                 "id": path.stem,
-                "section": doc.get("source", {}).get("section", "?"),
-                "concept": doc.get("concept", path.stem),
-                "front": dict(doc["front"], format_version=version),
-                "back": dict(doc["back"], format_version=version),
+                "path": path,
+                # Coerced to text: these two only label the preview, so a
+                # wrong-typed value should not stop the page from building.
+                "section": "%s" % (source.get("section", "?")
+                                   if isinstance(source, dict) else "?"),
+                "concept": "%s" % doc.get("concept", path.stem),
+                "front": dict(front, format_version=version),
+                "back": dict(back, format_version=version),
             })
     return cards
 
@@ -338,8 +380,8 @@ def build_page(cards, theme, scale, origin=DB_ORIGIN):
                        % (html.escape(card["id"]), html.escape(card["section"]),
                           html.escape(card["concept"]), suffix))
             out.append('<div class="row">%s%s</div>'
-                       % (render_side(card["front"], front_theme, scale),
-                          render_side(card["back"], back_theme, scale)))
+                       % (render_card_side(card, "front", front_theme, scale),
+                          render_card_side(card, "back", back_theme, scale)))
     return "\n".join(out)
 
 

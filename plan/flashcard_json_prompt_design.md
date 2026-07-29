@@ -27,8 +27,20 @@ extractor (`tools/import_concept_flashcards.py`).
 | title <= 24 characters | countable budget | 74/75 (`Logarithmic Differentiation`, 27) |
 | "exactly six meaningful solution rows" | semantic count | **0/75** (6 decks 3 rows, 50 decks 4, 19 decks 5) |
 | "never save SVG data inside a `.png` file" | binary file internals | **0/351 png parts are PNG** |
-| "never use Unicode superscripts" | cross-cutting ban | **violated in 52/75 decks** |
+| "never use Unicode superscripts" | cross-cutting ban | **violated in 52/75 decks** over superscript digits, superscript n, subscript digits and U+2212; **55/75** under the wider set G11 ships with |
 | "native Office Math" listed as first preference | preference order | **0/75 use OMML** |
+
+Method note on the Unicode count, added July 29 after a reviewer could not
+reproduce the bare number: this count depends entirely on which characters are
+searched, so quoting it without the character set is not reproducible.
+Neighbouring sets give 41, 44, 50, and 55. The two figures worth carrying are
+**52/75** over superscript digits, superscript n, subscript digits, and U+2212,
+and **55/75** over the set `G11` actually enforces, which adds the rest of the
+superscript/subscript block plus the times sign, division sign, and caret. The
+three decks that only the wider set catches are `017_One-Sided_Limits`,
+`022_Limits_At_Infinity`, and `050_LHpitals_Rule`. Both numbers were
+re-measured independently on July 29 and reproduce exactly. 55/75 is the
+decision-relevant one, since it is the rule that ships.
 
 Method note on the row count: rows were counted as separate shapes on slide 2,
 excluding the problem statement and footer. A rows-4-to-6 block fused into one
@@ -212,7 +224,8 @@ Segments (used by `problem` and every row):
   `Then`, `Since`, `Therefore`.
 - `{"t": "math", "latex": "..."}` for anything mathematical.
 - No text segment may contain a Unicode superscript, subscript, minus sign, or
-  a caret. This is the structural fix for the 52/75 violation: prose-containing-
+  a caret. This is the structural fix for the 52/75 (55/75 under this wider
+  set, see the method note above) violation: prose-containing-
   math previously had no home in the format, so the model invented one. The ban
   covers prose only: `latex` values use `^` and `_` normally, as LaTeX does.
 
