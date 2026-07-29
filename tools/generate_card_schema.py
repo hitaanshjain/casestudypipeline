@@ -31,22 +31,52 @@ def build_schema():
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "title": "Flashcard card, format_version 2",
         "description": "Enforced by tools/check_flashcard_json.py, which is the "
-                       "contract. This file is generated from it.",
+                       "sole contract; this file is generated from its "
+                       "constants and expresses only what JSON Schema can "
+                       "state structurally. Passing this schema is necessary "
+                       "but NOT sufficient: it does not express G03 (word-count "
+                       "budgets on seven fields), G06 (exactly one bold row, "
+                       "must be last), G07 (aligned rows must be contiguous "
+                       "and run to the end), G09 (variable_key must cover "
+                       "every symbol in front.central), G10 (a back row may "
+                       "not use a symbol the front or an earlier row never "
+                       "introduced), G11 (no Unicode math glyphs in prose "
+                       "fields), or G14 (banned footer prefixes). A card can "
+                       "pass this schema and still be rejected by the validator.",
         "type": "object",
         "required": list(chk.REQUIRED_TOP),
         "properties": {
             "format_version": {"const": chk.FORMAT_VERSION},
             "card_type": {"enum": list(chk.CARD_TYPES)},
-            "concept": {"type": "string", "minLength": 1, "maxLength": 40},
+            "concept": {"type": "string", "minLength": 1,
+                       "maxLength": chk.CONCEPT_MAX_CHARS},
             "source": {
                 "type": "object",
                 "required": list(chk.REQUIRED_SOURCE),
                 "properties": {
                     "book_tag": {"type": "string"},
                     "section": {"type": "string"},
-                    "lo_ordinal": {"type": ["integer", "null"], "minimum": 1},
+                    "lo_ordinal": {
+                        "type": ["integer", "null"], "minimum": 1,
+                        "description": "The validator requires a true "
+                            "Python int (type(x) is int). This schema's "
+                            "'integer' type also accepts a whole-number "
+                            "float such as 1.0, which the validator "
+                            "rejects; that divergence is not expressible "
+                            "here and is disclosed, not fixed.",
+                    },
                     "lo_text": {"type": "string"},
                     "review_note": {"type": "string"},
+                },
+                "if": {
+                    "properties": {"lo_ordinal": {"const": None}},
+                },
+                "then": {
+                    "required": ["review_note"],
+                    "properties": {
+                        "review_note": {"type": "string", "minLength": 1},
+                        "lo_text": {"maxLength": 0},
+                    },
                 },
             },
             "front": {

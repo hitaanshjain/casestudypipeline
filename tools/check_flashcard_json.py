@@ -21,6 +21,7 @@ FRONT_FOOTER = "Flip for a worked example"
 BACK_TITLE = "Worked Example"
 CARD_TYPES = ("concept_example", "problem_solution")
 
+CONCEPT_MAX_CHARS = 40
 TITLE_MAX_CHARS = 24
 SUBTITLE_MIN_WORDS, SUBTITLE_MAX_WORDS = 2, 4
 MAIN_MAX_WORDS = 14
@@ -90,10 +91,15 @@ def g01_shape(card, errors):
         _err(errors, "G01", "card_type %r is outside the closed vocabulary %s"
              % (card.get("card_type"), list(CARD_TYPES)))
 
-    # Type-check concept is a string
-    if "concept" in card and not isinstance(card["concept"], str):
-        _err(errors, "G01", "concept is %s, expected string"
-             % type(card["concept"]).__name__)
+    # Type-check concept is a string within the 1-to-CONCEPT_MAX_CHARS contract
+    if "concept" in card:
+        concept = card["concept"]
+        if not isinstance(concept, str):
+            _err(errors, "G01", "concept is %s, expected string"
+                 % type(concept).__name__)
+        elif not 1 <= len(concept) <= CONCEPT_MAX_CHARS:
+            _err(errors, "G01", "concept is %d characters, contract requires 1 to %d"
+                 % (len(concept), CONCEPT_MAX_CHARS))
 
     # Check source, front, back blocks and their required keys
     for section, required in (("source", REQUIRED_SOURCE),

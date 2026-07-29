@@ -88,6 +88,24 @@ def test_g01_rejects_unknown_card_type():
     assert "G01" in errors_for(card)
 
 
+def test_g01_rejects_empty_concept():
+    card = good_card()
+    card["concept"] = ""
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_concept_over_40_chars():
+    card = good_card()
+    card["concept"] = "x" * (chk.CONCEPT_MAX_CHARS + 1)
+    assert "G01" in errors_for(card)
+
+
+def test_g01_accepts_concept_at_40_chars():
+    card = good_card()
+    card["concept"] = "x" * chk.CONCEPT_MAX_CHARS
+    assert "G01" not in errors_for(card)
+
+
 def test_g02_rejects_paraphrased_front_footer():
     card = good_card()
     card["front"]["footer"] = "Flip for a worked example!"
@@ -692,3 +710,16 @@ def test_schema_budgets_track_the_validator_constants():
     assert back["rows"]["minItems"] == chk.ROWS_MIN
     assert back["rows"]["maxItems"] == chk.ROWS_MAX
     assert front["footer"]["const"] == chk.FRONT_FOOTER
+    assert schema["properties"]["concept"]["maxLength"] == chk.CONCEPT_MAX_CHARS
+
+
+def test_schema_source_requires_review_note_when_lo_ordinal_null():
+    """Fix round 1, finding 2: G13 requires review_note (and an empty
+    lo_text) whenever lo_ordinal is null. Pin that the schema expresses
+    that conditional via if/then instead of silently omitting it."""
+    schema = gen.build_schema()
+    source = schema["properties"]["source"]
+    assert source["if"]["properties"]["lo_ordinal"]["const"] is None
+    assert "review_note" in source["then"]["required"]
+    assert source["then"]["properties"]["review_note"]["minLength"] == 1
+    assert source["then"]["properties"]["lo_text"]["maxLength"] == 0
