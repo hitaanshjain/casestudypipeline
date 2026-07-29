@@ -477,10 +477,68 @@ def g12_latex_sanity(card, errors):
             _err(errors, "G12", "unbalanced braces in latex %r" % latex)
 
 
+_BOOK_MAP_CACHE = {}
+
+
+def load_book_map(book_tag):
+    """Section number -> section dict, for one book. Cached per process."""
+    if book_tag not in _BOOK_MAP_CACHE:
+        sections = None
+        for path in sorted(BOOK_MAPS.glob("*/book_map.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if data.get("book_tag") == book_tag:
+                sections = {s["number"]: s for s in data["sections"]}
+                break
+        _BOOK_MAP_CACHE[book_tag] = sections
+    return _BOOK_MAP_CACHE[book_tag]
+
+
+def g13_corpus_mapping(card, errors):
+    source = card["source"]
+    sections = load_book_map(source.get("book_tag"))
+    if sections is None:
+        _err(errors, "G13", "no book_map.json under references/ has book_tag %r"
+             % source.get("book_tag"))
+        return
+    section = sections.get(source.get("section"))
+    if section is None:
+        _err(errors, "G13", "section %r is not in the %s corpus"
+             % (source.get("section"), source.get("book_tag")))
+        return
+    ordinal = source.get("lo_ordinal")
+    if ordinal is None:
+        if not (source.get("review_note") or "").strip():
+            _err(errors, "G13",
+                 "lo_ordinal is null, so source.review_note is required")
+        if source.get("lo_text"):
+            _err(errors, "G13", "lo_ordinal is null, so lo_text must be empty")
+        return
+    objectives = section.get("learning_objectives", [])
+    if not isinstance(ordinal, int) or not 1 <= ordinal <= len(objectives):
+        _err(errors, "G13", "lo_ordinal %r is out of range: section %s has %d objectives"
+             % (ordinal, source.get("section"), len(objectives)))
+        return
+    expected = objectives[ordinal - 1]
+    if source.get("lo_text") != expected:
+        _err(errors, "G13",
+             "lo_text does not match the corpus objective at %s ordinal %d.\n"
+             "         corpus: %r\n         card:   %r"
+             % (source.get("section"), ordinal, expected, source.get("lo_text")))
+
+
+def g14_footer_prefix(card, errors):
+    footer = card["back"].get("footer", "")
+    for prefix in BANNED_FOOTER_PREFIXES:
+        if footer.startswith(prefix):
+            _err(errors, "G14", "back.footer starts with the banned prefix %r"
+                 % prefix)
+
+
 GATES = [g02_contract_strings, g03_word_budgets, g04_title_length,
          g05_row_count, g06_bold_row, g07_aligned_rows,
          g08_variable_key_presence, g09_symbol_coverage,
-         g10_notation_consistency, g11_unicode_ban, g12_latex_sanity]
+         g10_notation_consistency, g11_unicode_ban, g12_latex_sanity,
+         g13_corpus_mapping, g14_footer_prefix]
 
 
 def check_card(card):
@@ -491,3 +549,38 @@ def check_card(card):
     for gate in GATES:
         gate(card, errors)
     return errors
+
+
+def main(argv):
+    if not argv:
+        print("usage: python tools/check_flashcard_json.py card.json [more.json]")
+        return 2
+    failed = False
+    for arg in argv:
+        path = Path(arg)
+        try:
+            card = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            print("%s" % path)
+            print("  ERROR G01: cannot read as JSON: %s" % exc)
+            failed = True
+            continue
+        errors = check_card(card)
+        print("%s: %s" % (path, "PASS" if not errors else "FAIL"))
+        for line in errors:
+            print("  %s" % line)
+        failed = failed or bool(errors)
+    return 2 if failed else 0
+
+
+if __name__ == "__main__":
+    # G11 error messages can embed the offending Unicode character itself
+    # (e.g. a superscript digit) via repr(). Some console/pipe encodings
+    # (cp1252 on Windows) cannot encode it, which would crash the CLI with
+    # a traceback instead of a clean exit 2. Keep the stream's own encoding
+    # (a no-op on UTF-8 systems) and only swap the error handler so an
+    # unencodable character degrades to a backslash escape instead of
+    # raising.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="backslashreplace")
+    sys.exit(main(sys.argv[1:]))

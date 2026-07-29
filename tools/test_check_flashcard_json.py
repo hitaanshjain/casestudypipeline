@@ -519,3 +519,87 @@ def test_sanity_mathrm_pv_only_fires_g09_for_v_and_r():
     g09_lines = [line for line in result if line.startswith("ERROR G09:")]
     assert any("'V'" in line for line in g09_lines), g09_lines
     assert any("'r'" in line for line in g09_lines), g09_lines
+
+
+FIXTURES = Path(__file__).resolve().parent / "fixtures" / "flashcard_json"
+
+
+def run_cli(*paths):
+    done = subprocess.run(
+        [sys.executable, str(REPO / "tools" / "check_flashcard_json.py")] +
+        [str(p) for p in paths],
+        capture_output=True, text=True, cwd=str(REPO))
+    return done.returncode, done.stdout
+
+
+def test_g13_rejects_a_section_absent_from_the_corpus():
+    card = good_card()
+    card["source"]["section"] = "9.9"
+    assert "G13" in errors_for(card)
+
+
+def test_g13_rejects_an_out_of_range_objective_ordinal():
+    card = good_card()
+    card["source"]["lo_ordinal"] = 99
+    assert "G13" in errors_for(card)
+
+
+def test_g13_rejects_a_paraphrased_objective():
+    """The exact failure mode that left 8 of 75 mappings as judgment calls."""
+    card = good_card()
+    card["source"]["lo_text"] = "State the power rule and some other rules."
+    assert "G13" in errors_for(card)
+
+
+def test_g13_requires_a_review_note_when_no_objective_fits():
+    card = good_card()
+    card["source"]["lo_ordinal"] = None
+    card["source"]["lo_text"] = ""
+    assert "G13" in errors_for(card)
+
+
+def test_g13_accepts_a_flagged_unmapped_card():
+    card = good_card()
+    card["source"]["lo_ordinal"] = None
+    card["source"]["lo_text"] = ""
+    card["source"]["review_note"] = "No 3.3 objective covers this framing."
+    assert "G13" not in errors_for(card)
+
+
+def test_g14_rejects_a_blacklisted_footer_prefix():
+    card = good_card()
+    card["back"]["footer"] = "Tip: power down, exponent down one."
+    assert "G14" in errors_for(card)
+
+
+def test_cli_exits_0_on_the_valid_fixture():
+    code, out = run_cli(FIXTURES / "valid_power_rule.json")
+    assert code == 0, out
+
+
+def test_cli_exits_2_and_names_the_gate_on_each_bad_fixture():
+    for name, gate in (("bad_G05_three_rows.json", "G05"),
+                       ("bad_G09_undefined_symbol.json", "G09"),
+                       ("bad_G11_unicode_superscript.json", "G11"),
+                       ("bad_G13_wrong_lo_text.json", "G13")):
+        code, out = run_cli(FIXTURES / name)
+        assert code == 2, "%s should fail: %s" % (name, out)
+        assert "ERROR %s:" % gate in out, "%s: %s" % (name, out)
+
+
+def test_cli_exits_2_on_unparseable_json(tmp_path):
+    bad = tmp_path / "broken.json"
+    bad.write_text("{not json", encoding="utf-8")
+    code, out = run_cli(bad)
+    assert code == 2
+    assert "ERROR G01:" in out
+
+
+def test_every_gate_has_a_test():
+    """A gate with no negative control is decoration."""
+    source = (REPO / "tools" / "test_check_flashcard_json.py").read_text(
+        encoding="utf-8")
+    for n in range(1, 15):
+        gate = "G%02d" % n
+        assert '"%s" in errors_for' % gate in source or \
+               'ERROR %s:' % gate in source, "%s has no test" % gate
