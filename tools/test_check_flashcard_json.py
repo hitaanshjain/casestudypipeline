@@ -116,3 +116,63 @@ def test_g04_rejects_title_over_24_chars():
     card = good_card()
     card["front"]["title"] = "Logarithmic Differentiation"  # 27, the real slip
     assert "G04" in errors_for(card)
+
+
+def test_g01_rejects_front_none_type():
+    card = good_card()
+    card["front"] = None
+    result = chk.check_card(card)
+    assert result != [] and "G01" in errors_for(card)
+
+
+def test_g01_rejects_front_list_type():
+    card = good_card()
+    card["front"] = []
+    result = chk.check_card(card)
+    assert result != [] and "G01" in errors_for(card)
+
+
+def test_g01_rejects_front_main_description_none():
+    card = good_card()
+    card["front"]["main_description"] = None
+    result = chk.check_card(card)
+    assert result != [] and "G01" in errors_for(card)
+
+
+def test_g01_rejects_back_problem_dict_not_list():
+    card = good_card()
+    card["back"]["problem"] = {"t": "text", "v": "hi"}
+    result = chk.check_card(card)
+    assert result != [] and "G01" in errors_for(card)
+
+
+def test_g01_rejects_front_subtitle_integer():
+    card = good_card()
+    card["front"]["subtitle"] = 42
+    result = chk.check_card(card)
+    assert result != [] and "G01" in errors_for(card)
+
+
+def test_g01_rejects_back_rows_dict_not_list():
+    card = good_card()
+    card["back"]["rows"] = {"key": "value"}
+    result = chk.check_card(card)
+    assert result != [] and "G01" in errors_for(card)
+
+
+def test_g01_crash_proof_on_none_fields():
+    card = good_card()
+    # Try various paths set to None and assert no crash
+    test_paths = [
+        ("source.book_tag", lambda c: c["source"].__setitem__("book_tag", None)),
+        ("front.title", lambda c: c["front"].__setitem__("title", None)),
+        ("back.footer", lambda c: c["back"].__setitem__("footer", None)),
+        ("front.central", lambda c: c["front"].__setitem__("central", None)),
+        ("front.variable_key", lambda c: c["front"].__setitem__("variable_key", None)),
+    ]
+    for path, setter in test_paths:
+        test_card = good_card()
+        setter(test_card)
+        result = chk.check_card(test_card)
+        assert isinstance(result, list), "check_card should return a list, not raise"
+        assert len(result) > 0, "should have at least one error for %s" % path
