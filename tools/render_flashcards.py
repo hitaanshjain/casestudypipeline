@@ -1,7 +1,8 @@
 """Render stored flashcards to a standalone HTML page.
 
 Reads card content out of the running MySQL container, so what you see is what
-the database actually holds, not a re-read of the source decks.
+the database actually holds, not a re-read of the source decks. Card JSON that
+is not in the database yet can be previewed straight from disk with --file.
 
 Run from the repo root:
   python tools/render_flashcards.py                   all 75 cards, deck theme
@@ -9,18 +10,26 @@ Run from the repo root:
   python tools/render_flashcards.py --section 3.3     every card in one section
   python tools/render_flashcards.py --theme dark      both sides on navy
   python tools/render_flashcards.py --theme both      dark and light side by side
-  python tools/render_flashcards.py --math-scale 2    bigger formulas
+  python tools/render_flashcards.py --math-scale 2    bigger formulas (v1 only)
   python tools/render_flashcards.py --out mycards.html
+  python tools/render_flashcards.py --file flashcard_examples_v2/*.json
+
+Two card formats are rendered. v1 cards (the 75 imported from the source decks)
+store their math as pre-rendered SVG blobs. format_version 2 cards store LaTeX,
+which MathJax typesets in the browser, so a v2 preview needs network access for
+the MathJax CDN; raw \\(...\\) on screen means MathJax did not load.
 
 The default "deck" theme mirrors the source decks' design: navy front, cream
-back. Math SVGs are normalised to currentColor at render time, so formulas
+back. v1 math SVGs are normalised to currentColor at render time, so formulas
 always match their card's text colour regardless of theme (the stored SVGs
 bake in the deck palette: cream fills on fronts, navy fills on backs).
 
-Needs the container running:  cd flashcards_db && docker compose up -d
+Needs the container running (not for --file):
+  cd flashcards_db && docker compose up -d
 """
 import argparse
 import binascii
+import glob
 import html
 import json
 import re
@@ -63,7 +72,38 @@ h1 small { color:#bbb; }
 .light { background:var(--cream); color:#12264f; border:2px solid #d8d8d0; }
 .light .title { color:#0d1b3e; }
 .light .sub { color:#4a6ab8; border-color:rgba(13,27,62,.35); }
+
+/* format_version 2 cards. Their math is MathJax, which sizes itself against
+   the surrounding text, so these rules control every dimension the JSON
+   deliberately does not carry. v2 cards keep 4:3 as a floor but may grow:
+   a six-row back on a narrow screen must stay readable, not be clipped. */
+.card.v2 { overflow:visible; }
+.card .varkey { font-size:.78rem; opacity:.85; margin:.1rem 0 .35rem; }
+.card .central { font-size:1.15rem; margin:.3rem 0; }
+.card .supporting { font-size:.85rem; }
+.card .foot { font-style:italic; font-size:.82rem; margin-top:.5rem; opacity:.9; }
+.card .step { font-size:.9rem; margin:.12rem 0; }
+.card .step.bold { font-weight:700; }
+/* An aligned run is ONE derivation, not a pile of independent statements, so
+   it is drawn as a single left-aligned block behind a rule: its rows share a
+   left edge (which lines up the relation symbols when the left sides match)
+   and the rule shows at a glance where the derivation starts and stops.
+   Non-aligned rows stay centred, one per line, as separate claims. */
+.card .derivation { text-align:left; max-width:100%; margin:.2rem 0;
+                    padding:.2rem 0 .2rem .8rem; border-left:2px solid; }
+.dark .varkey, .dark .foot { color:var(--accent); }
+.dark .derivation { border-color:rgba(250,248,244,.45); }
+.light .foot { color:#176CF8; }
+.light .derivation { border-color:rgba(13,27,62,.35); }
 """
+
+# MathJax typesets v2 cards in the browser. Loaded from a CDN and only when a
+# v2 card is on the page, so the v1 preview stays a single offline file.
+MATHJAX = (
+    '<script>window.MathJax={tex:{inlineMath:[["\\\\(","\\\\)"]],'
+    'displayMath:[["\\\\[","\\\\]"]]},svg:{fontCache:"global"}};</script>'
+    '<script id="MathJax-script" async '
+    'src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>')
 
 
 def query(sql):
@@ -114,6 +154,36 @@ def fetch(card_ids=None, section=None):
     return cards
 
 
+def load_files(patterns):
+    """Cards read from disk, so prompt output can be previewed before import.
+
+    Wildcards are expanded here as well as by the shell, because PowerShell
+    passes *.json through to the program untouched.
+    """
+    cards = []
+    for pattern in patterns:
+        matches = ([Path(p) for p in sorted(glob.glob(pattern))]
+                   if any(ch in pattern for ch in "*?[") else [Path(pattern)])
+        if not matches:
+            sys.exit("No file matched %s" % pattern)
+        for path in matches:
+            try:
+                doc = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError) as exc:
+                sys.exit("Cannot read %s as card JSON: %s" % (path, exc))
+            # format_version rides on the wrapper, but render_side dispatches
+            # per side, so each side carries a copy.
+            version = doc.get("format_version")
+            cards.append({
+                "id": path.stem,
+                "section": doc.get("source", {}).get("section", "?"),
+                "concept": doc.get("concept", path.stem),
+                "front": dict(doc["front"], format_version=version),
+                "back": dict(doc["back"], format_version=version),
+            })
+    return cards
+
+
 def prepare_svg(svg, scale):
     """Make a stored math SVG theme-proof and size it.
 
@@ -134,6 +204,98 @@ def prepare_svg(svg, scale):
 
 
 def render_side(doc, theme, scale):
+    """Dispatch on format. v1 cards have no format_version key."""
+    if doc.get("format_version") == 2:
+        return render_side_v2(doc, theme)
+    return render_side_v1(doc, theme, scale)
+
+
+def _math_html(latex, display=False):
+    r"""One latex string as a MathJax delimiter.
+
+    The latex is HTML-escaped: the browser decodes the entities back before
+    MathJax reads the text node, so escaping is lossless, and an unescaped
+    "<" in a formula would otherwise be parsed as the start of a tag.
+    """
+    fence = ("\\[%s\\]" if display else "\\(%s\\)")
+    return fence % html.escape(latex)
+
+
+def _segments_html(segments):
+    """Segments as HTML. Math becomes a MathJax delimiter, not an image.
+
+    Spacing convention: the renderer owns it, not the card. Cards are
+    inconsistent about padding text segments ("Differentiate " carries a
+    trailing space, "The integrand is" does not), so each text value is
+    stripped and the segments are joined with exactly one space. Fixing it
+    here rather than in the cards means no card can produce a double space.
+    """
+    out = []
+    for segment in segments:
+        if segment.get("t") == "math":
+            out.append(_math_html(segment["latex"]))
+        else:
+            value = segment.get("v", "").strip()
+            if value:
+                out.append(html.escape(value))
+    return " ".join(out)
+
+
+def _step_html(row):
+    """One back row as a line. The bold row is the conclusion."""
+    return '<p class="step%s">%s</p>' % (" bold" if row.get("bold") else "",
+                                         _segments_html(row["segments"]))
+
+
+def _rows_html(rows):
+    """Back rows, with each contiguous run of aligned rows grouped as one block.
+
+    The contract (G07) allows at most one such run, but grouping every run
+    keeps this honest if that ever loosens.
+    """
+    parts, i = [], 0
+    while i < len(rows):
+        if not rows[i].get("aligned"):
+            parts.append(_step_html(rows[i]))
+            i += 1
+            continue
+        j = i
+        while j < len(rows) and rows[j].get("aligned"):
+            j += 1
+        parts.append('<div class="derivation">%s</div>'
+                     % "".join(_step_html(row) for row in rows[i:j]))
+        i = j
+    return parts
+
+
+def render_side_v2(doc, theme):
+    """A format_version 2 side. Layout lives here, never in the JSON."""
+    parts = ['<div class="card v2 %s">' % theme,
+             '<div class="title">%s</div>' % html.escape(doc["title"])]
+    if "subtitle" in doc:                                   # front
+        parts.append('<div class="sub">%s</div>' % html.escape(doc["subtitle"]))
+        central = doc["central"]
+        parts.append('<div class="math central">%s</div>'
+                     % (_math_html(central["latex"], display=True)
+                        if "latex" in central else html.escape(central["text"])))
+        key = doc.get("variable_key") or []
+        if key:
+            parts.append('<div class="varkey">%s</div>' % "; ".join(
+                "%s = %s" % (_math_html(e["symbol"]), html.escape(e["meaning"]))
+                for e in key))
+        parts.append("<p>%s</p>" % html.escape(doc["main_description"]))
+        parts.append('<p class="supporting">%s</p>'
+                     % html.escape(doc["supporting_description"]))
+        parts.append('<p class="foot">%s</p>' % html.escape(doc["footer"]))
+    else:                                                   # back
+        parts.append('<div class="sub">%s</div>' % _segments_html(doc["problem"]))
+        parts.extend(_rows_html(doc["rows"]))
+        parts.append('<p class="foot">%s</p>' % html.escape(doc["footer"]))
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def render_side_v1(doc, theme, scale):
     """One side as a styled card. math_svg values are already SVG markup."""
     parts = ['<div class="card %s">' % theme,
              '<div class="title">%s</div>' % html.escape(doc["title"])]
@@ -149,6 +311,10 @@ def render_side(doc, theme, scale):
     return "".join(parts)
 
 
+# Page heading, which names where the cards actually came from.
+DB_ORIGIN = "the database <small>rendered from stored JSON</small>"
+FILE_ORIGIN = "disk <small>rendered from card JSON</small>"
+
 # theme name -> list of (front_theme, back_theme, label_suffix) rows per card
 THEMES = {
     "deck": [("dark", "light", "")],
@@ -158,11 +324,14 @@ THEMES = {
 }
 
 
-def build_page(cards, theme, scale):
+def build_page(cards, theme, scale, origin=DB_ORIGIN):
     out = ["<meta charset=utf-8><title>Flashcards</title>",
            "<style>%s</style>" % CSS,
-           '<h1>%d card%s from the database <small>rendered from stored JSON'
-           "</small></h1>" % (len(cards), "" if len(cards) == 1 else "s")]
+           "<h1>%d card%s from %s</h1>"
+           % (len(cards), "" if len(cards) == 1 else "s", origin)]
+    if any(side.get("format_version") == 2
+           for card in cards for side in (card["front"], card["back"])):
+        out.append(MATHJAX)
     for card in cards:
         for front_theme, back_theme, suffix in THEMES[theme]:
             out.append('<div class="label">#%s &middot; %s &middot; %s%s</div>'
@@ -181,16 +350,25 @@ def main():
     ap.add_argument("--theme", choices=sorted(THEMES), default="deck",
                     help="deck = navy front, cream back, like the source decks")
     ap.add_argument("--math-scale", type=float, default=1.75,
-                    help="multiplier on the formulas' natural size")
+                    help="multiplier on the formulas' natural size (v1 cards "
+                         "only: v2 math is sized by MathJax)")
+    ap.add_argument("--file", nargs="+", metavar="CARD.json",
+                    help="render card JSON from disk instead of the database")
     ap.add_argument("--out", default="flashcards.html")
     args = ap.parse_args()
 
-    cards = fetch(card_ids=args.ids, section=args.section)
+    if args.file and (args.ids or args.section):
+        sys.exit("--file reads cards from disk, so card ids and --section, "
+                 "which are database filters, cannot be combined with it.")
+
+    cards = (load_files(args.file) if args.file
+             else fetch(card_ids=args.ids, section=args.section))
     if not cards:
         sys.exit("No cards matched. Try: python tools/render_flashcards.py")
 
+    origin = FILE_ORIGIN if args.file else DB_ORIGIN
     out_path = REPO / args.out
-    out_path.write_text(build_page(cards, args.theme, args.math_scale),
+    out_path.write_text(build_page(cards, args.theme, args.math_scale, origin),
                         encoding="utf-8", newline="\n")
     print("wrote %s (%d cards, theme=%s, math x%.2f)"
           % (args.out, len(cards), args.theme, args.math_scale))
