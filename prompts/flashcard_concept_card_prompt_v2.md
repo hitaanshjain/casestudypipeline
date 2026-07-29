@@ -57,7 +57,7 @@ The object has exactly this shape:
       { "segments": [ ... ], "aligned": true,  "bold": false },
       { "segments": [ ... ], "aligned": true,  "bold": true  }
     ],
-    "footer": "Power down, exponent down one."
+    "footer": "Power down front, exponent down one."
   }
 }
 

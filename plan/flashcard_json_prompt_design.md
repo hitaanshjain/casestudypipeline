@@ -154,7 +154,7 @@ populate the `concept` row and are not stored inside either blob.
       { "segments": [ ... ], "aligned": true,  "bold": false },
       { "segments": [ ... ], "aligned": true,  "bold": true  }
     ],
-    "footer": "Power down, exponent down one."
+    "footer": "Power down front, exponent down one."
   }
 }
 ```
@@ -258,7 +258,7 @@ failure, one `ERROR <gate_id>: <message>` line per failure, mirroring
 
 | id | Gate |
 |---|---|
-| G01 | File parses as UTF-8 JSON and validates against `card_schema_v2.json` |
+| G01 | File parses as UTF-8 JSON and has the required shape: required keys, closed vocabularies, correct types, closed segment shape, non-empty rows/segments/problem |
 | G02 | `front.footer` and `back.title` are byte-exact contract strings |
 | G03 | Word budgets: subtitle 2-4, main <= 14, supporting <= 17, problem <= 14, back footer <= 12 |
 | G04 | `front.title` <= 24 characters |
@@ -270,7 +270,7 @@ failure, one `ERROR <gate_id>: <message>` line per failure, mirroring
 
 | G10 | Notation consistency: every identifier used in `back` either appears in `variable_key` or is introduced by an earlier row |
 | G11 | No Unicode superscript, subscript, minus, or caret in any text field |
-| G12 | Every `latex` string parses (KaTeX parse check via node when available; skipped with a logged note when not) |
+| G12 | Every `latex` string is non-empty and its braces balance (structural sanity only, not a parse) |
 | G13 | `source.section` exists in the named book map, `source.lo_ordinal` is in range for that section, and `source.lo_text` is byte-equal to the corpus objective at that ordinal |
 | G14 | Back footer does not begin with a blacklisted prefix |
 
@@ -289,8 +289,24 @@ parentheses, fraction bars used as ordinary division, and standard numerals.
 The validator ships this as an explicit allowlist so the boundary is one edited
 list rather than a judgment call repeated per card.
 
-G12 degrades honestly rather than silently: when node or KaTeX is unavailable
-the gate is reported as `SKIPPED`, never as `PASS`.
+**Amendment, July 29**: the two rows above were corrected against the shipped
+validator, which this spec had overstated in opposite directions.
+
+- G01 never loads `card_schema_v2.json`. The dependency runs the other way:
+  `tools/generate_card_schema.py` imports the validator and generates the
+  schema from its constants, and nothing imports the schema at check time
+  (`jsonschema` is not installed and the repo is stdlib-only). The schema is
+  published documentation for external consumers, drift-tested against the
+  validator; the validator is the contract. CLAUDE.md sec 9 decision (5)
+  already states this correctly.
+- G12 does brace balance and an empty-string check, nothing more. There is no
+  KaTeX parse check, no node dependency, and no `SKIPPED` status anywhere in
+  the validator or in its exit-0/2 contract. The gate therefore passes
+  `\frac{5}` and `x^`: both are brace-balanced, and neither is valid LaTeX. A
+  real parse check would need a JavaScript runtime, which is a separate
+  decision, not a thing this spec can claim as shipped. The prompt and the
+  generated schema both describe the gate accurately; only this spec was
+  wrong.
 
 ### Negative controls
 
@@ -337,7 +353,7 @@ rejected because backlog 8 already flags repo weight as an open exposure.
   `variable_key`. This is an honest path, not an error.
 - The concept cannot be worked in 4 to 6 rows: choose a simpler representative
   example. Never pad, never drop below 4.
-- No `lo_id` fits the concept: emit `lo_id: null`, `lo_text: ""`, and a
+- No `lo_ordinal` fits the concept: emit `lo_ordinal: null`, `lo_text: ""`, and a
   `review_note` string on `source`. Honest gaps ship flagged, never guessed,
   which is the same rule phase 1 already follows for `no_primary_available`.
 
@@ -345,7 +361,11 @@ rejected because backlog 8 already flags repo weight as an open exposure.
 
 1. Static: required-string scan and non-ASCII scan over the prompt file.
 2. Schema: the three example cards validate, exit 0.
-3. Negative controls: 14 fixtures, one per gate, each exits 2 with its own id.
+3. Negative controls: a negative unit test per gate G01 to G14, plus a
+   meta-test that fails if any gate lacks one, plus 4 CLI fixtures (one per
+   gate family) that each exit 2 naming their own id. Corrected July 29: this
+   line still read "14 fixtures, one per gate", which section 4's own July 28
+   amendment had already superseded.
 4. Fresh-session generation: run the prompt cold on a topic not in the examples
    and validate the output without editing it.
 5. Render: all three examples plus one legacy v1 card on one preview page.
@@ -367,3 +387,14 @@ CLAUDE.md.
   no license line, only `dc:subject`. OpenStax is CC BY-NC-SA. v2 moves the
   obligation to the renderer (a credit line drawn from the `textbook` row's
   license metadata, which already exists) rather than asking the model for it.
+  **Amendment, July 29**: as first written this said "moves" while the
+  renderer contained no license, credit, or attribution string at all, so the
+  obligation was tracked nowhere. Now implemented and true: every page
+  `tools/render_flashcards.py` writes ends with one credit line per distinct
+  source book (title, authors, license, the "Access for free at openstax.org."
+  attribution, and the source URL). Database runs read those five fields from
+  the joined `textbook` row; `--file` runs, which have no database, read the
+  same fields from the `references/*/book_map.json` whose `book_tag` matches
+  the card's `source.book_tag`. When neither yields metadata the line says so
+  in words rather than disappearing, since a silently missing credit is the
+  failure mode that matters.

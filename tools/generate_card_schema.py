@@ -122,7 +122,8 @@ def build_schema():
                 "required": list(chk.REQUIRED_BACK),
                 "properties": {
                     "title": {"const": chk.BACK_TITLE},
-                    "problem": {"type": "array", "items": SEGMENT},
+                    "problem": {"type": "array", "items": SEGMENT,
+                                "minItems": 1},
                     "rows": {
                         "type": "array",
                         "minItems": chk.ROWS_MIN,

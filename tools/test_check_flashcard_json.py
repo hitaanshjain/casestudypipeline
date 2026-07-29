@@ -243,6 +243,75 @@ def test_g01_rejects_front_central_text_none():
     assert isinstance(result, list) and "G01" in errors_for(card)
 
 
+# Final fix wave, July 29. Four mutations passed every gate here while
+# FAILING the published schema (measured with jsonschema 4.26), which inverts
+# the schema's own "necessary but not sufficient" direction. Two of them are
+# substantive holes rather than mere divergences: an empty segments array
+# ships a blank filler row, and an empty back.problem ships a worked example
+# that states no task. "No filler rows" is the exact rule the old prompt
+# scored 0 out of 75 on.
+
+def test_g01_rejects_a_row_with_no_aligned_key():
+    card = good_card()
+    del card["back"]["rows"][0]["aligned"]
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_a_row_with_no_bold_key():
+    card = good_card()
+    del card["back"]["rows"][0]["bold"]
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_integer_zero_as_a_row_flag():
+    """bold: 0 is not bold: false. G06 reads it with row.get(), which is
+    truthy-coerced, so an integer flag used to pass unnoticed."""
+    card = good_card()
+    card["back"]["rows"][-1]["bold"] = 1
+    card["back"]["rows"][0]["aligned"] = 0
+    result = chk.check_card(card)
+    assert "G01" in errors_for(card)
+    assert sum(1 for line in result if "expected true or false" in line) == 2
+
+
+def test_g01_rejects_an_empty_segments_array():
+    card = good_card()
+    card["back"]["rows"][0]["segments"] = []
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_a_row_with_no_segments_key():
+    card = good_card()
+    del card["back"]["rows"][0]["segments"]
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_an_unknown_key_inside_a_segment():
+    card = good_card()
+    card["back"]["rows"][0]["segments"][0]["style"] = "italic"
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_a_math_key_on_a_text_segment():
+    """A segment is a closed shape: t plus v, or t plus latex, never both."""
+    card = good_card()
+    card["back"]["problem"][0]["latex"] = "x"
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_a_segment_missing_its_value_key():
+    card = good_card()
+    del card["back"]["problem"][1]["latex"]
+    assert "G01" in errors_for(card)
+
+
+def test_g01_rejects_an_empty_back_problem():
+    """A worked example with no task stated cleared all 14 gates."""
+    card = good_card()
+    card["back"]["problem"] = []
+    assert "G01" in errors_for(card)
+
+
 def test_g05_rejects_three_rows():
     card = good_card()
     card["back"]["rows"] = card["back"]["rows"][:3]
@@ -429,6 +498,13 @@ def test_g10_accepts_a_symbol_introduced_by_the_problem_line():
 def test_g11_rejects_unicode_superscript_in_prose():
     card = good_card()
     card["back"]["problem"][0]["v"] = "Differentiate x⁵ "
+    assert "G11" in errors_for(card)
+
+
+def test_g11_rejects_unicode_superscript_in_the_concept_name():
+    """concept is prose too: it becomes concept.name in MySQL."""
+    card = good_card()
+    card["concept"] = "Powers of x²"
     assert "G11" in errors_for(card)
 
 
@@ -721,6 +797,59 @@ def test_schema_budgets_track_the_validator_constants():
     assert back["rows"]["maxItems"] == chk.ROWS_MAX
     assert front["footer"]["const"] == chk.FRONT_FOOTER
     assert schema["properties"]["concept"]["maxLength"] == chk.CONCEPT_MAX_CHARS
+
+
+def test_latex_environments_are_not_allowlisted_as_universal_notation():
+    """The prompt bans \\begin{aligned} and friends outright, so the three
+    environment macros must not sit in UNIVERSAL_MACROS pretending to be
+    notation every student reads."""
+    for macro in ("\\begin", "\\end", "\\aligned"):
+        assert macro not in chk.UNIVERSAL_MACROS
+
+
+# The artifacts on disk. 81 green tests on check_card() said nothing about
+# what the repo actually ships: no test referenced the example cards or the
+# prompt, which is the July 25 lesson (a green builder function proves
+# nothing about its committed output) recurring one branch later.
+
+EXAMPLES = REPO / "flashcard_examples_v2"
+PROMPT_PATH = REPO / "prompts" / "flashcard_concept_card_prompt_v2.md"
+PROMPT_EXAMPLE_MARKER = \
+    "Here is one complete card that satisfies every rule in this prompt."
+
+
+def test_committed_example_cards_pass_every_gate():
+    paths = sorted(EXAMPLES.glob("*.json"))
+    assert len(paths) == 3, "expected three example cards, found %s" % paths
+    for path in paths:
+        card = json.loads(path.read_text(encoding="utf-8"))
+        assert chk.check_card(card) == [], path.name
+
+
+def prompt_example_json():
+    """The complete card embedded in the prompt, parsed.
+
+    The prompt carries two JSON blocks: a skeleton with ... placeholders, and
+    one complete card after the marker sentence. Only the second is parseable,
+    so extraction anchors on that sentence.
+    """
+    text = PROMPT_PATH.read_text(encoding="utf-8")
+    assert PROMPT_EXAMPLE_MARKER in text, "the prompt's example marker moved"
+    body = text.split(PROMPT_EXAMPLE_MARKER, 1)[1].split("</output_contract>")[0]
+    return json.loads(body[body.index("{"):body.rindex("}") + 1])
+
+
+def test_prompt_embedded_example_passes_every_gate():
+    """The one card every run of the prompt is told to copy the structure of.
+    If it violates the contract, every generated card inherits the violation."""
+    assert chk.check_card(prompt_example_json()) == []
+
+
+def test_power_rule_fixture_and_example_stay_byte_identical():
+    """flashcard_examples_v2/power_rule.json and the valid CLI fixture are the
+    same file in two places, with nothing but this test coupling them."""
+    assert (FIXTURES / "valid_power_rule.json").read_bytes() == \
+           (EXAMPLES / "power_rule.json").read_bytes()
 
 
 def test_schema_source_requires_review_note_when_lo_ordinal_null():

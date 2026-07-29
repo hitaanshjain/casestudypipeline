@@ -50,6 +50,11 @@ def _err(errors, gate, message):
     errors.append("ERROR %s: %s" % (gate, message))
 
 
+# A segment is a closed shape: exactly these keys, nothing else. The schema
+# says the same with additionalProperties: false on each branch.
+SEGMENT_KEYS = {"text": ("t", "v"), "math": ("t", "latex")}
+
+
 def _check_segments(errors, path, segments):
     """Validate a list of {t, v|latex} segment dicts in place.
 
@@ -63,16 +68,22 @@ def _check_segments(errors, path, segments):
                  % (seg_path, type(seg).__name__))
             continue
         t = seg.get("t")
-        if t not in ("text", "math"):
+        if t not in SEGMENT_KEYS:
             _err(errors, "G01", "%s.t is %r, expected 'text' or 'math'"
                  % (seg_path, t))
             continue
-        if t == "text" and "v" in seg and not isinstance(seg["v"], str):
-            _err(errors, "G01", "%s.v is %s, expected string"
-                 % (seg_path, type(seg["v"]).__name__))
-        if t == "math" and "latex" in seg and not isinstance(seg["latex"], str):
-            _err(errors, "G01", "%s.latex is %s, expected string"
-                 % (seg_path, type(seg["latex"]).__name__))
+        value_key = "v" if t == "text" else "latex"
+        if value_key not in seg:
+            _err(errors, "G01", "%s is a %s segment with no %r"
+                 % (seg_path, t, value_key))
+        elif not isinstance(seg[value_key], str):
+            _err(errors, "G01", "%s.%s is %s, expected string"
+                 % (seg_path, value_key, type(seg[value_key]).__name__))
+        extra = sorted(set(seg) - set(SEGMENT_KEYS[t]))
+        if extra:
+            _err(errors, "G01", "%s carries unknown key(s) %s; a %s segment "
+                                "holds only %s"
+                 % (seg_path, extra, t, list(SEGMENT_KEYS[t])))
 
 
 def g01_shape(card, errors):
@@ -184,6 +195,11 @@ def g01_shape(card, errors):
 
         # Check problem's segments: each is a dict, t is text/math, v/latex are strings
         if isinstance(problem, list):
+            # An empty problem array used to pass every gate, so a back with no
+            # task stated at all shipped as a valid worked example.
+            if not problem:
+                _err(errors, "G01",
+                     "back.problem is empty, so the worked example states no task")
             _check_segments(errors, "back.problem", problem)
 
         # Check rows is a list if present
@@ -201,11 +217,30 @@ def g01_shape(card, errors):
                     _err(errors, "G01", "%s is %s, expected object"
                          % (row_path, type(row).__name__))
                     continue
+                # aligned and bold decide layout and which row is the
+                # conclusion, and both gates that read them (G06, G07) coerce
+                # with row.get(), so a missing flag or a truthy 0/1 used to
+                # pass silently. Require both, as real booleans.
+                for flag in ("aligned", "bold"):
+                    if flag not in row:
+                        _err(errors, "G01", "%s is missing required key %r"
+                             % (row_path, flag))
+                    elif type(row[flag]) is not bool:
+                        _err(errors, "G01", "%s.%s is %r, expected true or false"
+                             % (row_path, flag, row[flag]))
                 segments = row.get("segments")
-                if "segments" in row and not isinstance(segments, list):
+                if "segments" not in row:
+                    _err(errors, "G01", "%s is missing required key 'segments'"
+                         % row_path)
+                elif not isinstance(segments, list):
                     _err(errors, "G01", "%s.segments is %s, expected array"
                          % (row_path, type(segments).__name__))
-                elif isinstance(segments, list):
+                elif not segments:
+                    # A row with no segments renders as a blank line: the
+                    # filler row the prompt's own rule forbids.
+                    _err(errors, "G01", "%s.segments is empty, so the row says "
+                                        "nothing" % row_path)
+                else:
                     _check_segments(errors, "%s.segments" % row_path, segments)
 
     return not errors
@@ -319,11 +354,16 @@ def g08_variable_key_presence(card, errors):
 
 
 # Notation every student already reads, so it is never required in the key.
+# \begin, \end and \aligned are deliberately NOT here: the prompt bans LaTeX
+# environments outright (rows carry structure, not \begin{aligned}), and this
+# tokenizer reads an environment name letter by letter anyway, so allowlisting
+# the three macros would only soften the reporting on a card that is invalid
+# for a different reason.
 UNIVERSAL_MACROS = frozenset({
     "\\cdot", "\\times", "\\div", "\\pm", "\\mp", "\\frac", "\\left", "\\right",
     "\\big", "\\Big", "\\bigg", "\\Bigg", "\\quad", "\\qquad", "\\,", "\\;",
     "\\text", "\\mathrm", "\\displaystyle", "\\boldsymbol", "\\bm", "\\sqrt",
-    "\\begin", "\\end", "\\aligned", "\\approx", "\\neq", "\\leq", "\\geq",
+    "\\approx", "\\neq", "\\leq", "\\geq",
     "\\to", "\\infty", "\\ldots", "\\cdots", "\\sin", "\\cos", "\\tan",
     "\\sec", "\\csc", "\\cot", "\\log", "\\ln", "\\exp",
 })
@@ -432,6 +472,9 @@ def g11_unicode_ban(card, errors):
             _err(errors, "G11",
                  "%s contains %r, which belongs in a latex segment"
                  % (where, hit.group(0)))
+    # concept is prose too: it becomes concept.name in MySQL, where a stray
+    # Unicode superscript is as unsearchable as it is on a card.
+    scan("concept", card.get("concept", ""))
     for block, field in PROSE_FIELDS:
         scan("%s.%s" % (block, field), card[block].get(field, ""))
     for entry in card["front"].get("variable_key") or []:

@@ -24,6 +24,11 @@ back. v1 math SVGs are normalised to currentColor at render time, so formulas
 always match their card's text colour regardless of theme (the stored SVGs
 bake in the deck palette: cream fills on fronts, navy fills on backs).
 
+Every page ends with a credit line per source book. The cards are built from
+OpenStax content under CC BY-NC-SA, so attribution is a license obligation and
+the renderer, not the model, is where v2 pays it: database runs read it from
+the textbook row, --file runs from the matching references/*/book_map.json.
+
 Needs the container running (not for --file):
   cd flashcards_db && docker compose up -d
 """
@@ -91,6 +96,13 @@ h1 small { color:#bbb; }
    Non-aligned rows stay centred, one per line, as separate claims. */
 .card .derivation { text-align:left; max-width:100%; margin:.2rem 0;
                     padding:.2rem 0 .2rem .8rem; border-left:2px solid; }
+/* Attribution. Small and quiet, but always on the page: the cards are built
+   from CC BY-NC-SA content, so this line is an obligation, not a caption. */
+.credit { max-width:70rem; margin:2.5rem auto 0; padding-top:1rem;
+          border-top:1px solid #555; color:#bbb; font-size:.75rem;
+          line-height:1.6; }
+.credit a { color:#9bb8f7; }
+
 .dark .varkey, .dark .foot { color:var(--accent); }
 .dark .derivation { border-color:rgba(250,248,244,.45); }
 .light .foot { color:#176CF8; }
@@ -125,6 +137,11 @@ def query(sql):
     return [line.split("\t") for line in done.stdout.strip().splitlines() if line]
 
 
+def _sql_text(value):
+    """One field from mysql -N -B output. NULL arrives as the literal 'NULL'."""
+    return "" if value == "NULL" else value
+
+
 def fetch(card_ids=None, section=None):
     where = ""
     if card_ids:
@@ -133,25 +150,79 @@ def fetch(card_ids=None, section=None):
         where = "WHERE ch.section_number = '%s'" % section.replace("'", "")
     sql = """
         SELECT f.id, ch.section_number, co.name,
+               tb.title, tb.authors, tb.license, tb.attribution, tb.source_url,
                HEX(f.front_content), HEX(f.back_content)
         FROM flashcard f
         JOIN concept co ON f.concept_id = co.id
         JOIN learning_objective lo ON co.lo_id = lo.id
         JOIN chapter ch ON lo.chapter_id = ch.id
+        JOIN textbook tb ON ch.textbook_id = tb.id
         %s
         ORDER BY f.id;
     """ % where
     cards = []
     for row in query(sql):
-        card_id, section_number, concept, front_hex, back_hex = row
+        (card_id, section_number, concept, title, authors, license_name,
+         attribution, source_url, front_hex, back_hex) = row
         cards.append({
             "id": card_id,
             "section": section_number,
             "concept": concept,
+            # The license metadata lives on the textbook row (July 20
+            # decision: attribution follows the content), so it travels with
+            # the card rather than being hard-coded here.
+            "credit": {"title": _sql_text(title),
+                       "authors": _sql_text(authors),
+                       "license": _sql_text(license_name),
+                       "attribution": _sql_text(attribution),
+                       "source_url": _sql_text(source_url)},
             "front": json.loads(binascii.unhexlify(front_hex).decode("utf-8")),
             "back": json.loads(binascii.unhexlify(back_hex).decode("utf-8")),
         })
     return cards
+
+
+_BOOK_CREDIT_CACHE = {}
+
+
+def book_credit(book_tag):
+    """License metadata for one corpus book, or None when it is not on disk.
+
+    --file runs have no database to read the textbook row from, so the credit
+    comes from the same references/*/book_map.json that the validator's G13
+    already matches source.book_tag against.
+    """
+    if book_tag not in _BOOK_CREDIT_CACHE:
+        credit = None
+        for path in sorted((REPO / "references").glob("*/book_map.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if data.get("book_tag") == book_tag:
+                credit = {"title": data.get("title", ""),
+                          "authors": "; ".join(data.get("authors") or []),
+                          "license": data.get("license", ""),
+                          "attribution": data.get("attribution_required", ""),
+                          "source_url": data.get("source_url", "")}
+                break
+        _BOOK_CREDIT_CACHE[book_tag] = credit
+    return _BOOK_CREDIT_CACHE[book_tag]
+
+
+def credit_text(credit, book_tag=None):
+    """One attribution line. Says so plainly when the metadata is missing."""
+    if not credit or not any(credit.values()):
+        return ("Source book %s: no license metadata found, so this page is "
+                "missing a required attribution." % (book_tag or "unknown"))
+    head = credit.get("title") or (book_tag or "Source book")
+    if credit.get("authors"):
+        head = "%s by %s" % (head, credit["authors"])
+    parts = [head]
+    for field in ("license", "attribution"):
+        if credit.get(field):
+            parts.append(credit[field])
+    text = " ".join(p if p.endswith(".") else p + "." for p in parts)
+    if credit.get("source_url"):
+        text += " " + credit["source_url"]
+    return text
 
 
 def bad_card(where, detail, path=None):
@@ -212,9 +283,13 @@ def load_files(patterns):
             # step yet, which is why the database cannot serve a v2 card.
             version = doc.get("format_version")
             source = doc.get("source")
+            book_tag = (source.get("book_tag") if isinstance(source, dict)
+                        else None)
             cards.append({
                 "id": path.stem,
                 "path": path,
+                "book_tag": book_tag,
+                "credit": book_credit(book_tag) if book_tag else None,
                 # Coerced to text: these two only label the preview, so a
                 # wrong-typed value should not stop the page from building.
                 "section": "%s" % (source.get("section", "?")
@@ -382,7 +457,19 @@ def build_page(cards, theme, scale, origin=DB_ORIGIN):
             out.append('<div class="row">%s%s</div>'
                        % (render_card_side(card, "front", front_theme, scale),
                           render_card_side(card, "back", back_theme, scale)))
+    for line in credit_lines(cards):
+        out.append('<div class="credit">%s</div>' % line)
     return "\n".join(out)
+
+
+def credit_lines(cards):
+    """One escaped attribution line per distinct source book, in page order."""
+    lines = []
+    for card in cards:
+        line = html.escape(credit_text(card.get("credit"), card.get("book_tag")))
+        if line not in lines:
+            lines.append(line)
+    return lines
 
 
 def main():
@@ -412,8 +499,13 @@ def main():
     out_path = REPO / args.out
     out_path.write_text(build_page(cards, args.theme, args.math_scale, origin),
                         encoding="utf-8", newline="\n")
-    print("wrote %s (%d cards, theme=%s, math x%.2f)"
-          % (args.out, len(cards), args.theme, args.math_scale))
+    # --math-scale only sizes v1 SVGs, so reporting it on an all-v2 page
+    # advertises a setting that changed nothing.
+    scaled = any(side.get("format_version") != 2
+                 for card in cards for side in (card["front"], card["back"]))
+    print("wrote %s (%d cards, theme=%s%s)"
+          % (args.out, len(cards), args.theme,
+             ", math x%.2f" % args.math_scale if scaled else ""))
 
 
 if __name__ == "__main__":

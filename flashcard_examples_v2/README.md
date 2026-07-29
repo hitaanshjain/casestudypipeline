@@ -1,4 +1,12 @@
-These three cards are validated examples of the format_version 2 concept card
+These three cards were HAND-WRITTEN, by the same session that wrote
+`prompts/flashcard_concept_card_prompt_v2.md` and the validator. None of them
+is prompt output: as of July 29, 2026 the prompt has never been run, in any
+session (CLAUDE.md sec 12). So they measure the contract's internal
+consistency, not any model's compliance with it. The first real prompt output
+will land beside them as `product_rule.json`, per the fresh-session procedure
+in `plan/flashcard_json_prompt_implementation_plan.md`.
+
+They are validated examples of the format_version 2 concept card
 contract. Each was chosen to exercise a different branch of that contract, so
 between them every conditional path these three were chosen for gets hit at
 least once. They do not exercise every path the validator checks: the

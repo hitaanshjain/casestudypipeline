@@ -1749,7 +1749,13 @@ python tools/check_flashcard_json.py flashcard_examples_v2/*.json; echo "exit=$?
 python tools/generate_card_schema.py && git diff --exit-code flashcards_db/card_schema_v2.json
 git status --porcelain
 ```
-Expected: 45 passed; three PASS lines and exit 0; no schema diff; a clean tree.
+Expected: 95 passed; three PASS lines and exit 0; no schema diff; a clean tree.
+
+Corrected July 29: this line read "45 passed", which was the plan's estimate
+before the tasks' own reviews added tests. The count was 81 at the end of task
+8 and is 95 after the final fix wave. The per-task "Expected: N passed" lines
+above are the original estimates and were left as written; the number here is
+the one to check.
 
 ## Manual step the plan cannot execute: the fresh-session run
 
@@ -1757,20 +1763,82 @@ Spec section 7 item 4 requires running the prompt cold. No task above does this,
 because it needs a separate session or a model call, and a run inside the
 session that wrote the prompt proves nothing about a cold start.
 
-Procedure, for Hitaansh or a fresh session:
+**Rewritten July 29, because the first version was not runnable.** It said to
+open a context-free chat, paste the prompt with `topic: Product Rule`,
+`book_tag: openstax_calc1`, `section: 3.3`, save the reply as JSON, and
+validate. But the prompt requires the section's objectives to come from a
+`references/*/book_map.json` or from `<source_notes>`, bans recalling them from
+memory, and mandates `ERROR input: <reason>` and NO JSON when neither is
+available. A fully compliant model therefore had to emit an error line, which
+step 3 saved as `.json` and step 4 scored as a failure. The procedure
+manufactured a false negative and punished exactly the behavior the prompt
+demands. Two variants replace it. They test different things; run at least
+variant B, which is the one that measures card authoring.
 
-1. Open a new chat with no project context loaded.
-2. Paste `prompts/flashcard_concept_card_prompt_v2.md`, then the inputs
-   `topic: Product Rule`, `book_tag: openstax_calc1`, `section: 3.3`. This topic
-   is deliberately not one of the three examples.
-3. Save the reply verbatim as `flashcard_examples_v2/product_rule.json`. Do not
+### Variant A: agentic run, with repo file access
+
+Tests the whole prompt, corpus lookup included: whether the model finds the
+right book map by `book_tag` (the directory is named `openstax_calculus_v1`
+while the tag is `openstax_calc1`, a mismatch the prompt warns about on
+purpose), picks a defensible `lo_ordinal`, and copies `lo_text` byte for byte
+out of a file it read rather than one it remembered.
+
+1. Start a fresh agent session on a clone of this repo with NO project context
+   loaded: no CLAUDE.md, no plan, no design spec, no example cards read first.
+   The repo tree and the prompt, nothing else.
+2. Give it the contents of `prompts/flashcard_concept_card_prompt_v2.md` plus
+   these three inputs and nothing else: `topic: Product Rule`,
+   `book_tag: openstax_calc1`, `section: 3.3`. Product Rule is deliberately not
+   one of the three example cards.
+3. Save the reply VERBATIM as `flashcard_examples_v2/product_rule.json`. Do not
    edit it, not even whitespace: an edited output measures the editor.
 4. Run `python tools/check_flashcard_json.py flashcard_examples_v2/product_rule.json`.
-5. Record the result in CLAUDE.md sec 12, including which gates fired. A first
-   run that fails two or three gates is a useful measurement, not a failure of
-   the exercise; it says exactly which rules the prompt states unclearly.
+5. Record the result in CLAUDE.md sec 12: which gates fired, and whether
+   `lo_ordinal` landed on 3, which is 3.3's product rule objective.
 
-Repeat on a second model if cross-provider portability matters, and log both.
+### Variant B: plain chat, objectives supplied
+
+Tests card authoring alone, with the lookup taken out of the picture. This is
+the variant to run when no file-access session is available. It cannot measure
+retrieval: the objectives are handed over, so a correct `lo_text` proves
+copying, not finding.
+
+1. Open a new chat with no project context loaded.
+2. Paste `prompts/flashcard_concept_card_prompt_v2.md`, then the block below
+   exactly as written, `<source_notes>` included. Those six objectives are
+   section 3.3's, copied out of `references/openstax_calculus_v1/book_map.json`.
+   Paste them unaltered: G13 compares the card's `lo_text` against that file
+   byte for byte, so a tidied objective fails as loudly as an invented one.
+
+```
+topic: Product Rule
+book_tag: openstax_calc1
+section: 3.3
+<source_notes>
+Learning objectives for section 3.3, in order, exactly as they appear in
+references/openstax_calculus_v1/book_map.json:
+1. State the constant, constant multiple, and power rules.
+2. Apply the sum and difference rules to combine derivatives.
+3. Use the product rule for finding the derivative of a product of functions.
+4. Use the quotient rule for finding the derivative of a quotient of functions.
+5. Extend the power rule to functions with negative exponents.
+6. Combine the differentiation rules to find the derivative of a polynomial or rational function.
+</source_notes>
+```
+
+3. Save the reply VERBATIM as `flashcard_examples_v2/product_rule.json`, with
+   the same no-editing rule as variant A.
+4. Run `python tools/check_flashcard_json.py flashcard_examples_v2/product_rule.json`.
+5. Record the result in CLAUDE.md sec 12: which gates fired, and whether
+   `lo_ordinal` landed on 3.
+
+### Either variant
+
+A first run that fails two or three gates is a useful measurement, not a
+failure of the exercise; it says exactly which rules the prompt states
+unclearly. A run that emits `ERROR input:` under variant B is a real finding,
+since the objectives were supplied. Repeat on a second model if cross-provider
+portability matters, and log both.
 
 ## What this plan does not do
 
