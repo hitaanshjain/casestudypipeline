@@ -529,6 +529,33 @@ def g07_aligned_rows(card, errors):
         _err(errors, "G07",
              "the aligned block must run to the last row, but row %d is not aligned"
              % len(flags))
+```
+
+**Amendment, July 28, from the Task 2 review.** The `g07_aligned_rows` body
+above is WRONG and must not be transcribed as written. `not all(flags[first:])`
+is true both when there is an interior gap and whenever the block merely ends
+early, so the pattern `[T,T,F,F]` fires two error lines, and the first one says
+"aligned rows are not contiguous" about rows that are perfectly contiguous.
+Since the generating model reads these lines to correct itself, a message that
+misdescribes the problem is worse than no message.
+
+Required: exactly one G07 line per underlying problem, describing the real one.
+Interior gap (`[T,F,T,T]`) reports non-contiguity; contiguous but ending early
+(`[T,T,F,F]`) reports only the reach-the-last-row problem; both at once emits
+one line, not two. Test all five of `[F,F,T,T]`, `[T,F,T,T]`, `[T,T,F,F]`,
+`[F,F,F,F]`, `[T,T,T,T]` by COUNTING G07 lines, not by set membership: the
+`errors_for` helper collapses duplicates and cannot catch a double fire.
+
+Two more defects the same review found, both to fix here:
+
+- `test_g06_rejects_bold_on_a_middle_row` does not test its own name. The
+  fixture's last row is already bold, so setting row 0 bold creates two bold
+  rows and trips the count branch, leaving the position branch untested. The
+  test must set bold on row 0 AND clear it on the last row.
+- G08 lets `"variable_key": []` through when `central` is text. The contract is
+  present iff latex, so a present-but-empty key on the text side must fire.
+
+```python
 
 
 def g08_variable_key_presence(card, errors):
