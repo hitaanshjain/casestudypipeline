@@ -1,0 +1,83 @@
+{
+  "format_version": 2,
+  "card_type": "concept_example",
+  "concept": "Intermediate Value Theorem",
+  "source": {
+    "book_tag": "openstax_calc1",
+    "section": "2.4",
+    "lo_ordinal": 5,
+    "lo_text": "Provide an example of the intermediate value theorem."
+  },
+  "front": {
+    "title": "Intermediate Value",
+    "subtitle": "No Skipped Values",
+    "central": {
+      "text": "A continuous function takes every value between its two endpoint values."
+    },
+    "main_description": "An unbroken graph must hit every height in between.",
+    "supporting_description": "If the curve starts below a target and ends above it, it crossed.",
+    "footer": "Flip for a worked example"
+  },
+  "back": {
+    "title": "Worked Example",
+    "problem": [
+      {
+        "t": "text",
+        "v": "Is there a solution between 1 and 4?"
+      }
+    ],
+    "rows": [
+      {
+        "segments": [
+          {
+            "t": "text",
+            "v": "The graph is continuous with no breaks."
+          }
+        ],
+        "aligned": false,
+        "bold": false
+      },
+      {
+        "segments": [
+          {
+            "t": "text",
+            "v": "At the left end the value is below zero."
+          }
+        ],
+        "aligned": false,
+        "bold": false
+      },
+      {
+        "segments": [
+          {
+            "t": "text",
+            "v": "At the right end the value is above zero."
+          }
+        ],
+        "aligned": false,
+        "bold": false
+      },
+      {
+        "segments": [
+          {
+            "t": "text",
+            "v": "Zero lies between those two heights."
+          }
+        ],
+        "aligned": false,
+        "bold": false
+      },
+      {
+        "segments": [
+          {
+            "t": "text",
+            "v": "A solution is guaranteed between 1 and 4."
+          }
+        ],
+        "aligned": false,
+        "bold": true
+      }
+    ],
+    "footer": "Continuity guarantees every in between value is reached."
+  }
+}
