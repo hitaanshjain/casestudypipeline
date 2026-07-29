@@ -49,6 +49,31 @@ def _err(errors, gate, message):
     errors.append("ERROR %s: %s" % (gate, message))
 
 
+def _check_segments(errors, path, segments):
+    """Validate a list of {t, v|latex} segment dicts in place.
+
+    path is the dotted/indexed location for error messages, e.g.
+    "back.problem" or "back.rows[2].segments".
+    """
+    for i, seg in enumerate(segments):
+        seg_path = "%s[%d]" % (path, i)
+        if not isinstance(seg, dict):
+            _err(errors, "G01", "%s is %s, expected object"
+                 % (seg_path, type(seg).__name__))
+            continue
+        t = seg.get("t")
+        if t not in ("text", "math"):
+            _err(errors, "G01", "%s.t is %r, expected 'text' or 'math'"
+                 % (seg_path, t))
+            continue
+        if t == "text" and "v" in seg and not isinstance(seg["v"], str):
+            _err(errors, "G01", "%s.v is %s, expected string"
+                 % (seg_path, type(seg["v"]).__name__))
+        if t == "math" and "latex" in seg and not isinstance(seg["latex"], str):
+            _err(errors, "G01", "%s.latex is %s, expected string"
+                 % (seg_path, type(seg["latex"]).__name__))
+
+
 def g01_shape(card, errors):
     """Structure, required keys, closed vocabularies."""
     if not isinstance(card, dict):
@@ -110,10 +135,31 @@ def g01_shape(card, errors):
             _err(errors, "G01",
                  "front.central needs exactly one of 'latex' or 'text'")
 
+        # Check central.text / central.latex are strings, when present
+        if isinstance(central, dict):
+            for field in ("text", "latex"):
+                if field in central and not isinstance(central[field], str):
+                    _err(errors, "G01", "front.central.%s is %s, expected string"
+                         % (field, type(central[field]).__name__))
+
         # Check variable_key is a list if present
-        if "variable_key" in front and not isinstance(front["variable_key"], list):
+        key = front.get("variable_key")
+        if "variable_key" in front and not isinstance(key, list):
             _err(errors, "G01", "front.variable_key is %s, expected array"
-                 % type(front["variable_key"]).__name__)
+                 % type(key).__name__)
+
+        # Check variable_key entries: each is a dict with string symbol/meaning
+        if isinstance(key, list):
+            for i, entry in enumerate(key):
+                entry_path = "front.variable_key[%d]" % i
+                if not isinstance(entry, dict):
+                    _err(errors, "G01", "%s is %s, expected object"
+                         % (entry_path, type(entry).__name__))
+                    continue
+                for field in ("symbol", "meaning"):
+                    if field in entry and not isinstance(entry[field], str):
+                        _err(errors, "G01", "%s.%s is %s, expected string"
+                             % (entry_path, field, type(entry[field]).__name__))
 
     # Type-check back fields
     back = card.get("back")
@@ -125,14 +171,36 @@ def g01_shape(card, errors):
                      % (field, type(back[field]).__name__))
 
         # Check problem is a list if present
-        if "problem" in back and not isinstance(back["problem"], list):
+        problem = back.get("problem")
+        if "problem" in back and not isinstance(problem, list):
             _err(errors, "G01", "back.problem is %s, expected array"
-                 % type(back["problem"]).__name__)
+                 % type(problem).__name__)
+
+        # Check problem's segments: each is a dict, t is text/math, v/latex are strings
+        if isinstance(problem, list):
+            _check_segments(errors, "back.problem", problem)
 
         # Check rows is a list if present
-        if "rows" in back and not isinstance(back["rows"], list):
+        rows = back.get("rows")
+        if "rows" in back and not isinstance(rows, list):
             _err(errors, "G01", "back.rows is %s, expected array"
-                 % type(back["rows"]).__name__)
+                 % type(rows).__name__)
+
+        # Check rows: each is a dict, and each row's segments follow the
+        # same shape rules as back.problem's segments
+        if isinstance(rows, list):
+            for i, row in enumerate(rows):
+                row_path = "back.rows[%d]" % i
+                if not isinstance(row, dict):
+                    _err(errors, "G01", "%s is %s, expected object"
+                         % (row_path, type(row).__name__))
+                    continue
+                segments = row.get("segments")
+                if "segments" in row and not isinstance(segments, list):
+                    _err(errors, "G01", "%s.segments is %s, expected array"
+                         % (row_path, type(segments).__name__))
+                elif isinstance(segments, list):
+                    _check_segments(errors, "%s.segments" % row_path, segments)
 
     return not errors
 
@@ -182,7 +250,70 @@ def g04_title_length(card, errors):
              % (len(title), TITLE_MAX_CHARS))
 
 
-GATES = [g02_contract_strings, g03_word_budgets, g04_title_length]
+def g05_row_count(card, errors):
+    n = len(card["back"].get("rows", []))
+    if not ROWS_MIN <= n <= ROWS_MAX:
+        _err(errors, "G05", "back.rows has %d rows, contract requires %d to %d"
+             % (n, ROWS_MIN, ROWS_MAX))
+
+
+def g06_bold_row(card, errors):
+    rows = card["back"].get("rows", [])
+    bold = [i for i, row in enumerate(rows) if row.get("bold")]
+    if len(bold) != 1:
+        _err(errors, "G06", "%d rows are bold, contract requires exactly 1"
+             % len(bold))
+    elif bold[0] != len(rows) - 1:
+        _err(errors, "G06", "row %d is bold, the bold row must be the last (row %d)"
+             % (bold[0] + 1, len(rows)))
+
+
+def g07_aligned_rows(card, errors):
+    rows = card["back"].get("rows", [])
+    flags = [bool(row.get("aligned")) for row in rows]
+    if not any(flags):
+        return                                  # zero aligned rows is valid
+    first = flags.index(True)
+    if not all(flags[first:]):
+        _err(errors, "G07", "aligned rows are not contiguous: %s"
+             % "".join("A" if f else "." for f in flags))
+    if flags and not flags[-1]:
+        _err(errors, "G07",
+             "the aligned block must run to the last row, but row %d is not aligned"
+             % len(flags))
+
+
+def g08_variable_key_presence(card, errors):
+    front = card["front"]
+    central = front.get("central", {})
+    key = front.get("variable_key")
+    if "latex" in central:
+        if not key:
+            _err(errors, "G08",
+                 "front.central is latex, so variable_key is required and non-empty")
+            return
+    else:
+        if key:
+            _err(errors, "G08",
+                 "front.central is text, so variable_key must be absent")
+        return
+    if len(key) > KEY_MAX_ENTRIES:
+        _err(errors, "G08", "variable_key has %d entries, cap is %d"
+             % (len(key), KEY_MAX_ENTRIES))
+    seen = set()
+    for entry in key:
+        symbol = entry.get("symbol", "")
+        if symbol in seen:
+            _err(errors, "G08", "variable_key defines %r more than once" % symbol)
+        seen.add(symbol)
+        if words(entry.get("meaning", "")) > KEY_MEANING_MAX_WORDS:
+            _err(errors, "G08", "variable_key meaning for %r has %d words, cap is %d"
+                 % (symbol, words(entry.get("meaning", "")), KEY_MEANING_MAX_WORDS))
+
+
+GATES = [g02_contract_strings, g03_word_budgets, g04_title_length,
+         g05_row_count, g06_bold_row, g07_aligned_rows,
+         g08_variable_key_presence]
 
 
 def check_card(card):

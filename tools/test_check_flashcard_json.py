@@ -176,3 +176,130 @@ def test_g01_crash_proof_on_none_fields():
         result = chk.check_card(test_card)
         assert isinstance(result, list), "check_card should return a list, not raise"
         assert len(result) > 0, "should have at least one error for %s" % path
+
+
+# Amendment, July 28, carried from the Task 1 re-review: four crash inputs
+# that survive g01_shape's container type-checks because it never validates
+# container CONTENTS. Each of the following used to raise inside a later
+# gate instead of returning ERROR lines.
+
+def test_g01_rejects_back_problem_with_a_non_dict_segment():
+    card = good_card()
+    card["back"]["problem"] = [{"t": "text", "v": "hi"}, "raw string"]
+    result = chk.check_card(card)
+    assert isinstance(result, list) and "G01" in errors_for(card)
+
+
+def test_g01_rejects_back_problem_of_none():
+    card = good_card()
+    card["back"]["problem"] = [None]
+    result = chk.check_card(card)
+    assert isinstance(result, list) and "G01" in errors_for(card)
+
+
+def test_g01_rejects_back_problem_of_ints():
+    card = good_card()
+    card["back"]["problem"] = [1, 2, 3]
+    result = chk.check_card(card)
+    assert isinstance(result, list) and "G01" in errors_for(card)
+
+
+def test_g01_rejects_back_problem_text_segment_non_string_v():
+    card = good_card()
+    card["back"]["problem"] = [{"t": "text", "v": 123}]
+    result = chk.check_card(card)
+    assert isinstance(result, list) and "G01" in errors_for(card)
+
+
+def test_g01_rejects_front_central_text_non_string():
+    card = good_card()
+    card["front"]["central"] = {"text": 123}
+    result = chk.check_card(card)
+    assert isinstance(result, list) and "G01" in errors_for(card)
+
+
+def test_g01_rejects_front_central_text_none():
+    card = good_card()
+    card["front"]["central"] = {"text": None}
+    result = chk.check_card(card)
+    assert isinstance(result, list) and "G01" in errors_for(card)
+
+
+def test_g05_rejects_three_rows():
+    card = good_card()
+    card["back"]["rows"] = card["back"]["rows"][:3]
+    assert "G05" in errors_for(card)
+
+
+def test_g05_rejects_seven_rows():
+    card = good_card()
+    row = copy.deepcopy(card["back"]["rows"][0])
+    card["back"]["rows"] = [row] * 6 + [card["back"]["rows"][-1]]
+    assert "G05" in errors_for(card)
+
+
+def test_g05_accepts_six_rows():
+    card = good_card()
+    plain = {"segments": [{"t": "math", "latex": "n=5"}],
+             "aligned": False, "bold": False}
+    card["back"]["rows"] = [copy.deepcopy(plain) for _ in range(5)] + \
+                           [card["back"]["rows"][-1]]
+    assert "G05" not in errors_for(card)
+
+
+def test_g06_rejects_no_bold_row():
+    card = good_card()
+    card["back"]["rows"][-1]["bold"] = False
+    assert "G06" in errors_for(card)
+
+
+def test_g06_rejects_bold_on_a_middle_row():
+    card = good_card()
+    card["back"]["rows"][0]["bold"] = True
+    assert "G06" in errors_for(card)
+
+
+def test_g07_rejects_non_contiguous_aligned_rows():
+    card = good_card()
+    card["back"]["rows"][0]["aligned"] = True
+    card["back"]["rows"][1]["aligned"] = False
+    assert "G07" in errors_for(card)
+
+
+def test_g07_rejects_aligned_block_not_reaching_the_last_row():
+    card = good_card()
+    card["back"]["rows"][-1]["aligned"] = False
+    assert "G07" in errors_for(card)
+
+
+def test_g07_accepts_zero_aligned_rows():
+    """Conceptual cards such as the IVT have no derivation to align."""
+    card = good_card()
+    for row in card["back"]["rows"]:
+        row["aligned"] = False
+    assert "G07" not in errors_for(card)
+
+
+def test_g08_rejects_missing_key_when_central_is_latex():
+    card = good_card()
+    del card["front"]["variable_key"]
+    assert "G08" in errors_for(card)
+
+
+def test_g08_rejects_key_present_when_central_is_text():
+    card = good_card()
+    card["front"]["central"] = {"text": "A rate of change measured at a point."}
+    assert "G08" in errors_for(card)
+
+
+def test_g08_rejects_more_than_five_key_entries():
+    card = good_card()
+    card["front"]["variable_key"] = [
+        {"symbol": "n", "meaning": "constant exponent"} for _ in range(6)]
+    assert "G08" in errors_for(card)
+
+
+def test_g08_rejects_overlong_meaning():
+    card = good_card()
+    card["front"]["variable_key"][1]["meaning"] = " ".join(["word"] * 9)
+    assert "G08" in errors_for(card)
