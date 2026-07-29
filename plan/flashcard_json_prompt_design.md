@@ -123,6 +123,7 @@ populate the `concept` row and are not stored inside either blob.
     "subtitle": "Differentiate Powers",
     "central": { "latex": "\\frac{d}{dx}\\left(x^{n}\\right)=nx^{n-1}" },
     "variable_key": [
+      { "symbol": "\\frac{d}{dx}", "meaning": "rate of change with respect to x" },
       { "symbol": "n", "meaning": "constant exponent" },
       { "symbol": "x", "meaning": "variable you differentiate by" }
     ],
@@ -145,6 +146,14 @@ populate the `concept` row and are not stored inside either blob.
   }
 }
 ```
+
+**Amendment, July 28**: the `\frac{d}{dx}` entry in the example's
+`variable_key` was added after the fact. As first written the key defined only
+`n` and `x`, which G09 rejects with `ERROR G09: 'd' appears in front.central but
+no variable_key entry covers it`, because `d` and `x` inside `\frac{d}{dx}` are
+both definable identifiers. The example above now passes the gate this spec
+calls the one that matters most; `prompts/flashcard_concept_card_prompt_v2.md`
+carries a byte-identical copy and was corrected in the same change.
 
 ### Field rules
 
