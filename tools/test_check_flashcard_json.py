@@ -543,10 +543,20 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures" / "flashcard_json"
 
 
 def run_cli(*paths):
+    # Fix round 2: encoding and errors are pinned, not left to the platform
+    # locale. text=True alone decodes the child's stdout with the parent's
+    # preferred encoding, so a shell exporting PYTHONIOENCODING=utf-8 made the
+    # child emit UTF-8 while the parent decoded cp1252, and the G11 fixture's
+    # superscript character crashed the test (measured: 1 failed, 80 passed,
+    # green again only after clearing the variable). The suite must not depend
+    # on an environment variable. errors="replace" keeps a stray undecodable
+    # byte from ever raising again; every assertion below matches ASCII
+    # substrings such as "ERROR G11:", so a replacement character is harmless.
     done = subprocess.run(
         [sys.executable, str(REPO / "tools" / "check_flashcard_json.py")] +
         [str(p) for p in paths],
-        capture_output=True, text=True, cwd=str(REPO))
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        cwd=str(REPO))
     return done.returncode, done.stdout
 
 
