@@ -671,3 +671,24 @@ def test_every_gate_has_a_test():
         gate = "G%02d" % n
         assert '"%s" in errors_for' % gate in source or \
                'ERROR %s:' % gate in source, "%s has no test" % gate
+
+
+import generate_card_schema as gen
+
+SCHEMA_PATH = REPO / "flashcards_db" / "card_schema_v2.json"
+
+
+def test_committed_schema_matches_its_generator():
+    """Regenerate after any constant change, or this fails."""
+    on_disk = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    assert on_disk == gen.build_schema()
+
+
+def test_schema_budgets_track_the_validator_constants():
+    schema = gen.build_schema()
+    front = schema["properties"]["front"]["properties"]
+    assert front["title"]["maxLength"] == chk.TITLE_MAX_CHARS
+    back = schema["properties"]["back"]["properties"]
+    assert back["rows"]["minItems"] == chk.ROWS_MIN
+    assert back["rows"]["maxItems"] == chk.ROWS_MAX
+    assert front["footer"]["const"] == chk.FRONT_FOOTER

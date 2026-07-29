@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Flashcard card, format_version 2",
+  "description": "Enforced by tools/check_flashcard_json.py, which is the contract. This file is generated from it.",
+  "type": "object",
+  "required": [
+    "format_version",
+    "card_type",
+    "concept",
+    "source",
+    "front",
+    "back"
+  ],
+  "properties": {
+    "format_version": {
+      "const": 2
+    },
+    "card_type": {
+      "enum": [
+        "concept_example",
+        "problem_solution"
+      ]
+    },
+    "concept": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "book_tag",
+        "section",
+        "lo_ordinal",
+        "lo_text"
+      ],
+      "properties": {
+        "book_tag": {
+          "type": "string"
+        },
+        "section": {
+          "type": "string"
+        },
+        "lo_ordinal": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "lo_text": {
+          "type": "string"
+        },
+        "review_note": {
+          "type": "string"
+        }
+      }
+    },
+    "front": {
+      "type": "object",
+      "required": [
+        "title",
+        "subtitle",
+        "central",
+        "main_description",
+        "supporting_description",
+        "footer"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "central": {
+          "type": "object",
+          "oneOf": [
+            {
+              "required": [
+                "latex"
+              ]
+            },
+            {
+              "required": [
+                "text"
+              ]
+            }
+          ],
+          "properties": {
+            "latex": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        "variable_key": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "symbol",
+              "meaning"
+            ],
+            "properties": {
+              "symbol": {
+                "type": "string"
+              },
+              "meaning": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "main_description": {
+          "type": "string"
+        },
+        "supporting_description": {
+          "type": "string"
+        },
+        "footer": {
+          "const": "Flip for a worked example"
+        }
+      }
+    },
+    "back": {
+      "type": "object",
+      "required": [
+        "title",
+        "problem",
+        "rows",
+        "footer"
+      ],
+      "properties": {
+        "title": {
+          "const": "Worked Example"
+        },
+        "problem": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "t",
+                  "v"
+                ],
+                "properties": {
+                  "t": {
+                    "const": "text"
+                  },
+                  "v": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "required": [
+                  "t",
+                  "latex"
+                ],
+                "properties": {
+                  "t": {
+                    "const": "math"
+                  },
+                  "latex": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "segments",
+              "aligned",
+              "bold"
+            ],
+            "properties": {
+              "segments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "oneOf": [
+                    {
+                      "required": [
+                        "t",
+                        "v"
+                      ],
+                      "properties": {
+                        "t": {
+                          "const": "text"
+                        },
+                        "v": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "required": [
+                        "t",
+                        "latex"
+                      ],
+                      "properties": {
+                        "t": {
+                          "const": "math"
+                        },
+                        "latex": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "minItems": 1
+              },
+              "aligned": {
+                "type": "boolean"
+              },
+              "bold": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "footer": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
