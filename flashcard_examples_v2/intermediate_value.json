@@ -23,7 +23,15 @@
     "problem": [
       {
         "t": "text",
-        "v": "Is there a solution between 1 and 4?"
+        "v": "Does "
+      },
+      {
+        "t": "math",
+        "latex": "f(x)=x^{3}-4x+1"
+      },
+      {
+        "t": "text",
+        "v": "have a root between 1 and 4?"
       }
     ],
     "rows": [
@@ -31,7 +39,7 @@
         "segments": [
           {
             "t": "text",
-            "v": "The graph is continuous with no breaks."
+            "v": "Every polynomial is continuous, so this one has no breaks."
           }
         ],
         "aligned": false,
@@ -41,7 +49,11 @@
         "segments": [
           {
             "t": "text",
-            "v": "At the left end the value is below zero."
+            "v": "At the left endpoint"
+          },
+          {
+            "t": "math",
+            "latex": "f(1)=-2"
           }
         ],
         "aligned": false,
@@ -51,7 +63,11 @@
         "segments": [
           {
             "t": "text",
-            "v": "At the right end the value is above zero."
+            "v": "At the right endpoint"
+          },
+          {
+            "t": "math",
+            "latex": "f(4)=49"
           }
         ],
         "aligned": false,
@@ -61,7 +77,7 @@
         "segments": [
           {
             "t": "text",
-            "v": "Zero lies between those two heights."
+            "v": "The output goes from negative to positive."
           }
         ],
         "aligned": false,
@@ -71,13 +87,13 @@
         "segments": [
           {
             "t": "text",
-            "v": "A solution is guaranteed between 1 and 4."
+            "v": "So a root is guaranteed between 1 and 4."
           }
         ],
         "aligned": false,
         "bold": true
       }
     ],
-    "footer": "Continuity guarantees every in between value is reached."
+    "footer": "Endpoints with opposite signs guarantee a root between them."
   }
 }

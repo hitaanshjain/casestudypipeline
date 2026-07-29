@@ -1,7 +1,7 @@
 {
   "format_version": 2,
   "card_type": "concept_example",
-  "concept": "Definite Integral",
+  "concept": "Integral Notation",
   "source": {
     "book_tag": "openstax_calc1",
     "section": "5.2",
@@ -33,10 +33,10 @@
       },
       {
         "symbol": "dx",
-        "meaning": "variable of integration"
+        "meaning": "names x as the variable of integration"
       }
     ],
-    "main_description": "Every part of this symbol names one piece of the setup.",
+    "main_description": "A definite integral totals a continuously changing quantity across an interval.",
     "supporting_description": "Reading it correctly tells you what accumulates and over which interval.",
     "footer": "Flip for a worked example"
   },

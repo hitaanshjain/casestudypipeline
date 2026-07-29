@@ -1,7 +1,9 @@
 These three cards are validated examples of the format_version 2 concept card
 contract. Each was chosen to exercise a different branch of that contract, so
-between them every conditional path the validator checks gets hit at least
-once.
+between them every conditional path these three were chosen for gets hit at
+least once. They do not exercise every path the validator checks: the
+honest-gap branch (`lo_ordinal: null`), `problem_solution` cards, a 6-row
+back, and every failure path are untested by this set.
 
 - `power_rule.json`: symbolic front (`central.latex`), a 3-entry variable key,
   and a back with an aligned two-row derivation ending on the bold conclusion
