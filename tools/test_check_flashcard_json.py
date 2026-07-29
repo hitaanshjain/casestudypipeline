@@ -572,6 +572,60 @@ def test_g14_rejects_a_blacklisted_footer_prefix():
     assert "G14" in errors_for(card)
 
 
+# Fix round 1 (quality review): two defects in the brief's own g13 code.
+# CRITICAL: review_note is not in REQUIRED_SOURCE and is never type-checked
+# by g01_shape, so a non-string value reached .strip() and crashed the
+# process with exit 1, breaking the CLI's exit 0/2 contract on exactly the
+# honest-gap path the brief singles out as important. IMPORTANT: bool
+# subclasses int in Python, so lo_ordinal: true passed isinstance(ordinal,
+# int) and the range check, silently accepted as ordinal 1.
+
+def test_g13_review_note_wrong_type_never_crashes_and_fires():
+    card = good_card()
+    card["source"]["lo_ordinal"] = None
+    card["source"]["lo_text"] = ""
+    card["source"]["review_note"] = 12345
+    result = chk.check_card(card)          # must not raise
+    assert isinstance(result, list)
+    assert "G13" in errors_for(card)
+
+
+def test_g13_rejects_lo_ordinal_true_as_not_a_real_ordinal():
+    card = good_card()
+    card["source"]["lo_ordinal"] = True
+    assert "G13" in errors_for(card)
+
+
+def test_g13_null_ordinal_honest_gap_path_still_works():
+    """lo_ordinal: null must still take the honest-gap path, unchanged."""
+    card = good_card()
+    card["source"]["lo_ordinal"] = None
+    card["source"]["lo_text"] = ""
+    card["source"]["review_note"] = "No 3.3 objective covers this framing."
+    assert "G13" not in errors_for(card)
+
+
+def test_g13_sweep_never_crashes_on_wrong_type_fields():
+    """Broader sweep from the fix-round review: every JSON type g13's two
+    card fields that g01_shape never type-checks (lo_ordinal, review_note)
+    could receive must produce an ERROR line, never an exception."""
+    for bad in ("1", 1.0, [1], {"n": 1}, True, False):
+        card = good_card()
+        card["source"]["lo_ordinal"] = bad
+        result = chk.check_card(card)      # must not raise
+        assert isinstance(result, list), bad
+        assert "G13" in errors_for(card), bad
+
+    for bad in (12345, 1.5, [], {}, True):
+        card = good_card()
+        card["source"]["lo_ordinal"] = None
+        card["source"]["lo_text"] = ""
+        card["source"]["review_note"] = bad
+        result = chk.check_card(card)      # must not raise
+        assert isinstance(result, list), bad
+        assert "G13" in errors_for(card), bad
+
+
 def test_cli_exits_0_on_the_valid_fixture():
     code, out = run_cli(FIXTURES / "valid_power_rule.json")
     assert code == 0, out
@@ -593,6 +647,20 @@ def test_cli_exits_2_on_unparseable_json(tmp_path):
     code, out = run_cli(bad)
     assert code == 2
     assert "ERROR G01:" in out
+
+
+def test_cli_exits_2_not_1_when_review_note_is_a_wrong_type(tmp_path):
+    """Fix round 1 exit-contract regression: before the fix this crashed
+    with an unhandled AttributeError and exit 1, never reaching exit 2."""
+    card = good_card()
+    card["source"]["lo_ordinal"] = None
+    card["source"]["lo_text"] = ""
+    card["source"]["review_note"] = 12345
+    path = tmp_path / "bad_review_note.json"
+    path.write_text(json.dumps(card), encoding="utf-8")
+    code, out = run_cli(path)
+    assert code == 2, out
+    assert "ERROR G13:" in out
 
 
 def test_every_gate_has_a_test():

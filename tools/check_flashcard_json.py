@@ -507,14 +507,26 @@ def g13_corpus_mapping(card, errors):
         return
     ordinal = source.get("lo_ordinal")
     if ordinal is None:
-        if not (source.get("review_note") or "").strip():
+        review_note = source.get("review_note")
+        if review_note is not None and not isinstance(review_note, str):
+            # CRITICAL fix (fix round 1): review_note is not in
+            # REQUIRED_SOURCE and is never type-checked by g01_shape, so an
+            # int/list/bool review_note used to reach .strip() below and
+            # crash the whole process instead of producing an error line.
+            _err(errors, "G13", "source.review_note is %s, expected string"
+                 % type(review_note).__name__)
+        elif not (review_note or "").strip():
             _err(errors, "G13",
                  "lo_ordinal is null, so source.review_note is required")
         if source.get("lo_text"):
             _err(errors, "G13", "lo_ordinal is null, so lo_text must be empty")
         return
-    objectives = section.get("learning_objectives", [])
-    if not isinstance(ordinal, int) or not 1 <= ordinal <= len(objectives):
+    objectives = section.get("learning_objectives") or []
+    # IMPORTANT fix (fix round 1): type(ordinal) is not int, not
+    # isinstance(ordinal, int). bool subclasses int in Python, so
+    # isinstance(True, int) is True and lo_ordinal: true used to pass
+    # silently as ordinal 1. type() excludes bool without an extra check.
+    if type(ordinal) is not int or not 1 <= ordinal <= len(objectives):
         _err(errors, "G13", "lo_ordinal %r is out of range: section %s has %d objectives"
              % (ordinal, source.get("section"), len(objectives)))
         return
