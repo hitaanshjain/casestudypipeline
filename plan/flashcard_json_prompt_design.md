@@ -113,9 +113,9 @@ populate the `concept` row and are not stored inside either blob.
   "card_type": "concept_example",
   "concept": "Power Rule",
   "source": {
-    "book_tag": "openstax_calc_v1",
+    "book_tag": "openstax_calc1",
     "section": "3.3",
-    "lo_id": "3.3.2",
+    "lo_ordinal": 1,
     "lo_text": "State the constant, constant multiple, and power rules."
   },
   "front": {
@@ -155,15 +155,23 @@ Top level:
   This spec covers `concept_example`; `problem_solution` reuses the same
   contract with a different back structure and is out of scope here.
 - `concept`: 1 to 40 characters. Becomes `concept.name` in the DB.
-- `source.book_tag`: must match a `book_tag` in a `references/*/book_map.json`.
-- `source.section`: must exist in that book map.
-- `source.lo_id`: must exist in that section, or `null`.
-- `source.lo_text`: verbatim objective text from the corpus, or `""` when
-  `lo_id` is `null`. Present so the human review gate can check the mapping
-  without opening the corpus.
-- `source.review_note`: string, required and non-empty when `lo_id` is `null`,
-  absent otherwise. Says why no objective fit. This is the v2 equivalent of
-  phase 1's `no_primary_available` honesty path.
+- `source.book_tag`: must match the `book_tag` in a `references/*/book_map.json`.
+  For the current corpus that value is `openstax_calc1`.
+- `source.section`: must exist in that book map, matched on its `number` field.
+- `source.lo_ordinal`: 1-based index into that section's `learning_objectives`
+  list, or `null`. **Amendment, July 28**: the spec first called this `lo_id`.
+  The corpus assigns no identifiers to objectives, and the DB's
+  `learning_objective.id` is an autoincrement that changes on every rebuild, so
+  neither is stable enough to put in a stored card. The section-scoped ordinal
+  is stable, and the importer resolves it to a DB id at load time.
+- `source.lo_text`: the objective **verbatim** from the corpus, or `""` when
+  `lo_ordinal` is `null`. Not decoration: gate G13 asserts byte equality with
+  `book_map.json` at that ordinal, which mechanically catches a paraphrased or
+  invented objective. That is the exact failure mode that left 8 of 75 mappings
+  as judgment calls in `tools/flashcard_lo_mapping.csv`.
+- `source.review_note`: string, required and non-empty when `lo_ordinal` is
+  `null`, absent otherwise. Says why no objective fit. This is the v2 equivalent
+  of phase 1's `no_primary_available` honesty path.
 
 `front`:
 
@@ -241,7 +249,7 @@ failure, one `ERROR <gate_id>: <message>` line per failure, mirroring
 | G10 | Notation consistency: every identifier used in `back` either appears in `variable_key` or is introduced by an earlier row |
 | G11 | No Unicode superscript, subscript, minus, or caret in any text field |
 | G12 | Every `latex` string parses (KaTeX parse check via node when available; skipped with a logged note when not) |
-| G13 | `source.section` exists in the named book map, and `source.lo_id` belongs to that section |
+| G13 | `source.section` exists in the named book map, `source.lo_ordinal` is in range for that section, and `source.lo_text` is byte-equal to the corpus objective at that ordinal |
 | G14 | Back footer does not begin with a blacklisted prefix |
 
 G09 is the one that matters most: "define every symbol exactly once" was
