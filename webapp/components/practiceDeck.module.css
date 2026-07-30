@@ -1,0 +1,231 @@
+/* Practice deck slideshow. Recreates chain-rule-nested-power-animation.html's
+   stage/sidebar/reference layout using the classes already ported into
+   app/globals.css by Task 5 (.panel, .eyebrow, .equation-stack/.equation-row,
+   .cards/.math-card, .callout, .progress-track/.progress-fill, .timeline,
+   .btn/.btn-primary). Everything below is layout/typography NOT already
+   ported (topbar, stage, controls, sidebar internals, reference section). */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+.stageShell {
+  overflow: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.deckTitle {
+  margin: 0;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  letter-spacing: -0.02em;
+}
+
+.deckSubtitle {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.stepCount {
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stage {
+  min-height: 460px;
+  padding: clamp(24px, 5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.stepContent {
+  position: relative;
+  animation: practiceDeckEnter 0.42s ease both;
+}
+
+@keyframes practiceDeckEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.caption {
+  color: var(--muted);
+  margin: 14px 0 20px;
+  font-size: clamp(0.98rem, 1.4vw, 1.1rem);
+  line-height: 1.55;
+  max-width: 760px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px 19px;
+  border-top: 1px solid var(--border);
+  background: rgba(8, 18, 32, 0.45);
+}
+
+.sidebar {
+  padding: 18px;
+  align-self: start;
+  position: sticky;
+  top: 18px;
+}
+
+.sidebarHeading {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.problemCard {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  margin-bottom: 15px;
+}
+
+.problemLabel {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+
+.problemMath {
+  margin-top: 9px;
+  font-size: 1.02rem;
+  overflow-x: auto;
+}
+
+.referenceShell {
+  grid-column: 1 / -1;
+  padding: 20px;
+}
+
+.referenceHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.referenceHeader h2 {
+  margin: 0;
+  font-size: clamp(1.18rem, 2vw, 1.45rem);
+  letter-spacing: -0.02em;
+}
+
+.referenceHeader p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.referenceList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.referenceItem {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border);
+}
+
+.referenceItemTop {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.referenceItemTop h3 {
+  margin: 0;
+  font-size: 0.94rem;
+}
+
+.referenceItemTop p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.referenceMath {
+  margin-top: 8px;
+  overflow-x: auto;
+  font-size: 1rem;
+}
+
+.referenceJump {
+  flex: 0 0 auto;
+  min-height: 31px;
+  border-radius: 9px;
+  border: 1px solid rgba(124, 167, 255, 0.35);
+  background: rgba(124, 167, 255, 0.1);
+  color: var(--text);
+  padding: 0 9px;
+  cursor: pointer;
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+.referenceJump:hover {
+  background: rgba(124, 167, 255, 0.18);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+  }
+  .referenceList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .stage {
+    padding: 22px 18px;
+    min-height: 400px;
+  }
+  .topbar {
+    align-items: flex-start;
+  }
+}

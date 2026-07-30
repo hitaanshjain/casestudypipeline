@@ -1,0 +1,226 @@
+/* Concept flashcard flip-card grid. Colors here are the deck's own brand
+   palette (from the source .pptx decks / render_flashcards.py), NOT the
+   dark-theme tokens in app/globals.css, per the results-page brief: these four
+   hex values are deliberately kept local to this module rather than promoted
+   to :root vars. */
+.grid {
+  --cc-front-bg: #011e4f;
+  --cc-front-text: #faf8f4;
+  --cc-front-accent: #82a4f5;
+  --cc-back-bg: #faf8f4;
+  --cc-back-text: #011e4f;
+  --cc-back-accent: #176cf8;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.cardButton {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  perspective: 1400px;
+}
+
+.cardButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
+
+.inner {
+  position: relative;
+  min-height: 380px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+.inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  box-sizing: border-box;
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.front {
+  background: var(--cc-front-bg);
+  color: var(--cc-front-text);
+  border: 2px solid var(--cc-front-text);
+  box-shadow:
+    inset 0 0 0 6px var(--cc-front-bg),
+    inset 0 0 0 7px var(--cc-front-text);
+}
+
+.back {
+  background: var(--cc-back-bg);
+  color: var(--cc-back-text);
+  border: 2px solid var(--cc-back-text);
+  box-shadow:
+    inset 0 0 0 6px var(--cc-back-bg),
+    inset 0 0 0 7px var(--cc-back-text);
+  transform: rotateY(180deg);
+}
+
+/* --- Front face --- */
+.frontBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.frontTitle {
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  line-height: 1.2;
+}
+
+.frontSubtitle {
+  margin: 0;
+  font-style: italic;
+  color: var(--cc-front-accent);
+  font-size: 0.92rem;
+}
+
+.frontDivider {
+  width: 56px;
+  height: 1px;
+  background: var(--cc-front-accent);
+  opacity: 0.65;
+  margin: 2px 0;
+}
+
+.frontCentral {
+  font-size: 1.05rem;
+}
+
+.variableKey {
+  display: grid;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--cc-front-accent);
+}
+
+.variableRow {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.descMain {
+  margin: 4px 0 0;
+  font-size: 0.94rem;
+  line-height: 1.4;
+}
+
+.descSupport {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--cc-front-accent);
+  line-height: 1.4;
+}
+
+.frontFooter {
+  margin: 10px 0 0;
+  text-align: center;
+  color: var(--cc-front-accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* --- Back face --- */
+.backBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+.backHeading {
+  margin: 0 0 8px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--cc-back-text);
+}
+
+.question {
+  margin: 0;
+  color: var(--cc-back-accent);
+  font-size: 0.96rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.backDivider {
+  width: 100%;
+  height: 1px;
+  background: rgba(1, 30, 79, 0.18);
+  margin: 12px 0;
+}
+
+.steps {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.step {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}
+
+.stepProse {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--cc-back-text);
+  opacity: 0.82;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.finalAnswer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(1, 30, 79, 0.25);
+  font-weight: 700;
+  text-align: left;
+}
+
+.backFooter {
+  margin: 12px 0 0;
+  text-align: center;
+  color: var(--cc-back-accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
