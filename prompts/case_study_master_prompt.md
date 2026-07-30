@@ -24,6 +24,11 @@ Optional files:
 - lo_mapping.json
 
 
+Optional run parameter:
+- preferred_context: a scenario domain requested by the student (for example
+  soccer, architecture, music). It arrives as plain text alongside the files.
+
+
 The worksheet must be fully generatable from the three required files alone.
 </input_files>
 
@@ -282,6 +287,9 @@ The scenario must materially affect the mathematics. Quantities, units, constrai
 Apply the strip test: mentally remove the scenario and replace meaningful quantities with generic labels. If the exercise remains essentially unchanged and the context has no effect on how students reason, interpret, compare, or decide, the scenario is decorative and must be revised.
 
 
+A preferred_context does not weaken this test: the requested domain must still constrain the mathematics, not decorate it.
+
+
 FULL-STRENGTH CONCEPT USE
 
 
@@ -333,6 +341,20 @@ Only the learning objective, essential skill, mathematical depth, and appropriat
 
 
 <anti_anchoring_requirement>
+PREFERRED CONTEXT OVERRIDE
+
+When a preferred_context is supplied, set the scenario in that domain, provided
+the central concept can honestly and materially matter there. Quantities,
+constraints, and the decision must still arise naturally from the situation.
+
+If the mathematics cannot honestly live in the requested domain, use the closest
+related domain that works, and state the substitution in one LaTeX comment line
+(% CONTEXT NOTE: ...) above \documentclass.
+
+Everything below governs scenario choice only when no preferred_context is
+supplied.
+
+
 Choose the scenario from the mathematics and learning objective, not from examples, familiar patterns, or frequently used case structures.
 
 
