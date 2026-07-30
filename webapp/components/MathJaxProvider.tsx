@@ -1,0 +1,24 @@
+"use client";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+
+const MathJaxReady = createContext(false);
+export function useMathJaxReady() { return useContext(MathJaxReady); }
+
+export default function MathJaxProvider({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState(false);
+  const loaded = useRef(false);
+  useEffect(() => {
+    if (loaded.current) return;
+    loaded.current = true;
+    (window as any).MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+      chtml: { scale: 1.05, displayAlign: "center" },
+      startup: { pageReady: () => (window as any).MathJax.startup.defaultPageReady().then(() => setReady(true)) },
+    };
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js";
+    s.defer = true;
+    document.head.appendChild(s);
+  }, []);
+  return <MathJaxReady.Provider value={ready}>{children}</MathJaxReady.Provider>;
+}

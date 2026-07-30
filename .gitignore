@@ -11,3 +11,7 @@ __pycache__/
 spot_check.html
 flashcard_preview.html
 flashcards.html
+webapp/node_modules/
+webapp/.next/
+webapp/.env.local
+webapp/next-env.d.ts
