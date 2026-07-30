@@ -86,7 +86,7 @@ FRONT
 - title: one line, at most 60 characters, the concept's own name. No generic wording such as "Core Concept" or "Key Idea."
 - subtitle: 2 to 4 words. No generic wording such as "Key Formula" or "Main Idea."
 - exactly one of central_latex or central_prose is non-null; the other is null. Use central_latex for a formula, theorem statement, or symbolic rule. Use central_prose for a concept better stated in words. Never fill both, never leave both null.
-- variable_key: one entry per symbol that appears in central_latex (or in central_prose's inline math) and needs a reader-facing meaning, each entry {"symbol", "meaning"}. Define every symbol used. An empty array is acceptable only when the card's central statement introduces no topic-specific notation.
+- variable_key: one entry per symbol that appears in central_latex (or in central_prose's inline math) and needs a reader-facing meaning, each entry {"symbol", "meaning"}. Define every symbol used. An empty array is acceptable only when the card's central statement introduces no topic-specific notation. At most 8 entries: when more symbols appear, keep the 8 most load-bearing and fold the trivial ones into prose (description_main, description_support, or a step) instead of a key entry.
 - description_main: at most 14 words, stating what the concept says or does.
 - description_support: at most 17 words, adding a second true fact about the concept (a condition, a common use, or how it relates to a neighboring idea). Do not restate description_main.
 

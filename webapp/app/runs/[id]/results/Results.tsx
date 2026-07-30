@@ -192,14 +192,23 @@ export default function Results({ id }: { id: string }) {
             })}
           </div>
 
+          {state.cacheOffline && (effectiveTab === "concept_cards" || effectiveTab === "practice_deck") && (
+            <p className={styles.cacheNote}>
+              Flashcard cache was offline for this run; cards were generated fresh and not saved.
+            </p>
+          )}
+
           <div className={styles.tabBody}>
-            {effectiveTab === "case_study" && <CaseStudyTab id={id} stage={state.stages.case_study} />}
+            {effectiveTab === "case_study" && (
+              <CaseStudyTab id={id} stage={state.stages.case_study} failed={state.failed} />
+            )}
             {effectiveTab === "concept_cards" && (
               <ConceptCardsTab
                 id={id}
                 stage={state.stages.concept_cards}
                 payload={conceptCards}
                 attempted={artifactsAttempted}
+                failed={state.failed}
               />
             )}
             {effectiveTab === "practice_deck" && (
@@ -208,6 +217,7 @@ export default function Results({ id }: { id: string }) {
                 stage={state.stages.practice_deck}
                 deck={practiceDeck}
                 attempted={artifactsAttempted}
+                failed={state.failed}
               />
             )}
           </div>
@@ -218,9 +228,29 @@ export default function Results({ id }: { id: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// Shared: a stage that never ran because an earlier stage failed the whole
+// run. Natural navigation never surfaces this (a failed run auto-forwards
+// here with the failed tab selected, per decision 10), so it only guards a
+// manually-typed results URL against attempting artifact rendering or
+// showing the misleading "reported success but data could not be read"
+// message for a stage that was never attempted at all.
+// ---------------------------------------------------------------------------
+function StageNotRun() {
+  return (
+    <div className="callout">
+      <div className="callout-icon">-</div>
+      <div>
+        <h3>This stage did not run</h3>
+        <p>This stage did not run because the run failed earlier.</p>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Case Study tab
 // ---------------------------------------------------------------------------
-function CaseStudyTab({ id, stage }: { id: string; stage: StageEntry }) {
+function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; failed: boolean }) {
   const [texExists, setTexExists] = useState(false);
   const [logExists, setLogExists] = useState(false);
 
@@ -244,6 +274,10 @@ function CaseStudyTab({ id, stage }: { id: string; stage: StageEntry }) {
       cancelled = true;
     };
   }, [id, stage.status]);
+
+  if (stage.status === "pending" && failed) {
+    return <StageNotRun />;
+  }
 
   if (stage.status === "failed") {
     return (
@@ -304,12 +338,18 @@ function ConceptCardsTab({
   stage,
   payload,
   attempted,
+  failed,
 }: {
   id: string;
   stage: StageEntry;
   payload: TConceptCardsPayload | null;
   attempted: boolean;
+  failed: boolean;
 }) {
+  if (stage.status === "pending" && failed) {
+    return <StageNotRun />;
+  }
+
   if (stage.status === "failed") {
     return (
       <div className="callout warning">
@@ -355,12 +395,18 @@ function PracticeDeckTab({
   stage,
   deck,
   attempted,
+  failed,
 }: {
   id: string;
   stage: StageEntry;
   deck: TPracticeDeck | null;
   attempted: boolean;
+  failed: boolean;
 }) {
+  if (stage.status === "pending" && failed) {
+    return <StageNotRun />;
+  }
+
   if (stage.status === "failed") {
     return (
       <div className="callout warning">
