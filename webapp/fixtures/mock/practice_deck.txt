@@ -1,0 +1,288 @@
+{
+  "schemaVersion": "1.1",
+  "renderer": {
+    "id": "math-animation-dark-sidebar",
+    "version": "1.1.0"
+  },
+  "animationId": "chain-rule-sine-cubed-001",
+  "title": "Chain Rule on a Nested Power",
+  "subtitle": "Differentiating sine cubed of a linear input",
+  "problem": {
+    "prompt": "Differentiate the function using the chain rule, then evaluate the derivative at the given point. Give the exact value.",
+    "latex": "y=\\sin^{3}(2x),\\qquad \\text{find } \\frac{dy}{dx} \\text{ and } \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}",
+    "answerLatex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299"
+  },
+  "steps": [
+    {
+      "id": "identify-composition",
+      "title": "Recognize the composition",
+      "caption": "The notation hides two nested operations: a cube applied to a sine, and a sine applied to a linear expression.",
+      "equations": [
+        {
+          "label": "Given",
+          "latex": "y=\\sin^{3}(2x)=\\left[\\sin(2x)\\right]^{3}",
+          "style": "primary"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "goal",
+        "title": "Goal",
+        "text": "Differentiate the nested function with the chain rule, then substitute x equal to pi over twelve for an exact value."
+      }
+    },
+    {
+      "id": "decompose-layers",
+      "title": "Peel the layers",
+      "caption": "Name each layer from the outside inward so no factor is forgotten later.",
+      "equations": [
+        {
+          "label": "Composite form",
+          "latex": "y=f(g(h(x))),\\qquad f(u)=u^{3},\\quad g(v)=\\sin v,\\quad h(x)=2x",
+          "style": "primary"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Outer layer",
+          "latex": "u^{3}\\ \\text{ with }\\ u=\\sin(2x)",
+          "tone": "blue"
+        },
+        {
+          "label": "Inner layers",
+          "latex": "\\sin v\\ \\text{ with }\\ v=2x",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "tip",
+        "title": "Outside-in ordering",
+        "text": "Always ask what operation happens last. That operation is the outermost layer."
+      }
+    },
+    {
+      "id": "state-chain-rule",
+      "title": "State the chain rule",
+      "caption": "The derivative of a composition is the product of the derivatives of every layer, each evaluated at its own input.",
+      "equations": [
+        {
+          "label": "Chain rule",
+          "latex": "\\frac{d}{dx}f(g(x))=f'(g(x))\\cdot g'(x)",
+          "style": "rule"
+        },
+        {
+          "label": "Three layers",
+          "latex": "\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dv}\\cdot\\frac{dv}{dx}",
+          "style": "rule"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "memory",
+        "title": "Memory cue",
+        "text": "Differentiate the outside, keep the inside unchanged, then multiply by the derivative of the inside."
+      }
+    },
+    {
+      "id": "differentiate-outer",
+      "title": "Differentiate the outer layer",
+      "caption": "Apply the power rule to the cube while treating the sine as an untouched single quantity.",
+      "equations": [
+        {
+          "label": "Power rule on the cube",
+          "latex": "\\frac{dy}{du}=3u^{2}=3\\sin^{2}(2x)",
+          "style": "secondary"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Correct",
+          "latex": "3\\left[\\sin(2x)\\right]^{2}",
+          "tone": "blue"
+        },
+        {
+          "label": "Not yet complete",
+          "latex": "3\\sin^{2}(2x)\\ \\text{alone is missing two factors}",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "warning",
+        "title": "Do not stop here",
+        "text": "The power rule alone ignores the sine and the linear input, so the answer would be incomplete."
+      }
+    },
+    {
+      "id": "differentiate-inner",
+      "title": "Differentiate the inner layers",
+      "caption": "The sine differentiates to cosine at the same input, and the linear expression contributes a constant factor.",
+      "equations": [],
+      "cards": [
+        {
+          "label": "Middle layer",
+          "latex": "\\frac{du}{dv}=\\cos v=\\cos(2x)",
+          "tone": "blue"
+        },
+        {
+          "label": "Innermost layer",
+          "latex": "\\frac{dv}{dx}=\\frac{d}{dx}(2x)=2",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "check",
+        "title": "Input check",
+        "text": "The cosine keeps the argument two x. The argument never changes when differentiating the outer layers."
+      }
+    },
+    {
+      "id": "assemble-derivative",
+      "title": "Multiply the three factors",
+      "caption": "Combine every layer derivative into one product, keeping each argument intact.",
+      "equations": [
+        {
+          "label": "Assembled product",
+          "latex": "\\frac{dy}{dx}=3\\sin^{2}(2x)\\cdot\\cos(2x)\\cdot 2",
+          "style": "primary"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "tip",
+        "title": "Count your factors",
+        "text": "Three layers must yield three factors. A missing constant factor is the most common source of error."
+      }
+    },
+    {
+      "id": "simplify-derivative",
+      "title": "Simplify the derivative",
+      "caption": "Collect the numerical coefficients into a single constant.",
+      "equations": [
+        {
+          "label": "General derivative",
+          "latex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x)",
+          "style": "final"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "success",
+        "title": "First requested result",
+        "text": "This expression is the derivative valid for every real value of x."
+      }
+    },
+    {
+      "id": "evaluate-point",
+      "title": "Evaluate at the given point",
+      "caption": "Substitute the point, simplify the argument first, then use exact unit-circle values.",
+      "equations": [
+        {
+          "label": "Argument",
+          "latex": "x=\\frac{\\pi}{12}\\ \\Longrightarrow\\ 2x=\\frac{\\pi}{6}",
+          "style": "secondary"
+        },
+        {
+          "label": "Substitution",
+          "latex": "\\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=6\\left(\\frac{1}{2}\\right)^{2}\\left(\\frac{\\sqrt{3}}{2}\\right)",
+          "style": "primary"
+        },
+        {
+          "label": "Exact value",
+          "latex": "=6\\cdot\\frac{1}{4}\\cdot\\frac{\\sqrt{3}}{2}=\\frac{6\\sqrt{3}}{8}=\\frac{3\\sqrt{3}}{4}",
+          "style": "final"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Sine value",
+          "latex": "\\sin\\frac{\\pi}{6}=\\frac{1}{2}",
+          "tone": "blue"
+        },
+        {
+          "label": "Cosine value",
+          "latex": "\\cos\\frac{\\pi}{6}=\\frac{\\sqrt{3}}{2}",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "warning",
+        "title": "Square the sine, not the angle",
+        "text": "The exponent applies to the sine value, so one half is squared to give one quarter."
+      }
+    },
+    {
+      "id": "verify-answer",
+      "title": "Verify and interpret",
+      "caption": "A second method confirms the derivative, and a decimal estimate confirms the size and sign.",
+      "equations": [
+        {
+          "label": "Identity check",
+          "latex": "\\frac{d}{dx}\\left[\\frac{3\\sin(2x)-\\sin(6x)}{4}\\right]=\\frac{6\\cos(2x)-6\\cos(6x)}{4}",
+          "style": "secondary"
+        },
+        {
+          "label": "Final answer",
+          "latex": "\\boxed{\\ \\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299\\ }",
+          "style": "final"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Rewritten form check at the point",
+          "latex": "\\frac{6\\cos\\frac{\\pi}{6}-6\\cos\\frac{\\pi}{2}}{4}=\\frac{3\\sqrt{3}-0}{4}",
+          "tone": "blue"
+        },
+        {
+          "label": "Sign reasoning",
+          "latex": "\\sin^{2}(2x)>0,\\ \\cos\\frac{\\pi}{6}>0\\ \\Rightarrow\\ \\frac{dy}{dx}>0",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "success",
+        "title": "Consistent",
+        "text": "The identity route gives the same value, and the positive result matches a function that is increasing there."
+      }
+    }
+  ],
+  "reference": {
+    "equations": [
+      {
+        "title": "Chain rule",
+        "latex": "\\frac{d}{dx}f(g(x))=f'(g(x))\\cdot g'(x)",
+        "text": "Here f is the outer function and g is the inner function. The outer derivative is evaluated at the unchanged inner expression, then multiplied by the inner derivative.",
+        "stepId": "state-chain-rule"
+      },
+      {
+        "title": "Three-layer chain rule",
+        "latex": "\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dv}\\cdot\\frac{dv}{dx}",
+        "text": "With u the outer input, v the middle input, and x the variable, each nesting level contributes one derivative factor.",
+        "stepId": "decompose-layers"
+      },
+      {
+        "title": "Power rule",
+        "latex": "\\frac{d}{du}\\left[u^{n}\\right]=nu^{n-1}",
+        "text": "Used for the outer cube, with n equal to three and u equal to sine of two x.",
+        "stepId": "differentiate-outer"
+      },
+      {
+        "title": "Derivative of sine",
+        "latex": "\\frac{d}{dv}\\left[\\sin v\\right]=\\cos v",
+        "text": "Valid when v is measured in radians. The argument is carried through unchanged.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Linear inner function",
+        "latex": "\\frac{d}{dx}(ax+b)=a",
+        "text": "A linear inner layer contributes only the constant a, which here equals two.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Power reducing identity for sine cubed",
+        "latex": "\\sin^{3}\\theta=\\frac{3\\sin\\theta-\\sin 3\\theta}{4}",
+        "text": "Used only as an independent verification route with theta equal to two x.",
+        "stepId": "verify-answer"
+      }
+    ]
+  }
+}
