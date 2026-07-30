@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MathGPT Pipeline Web App
 
-## Getting Started
+Next.js app that runs the full pipeline: paste a textbook problem, pick a scenario
+theme, and get back a one-page case-study PDF, concept flashcards, and a
+step-by-step practice deck. Flashcards are cached in MySQL by textbook section:
+a topic that already has cards serves them instead of regenerating.
 
-First, run the development server:
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd webapp
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `webapp/.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+ANTHROPIC_API_KEY=sk-ant-...        # required for live runs; omit in mock mode
+ANTHROPIC_MODEL=claude-sonnet-5     # optional, this is the default
+MOCK_LLM=1                          # optional: run the whole pipeline off fixtures, no key needed
+MYSQL_HOST=127.0.0.1                # defaults match flashcards_db/docker-compose.yml
+MYSQL_PORT=3306
+MYSQL_USER=flashcards_user
+MYSQL_PASSWORD=change_me_user
+MYSQL_DATABASE=flashcards
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Start the flashcard cache (optional; without it the app generates fresh every run
+and shows a "cache offline" note):
 
-## Learn More
+```bash
+cd ../flashcards_db
+docker compose up -d
+```
 
-To learn more about Next.js, take a look at the following resources:
+The DB initializes with the OpenStax Calc 1 hierarchy (45 sections, 195 learning
+objectives) and zero cards; the pipeline inserts cards as it generates them.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Run
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev     # http://localhost:3000
+npm test        # vitest: contracts, corpus tools, LLM mock, DB integration, mock e2e
+npm run build
+```
 
-## Deploy on Vercel
+Note: the DB integration tests write rows; if a second `npm test` fails with
+ER_DUP_ENTRY, reset the volume (`docker compose down -v && docker compose up -d`
+in flashcards_db/).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Mock mode vs live
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+With `MOCK_LLM=1` every model call returns a recorded fixture from
+`webapp/fixtures/mock/`, so the complete flow (Stage 1 -> critic -> case-study
+LaTeX -> real tectonic compile -> flashcard JSON -> DB insert -> results page)
+runs without an API key. The e2e test suite runs this way.
+
+To go live: remove `MOCK_LLM`, set `ANTHROPIC_API_KEY`, restart the dev server.
+Before the first live run, read the "live-key work" notes in CLAUDE.md
+(sec 13 backlog): the non-mock critic pass/fail contract needs one reconciliation
+pass, and no live run has ever been made.
+
+## Pipeline flow
+
+1. `POST /api/runs` with `{problem, preferredContext}` returns a run id;
+   `/runs/<id>` polls `GET /api/runs/<id>`.
+2. Stage 1: the phase-1 generator prompt, with read-only corpus tools over
+   `references/`, writes the 5-file package to `runs/<id>/`.
+3. Critic: the phase-1 critic re-solves the problem; a calibration mismatch fails
+   the run honestly with no artifacts.
+4. Topic resolution: lo_mapping's PRIMARY section maps to a `chapter` row; the
+   cache is checked per section.
+5. Fan-out, in parallel: case study (LaTeX -> `tools/tectonic.exe` -> PDF, one
+   retry on compile failure), concept cards (cache hit or generate + validate +
+   insert), practice deck (same).
+6. `/runs/<id>/results` renders three tabs: embedded PDF, flip cards, and the
+   Previous/Next/Final Slide practice slideshow.
+
+Artifacts land in `runs/<id>/` (gitignored): the Stage 1 files, `case_study.tex`,
+`case_study.pdf`, `concept_cards.json`, `practice_deck.json`, `compile.log`,
+`state.json`.
+
+## Prompts
+
+The app loads prompts from the repo's `prompts/` directory at call time:
+`phase1_generator_prompt_v1.md`, `phase1_critic_prompt_v1.md`,
+`case_study_master_prompt.md`, `concept_flashcards_prompt.md`,
+`practice_deck_prompt.md`. Editing those files changes the pipeline's behavior;
+no rebuild needed.
