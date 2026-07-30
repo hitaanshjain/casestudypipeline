@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MathBlock } from "./Math";
+import { MathBlock, Prose } from "./Math";
 import type { TPracticeDeck } from "@/lib/contracts";
 import styles from "./practiceDeck.module.css";
 
@@ -76,7 +76,11 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
           <article className={styles.stepContent} key={step.id}>
             <p className="eyebrow">Step {stepIndex + 1}</p>
             <h3 className={styles.stepTitle}>{step.title}</h3>
-            {step.caption && <p className={styles.caption}>{step.caption}</p>}
+            {step.caption && (
+              <p className={styles.caption}>
+                <Prose text={step.caption} />
+              </p>
+            )}
 
             {step.equations.length > 0 && (
               <div className="equation-stack">
@@ -108,8 +112,12 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
               <div className={`callout ${step.callout.type}`}>
                 <div className="callout-icon">{CALLOUT_ICONS[step.callout.type] ?? "•"}</div>
                 <div>
-                  <h3>{step.callout.title}</h3>
-                  <p>{step.callout.text}</p>
+                  <h3>
+                    <Prose text={step.callout.title} />
+                  </h3>
+                  <p>
+                    <Prose text={step.callout.text} />
+                  </p>
                 </div>
               </div>
             )}

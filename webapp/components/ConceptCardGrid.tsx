@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MathBlock, Prose } from "./Math";
+import { useMathJaxReady } from "./MathJaxProvider";
 import type { TConceptCard } from "@/lib/contracts";
 import styles from "./conceptCards.module.css";
 
@@ -32,6 +33,7 @@ function FlipCard({ card }: { card: TConceptCard }) {
   const [height, setHeight] = useState(MIN_CARD_HEIGHT);
   const frontRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
+  const mathJaxReady = useMathJaxReady();
 
   useEffect(() => {
     const measure = () => {
@@ -40,11 +42,42 @@ function FlipCard({ card }: { card: TConceptCard }) {
       setHeight(Math.max(MIN_CARD_HEIGHT, frontHeight, backHeight));
     };
     measure();
+
     const ro = new ResizeObserver(measure);
     if (frontRef.current) ro.observe(frontRef.current);
     if (backRef.current) ro.observe(backRef.current);
-    return () => ro.disconnect();
-  }, [card]);
+
+    // ResizeObserver alone is not enough: each face is `position: absolute;
+    // inset: 0` inside `.inner` (an explicit pixel height, applied via the
+    // inline `height` style below), so a face's own border-box is pinned by
+    // its parent and never itself resizes as content grows inside its
+    // `overflow: hidden` box -- the observer above never re-fires when
+    // MathJax-typeset math grows taller than the raw text it replaced. The
+    // initial measure() call above also runs on mount before MathJax has
+    // typeset anything: MathBlock/Prose (Math.tsx) write raw
+    // "\(...\)"/"\[...\]" textContent synchronously, then call
+    // MathJax.typesetPromise asynchronously, only once useMathJaxReady()
+    // flips true. Typesetting replaces those raw text nodes with rendered
+    // `mjx-container` elements, which IS a DOM mutation, so a
+    // MutationObserver on each face catches the moment typesetting actually
+    // finishes (whenever the CDN script/typeset call completes, regardless
+    // of load timing) and re-measures scrollHeight then, which is the
+    // moment it is correct. `mathJaxReady` is also in the dependency array
+    // so a fresh measure + observer pair is installed as soon as MathJax
+    // becomes available, not just at initial mount.
+    const mo = new MutationObserver(measure);
+    if (frontRef.current) {
+      mo.observe(frontRef.current, { childList: true, subtree: true, characterData: true });
+    }
+    if (backRef.current) {
+      mo.observe(backRef.current, { childList: true, subtree: true, characterData: true });
+    }
+
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+    };
+  }, [card, mathJaxReady]);
 
   return (
     <button
@@ -77,8 +110,12 @@ function FlipCard({ card }: { card: TConceptCard }) {
                 ))}
               </div>
             )}
-            <p className={styles.descMain}>{card.front.description_main}</p>
-            <p className={styles.descSupport}>{card.front.description_support}</p>
+            <p className={styles.descMain}>
+              <Prose text={card.front.description_main} />
+            </p>
+            <p className={styles.descSupport}>
+              <Prose text={card.front.description_support} />
+            </p>
           </div>
           <p className={styles.frontFooter}>Flip for a worked example</p>
         </div>
@@ -106,7 +143,9 @@ function FlipCard({ card }: { card: TConceptCard }) {
               <MathBlock latex={card.back.final_answer_latex} />
             </div>
           </div>
-          <p className={styles.backFooter}>{card.back.footer}</p>
+          <p className={styles.backFooter}>
+            <Prose text={card.back.footer} />
+          </p>
         </div>
       </div>
     </button>
