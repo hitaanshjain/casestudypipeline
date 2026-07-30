@@ -10,8 +10,9 @@ Self-contained local flashcard database. Needs ONLY Docker Desktop; no repo, no 
 
 First boot creates database `flashcards`, applies `init/01_schema.sql` (six tables plus
 the `flashcard_full` view), then `init/02_seed.sql` (OpenStax Calculus Volume 1 hierarchy:
-45 sections, 195 learning objectives), then `init/03_concept_cards.sql` (75 concept
-cards). Takes about a minute the first time.
+45 sections, 195 learning objectives). The database initializes with schema and hierarchy
+only; cards are empty. The web app pipeline in `webapp/` populates cards as JSON-format
+`concept_example` and `problem_solution` rows as it generates flashcards. Takes about a minute the first time.
 
 ## Connect
 
@@ -30,7 +31,6 @@ learning_objective > concept > flashcard. A flashcard has a `card_type`
 (`concept_example` or `problem_solution`), and front/back content as blobs with
 `front_format`/`back_format` tags (`json` today; `gif` later without any
 schema change). At most one card of each type per concept (enforced by the DB).
-Currently only concept_example cards are populated.
 
 ## Reset / remove
 
@@ -44,5 +44,5 @@ Currently only concept_example cards are populated.
 - Content licensing: OpenStax Calculus Volume 1, CC BY-NC-SA 4.0. The required credit
   ("Access for free at openstax.org.") is stored on the textbook row; any UI that shows
   card content must display it.
-- To apply to another MySQL server (e.g. production later): run `init/01_schema.sql`,
-  then `init/02_seed.sql`, then `init/03_concept_cards.sql` against it in that order.
+- To apply to another MySQL server (e.g. production later): run `init/01_schema.sql`
+  then `init/02_seed.sql` against it in that order. Cards are populated by the pipeline.

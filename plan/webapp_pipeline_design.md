@@ -286,3 +286,12 @@ New: webapp/ (Next.js app), runs/ output directory (gitignored).
   untracked PPTX folder only.
 - MathGPT production integration (their renderer, their MySQL conventions) stays
   future work; the schema is unchanged partly for that reason.
+
+## 9. Cleanup notes
+
+Two root-level files were duplicates of tracked files in `prompts/` and `plan/`. Task 1 diffed them before deletion to check for substantive changes.
+
+**universal_case_study_prompt_v5.md (root) vs prompts/universal_case_study_prompt_v5.md**: substantive changes in 237 lines of diff output (approximately 60 lines of actual content changes after filtering hunks). Key changes include: updated P1-P8 playbook derivation rules with expanded examples and clearer scope fence; refined the twelve invariants with better wording (e.g., invariant 3 "trap materiality" criterion, invariant 6 time budget, invariant 10 verdict-first); added guidance on reference data in data blocks; improved hint concealment examples; relaxed page-count rule to budgets; and clarified the derive-then-generate playbook emission. These reflect the refinements from the July 2 external review and subsequent team convergence.
+
+**pipeline_build_plan.md (root) vs plan/pipeline_build_plan.md**: substantive changes in 33 lines of diff output. Key changes: version references updated from v4 to v5 (now the single-shot manual prompt); clarified that the pipeline adapts IMathAS recon ideas; adjusted stage descriptions to reference v5 invariants and playbooks; and added harvest fixtures from v4 review. The root file was an older snapshot; tracked file is current.
+

@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Math Animation Renderer</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      chtml: {
+        scale: 1.05,
+        displayAlign: 'center'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #0f1d31;
+      --panel-2: #14243b;
+      --text: #f7f9fc;
+      --muted: #aebbd0;
+      --accent: #7ca7ff;
+      --accent-2: #aa91ff;
+      --success: #8be0b1;
+      --warning: #ffd38a;
+      --border: rgba(255,255,255,.12);
+      --shadow: 0 24px 60px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(124,167,255,.16), transparent 32%),
+        radial-gradient(circle at 90% 80%, rgba(170,145,255,.13), transparent 28%),
+        var(--bg);
+    }
+
+    button, select, textarea, input { font: inherit; }
+
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 18px auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+    }
+
+    .stage-shell, .sidebar {
+      background: rgba(15,29,49,.92);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .stage-shell { overflow: hidden; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      letter-spacing: -.02em;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .step-count {
+      color: var(--muted);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      height: 5px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .35s ease;
+    }
+
+    .stage {
+      min-height: 610px;
+      padding: clamp(26px, 5vw, 52px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -110px auto;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(124,167,255,.06);
+      pointer-events: none;
+    }
+
+    .step-content {
+      position: relative;
+      z-index: 1;
+      animation: enter .48s ease both;
+    }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(14px) scale(.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+
+    .caption {
+      color: var(--muted);
+      margin: 15px 0 28px;
+      font-size: clamp(1rem, 1.6vw, 1.16rem);
+      line-height: 1.55;
+      max-width: 760px;
+    }
+
+    .equation-stack {
+      display: grid;
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
+    .equation-row {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.035);
+      border-radius: 17px;
+      padding: 14px 18px;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rowIn .4s ease forwards;
+    }
+
+    @keyframes rowIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .equation-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      margin-bottom: 7px;
+    }
+
+    .equation {
+      font-size: clamp(1.15rem, 2.7vw, 1.8rem);
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 3px 0;
+    }
+
+    .equation-row.rule { border-color: rgba(170,145,255,.4); background: rgba(170,145,255,.08); }
+    .equation-row.primary { border-color: rgba(124,167,255,.45); background: rgba(124,167,255,.08); }
+    .equation-row.final { border-color: rgba(139,224,177,.5); background: rgba(139,224,177,.09); }
+    .equation-row.final .equation { font-size: clamp(1.35rem, 3.3vw, 2.15rem); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
+    .math-card {
+      border-radius: 17px;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rowIn .42s ease forwards;
+    }
+
+    .math-card.blue { background: rgba(124,167,255,.1); border-color: rgba(124,167,255,.42); }
+    .math-card.violet { background: rgba(170,145,255,.1); border-color: rgba(170,145,255,.42); }
+
+    .card-label {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .card-math { font-size: clamp(1rem, 2.3vw, 1.45rem); overflow-x: auto; }
+
+    .callout {
+      margin-top: 18px;
+      padding: 15px 17px;
+      border-radius: 16px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .callout-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: rgba(124,167,255,.12);
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    .callout.success .callout-icon { color: var(--success); background: rgba(139,224,177,.12); }
+    .callout.warning .callout-icon { color: var(--warning); background: rgba(255,211,138,.12); }
+
+    .callout h3 { margin: 0 0 4px; font-size: .95rem; }
+    .callout p { margin: 0; color: var(--muted); line-height: 1.45; font-size: .92rem; }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px 19px;
+      border-top: 1px solid var(--border);
+      background: rgba(8,18,32,.45);
+    }
+
+    .controls button, .controls select, .file-label {
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.055);
+      color: var(--text);
+      padding: 0 14px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .controls button:hover, .file-label:hover { background: rgba(255,255,255,.1); }
+    .controls button.primary { background: var(--accent); color: #08111f; border-color: transparent; }
+    .controls button:disabled { opacity: .35; cursor: default; }
+    .spacer { flex: 1; }
+
+    .sidebar {
+      padding: 18px;
+      align-self: start;
+      position: sticky;
+      top: 18px;
+    }
+
+    .sidebar h2 { margin: 0 0 6px; font-size: 1.1rem; }
+    .sidebar-intro { color: var(--muted); margin: 0 0 16px; font-size: .88rem; line-height: 1.45; }
+
+    .problem-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      margin-bottom: 15px;
+    }
+
+    .problem-label { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .problem-math { margin-top: 9px; font-size: 1.02rem; overflow-x: auto; }
+
+    .timeline {
+      display: grid;
+      gap: 7px;
+      max-height: 338px;
+      overflow: auto;
+      padding-right: 4px;
+      margin-bottom: 16px;
+    }
+
+    .timeline button {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      border-radius: 11px;
+      padding: 9px 10px;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .timeline button:hover { background: rgba(255,255,255,.045); }
+    .timeline button.active { background: rgba(124,167,255,.11); border-color: rgba(124,167,255,.3); color: var(--text); }
+    .timeline-index { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: rgba(255,255,255,.06); font-size: .72rem; font-weight: 800; }
+    .timeline-title { font-size: .83rem; font-weight: 700; }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.2);
+      color: var(--text);
+      padding: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .74rem;
+      line-height: 1.4;
+    }
+
+    .json-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .json-actions button, .file-label {
+      min-height: 39px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.055);
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0 10px;
+      font-size: .8rem;
+      font-weight: 750;
+    }
+    #fileInput { display: none; }
+    .status { min-height: 18px; margin-top: 8px; color: var(--muted); font-size: .75rem; }
+
+
+    .reference-shell {
+      grid-column: 1 / -1;
+      background: rgba(15,29,49,.92);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      padding: 20px;
+    }
+
+    .reference-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .reference-header h2 {
+      margin: 0;
+      font-size: clamp(1.18rem, 2vw, 1.45rem);
+      letter-spacing: -.02em;
+    }
+
+    .reference-header p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.45;
+    }
+
+    .reference-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .reference-group {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,.035);
+      overflow: hidden;
+    }
+
+    .reference-group summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 14px 16px;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .reference-group summary::-webkit-details-marker { display: none; }
+    .reference-group summary::after {
+      content: "+";
+      color: var(--accent);
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+    .reference-group[open] summary::after { content: "−"; }
+
+    .reference-items {
+      display: grid;
+      gap: 8px;
+      padding: 0 12px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .reference-item {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .reference-item-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .reference-item h3 {
+      margin: 0;
+      font-size: .92rem;
+    }
+
+    .reference-item p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.45;
+    }
+
+    .reference-math {
+      margin-top: 8px;
+      overflow-x: auto;
+      font-size: 1rem;
+    }
+
+    .reference-jump {
+      flex: 0 0 auto;
+      min-height: 31px;
+      border-radius: 9px;
+      border: 1px solid rgba(124,167,255,.35);
+      background: rgba(124,167,255,.1);
+      color: var(--text);
+      padding: 0 9px;
+      cursor: pointer;
+      font-size: .73rem;
+      font-weight: 800;
+    }
+
+    .reference-jump:hover { background: rgba(124,167,255,.18); }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .stage { min-height: 560px; }
+      .reference-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .app { width: min(100% - 14px, 1180px); margin: 7px auto; gap: 10px; }
+      .stage-shell, .sidebar { border-radius: 18px; }
+      .stage { padding: 25px 19px; min-height: 545px; }
+      .cards { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; }
+      .controls .spacer { display: none; }
+      .controls select { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="stage-shell" aria-label="Animation stage">
+      <header class="topbar">
+        <div class="brand">
+          <h1 id="animationTitle">Math Animation</h1>
+          <p id="animationSubtitle">Structured JSON renderer</p>
+        </div>
+        <div class="step-count" id="stepCount">Step 1 of 1</div>
+      </header>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="stage" id="stage"></div>
+      <footer class="controls">
+        <button id="resetBtn" title="Restart">↺ Reset</button>
+        <button id="prevBtn" title="Previous step">← Previous</button>
+        <button id="playBtn" class="primary" title="Play or pause">▶ Play</button>
+        <button id="nextBtn" title="Next step">Next →</button>
+        <div class="spacer"></div>
+        <label for="speedSelect" style="color:var(--muted);font-size:.82rem;font-weight:700">Speed</label>
+        <select id="speedSelect" aria-label="Playback speed">
+          <option value="0.5">0.5×</option>
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+        </select>
+      </footer>
+    </section>
+
+    <aside class="sidebar">
+      <h2>Animation data</h2>
+      <p class="sidebar-intro">Use the built-in example, paste another compatible JSON object, or load a local <code>.json</code> file.</p>
+      <div class="problem-card">
+        <div class="problem-label">Current problem</div>
+        <div class="problem-math" id="problemMath"></div>
+      </div>
+      <div class="timeline" id="timeline"></div>
+      <textarea id="jsonInput" spellcheck="false" aria-label="Animation JSON"></textarea>
+      <div class="json-actions">
+        <button id="applyJsonBtn">Apply pasted JSON</button>
+        <label class="file-label" for="fileInput">Load JSON file</label>
+        <input id="fileInput" type="file" accept="application/json,.json" />
+      </div>
+      <div class="status" id="status"></div>
+    </aside>
+
+    <section class="reference-shell" aria-labelledby="referenceTitle">
+      <div class="reference-header">
+        <div>
+          <h2 id="referenceTitle">Equations, Tips, Shortcuts &amp; Tricks</h2>
+          <p>Topic-specific reference material connected to the worked solution.</p>
+        </div>
+      </div>
+      <div class="reference-grid" id="referenceSections"></div>
+    </section>
+  </main>
+
+  <!-- BEGIN GENERATED ANIMATION DATA -->
+  <script id="animation-data" type="application/json">
+{
+  "schemaVersion": "1.1",
+  "renderer": {
+    "id": "math-animation-dark-sidebar",
+    "version": "1.1.0"
+  },
+  "animationId": "chain-rule-sine-cubed-001",
+  "title": "Chain Rule on a Nested Power",
+  "subtitle": "Differentiating sine cubed of a linear input",
+  "problem": {
+    "prompt": "Differentiate the function using the chain rule, then evaluate the derivative at the given point. Give the exact value.",
+    "latex": "y=\\sin^{3}(2x),\\qquad \\text{find } \\frac{dy}{dx} \\text{ and } \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}",
+    "answerLatex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299"
+  },
+  "settings": {
+    "defaultStepDurationMs": 4300,
+    "showStepCounter": true,
+    "allowKeyboardControls": true,
+    "autoPlay": false
+  },
+  "steps": [
+    {
+      "id": "identify-composition",
+      "title": "Recognize the composition",
+      "caption": "The notation hides two nested operations: a cube applied to a sine, and a sine applied to a linear expression.",
+      "equations": [
+        {
+          "label": "Given",
+          "latex": "y=\\sin^{3}(2x)=\\left[\\sin(2x)\\right]^{3}",
+          "style": "primary"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "goal",
+        "title": "Goal",
+        "text": "Differentiate the nested function with the chain rule, then substitute x equal to pi over twelve for an exact value."
+      },
+      "narration": "The exponent three sits outside the sine, so the function is a cube of a sine of a linear expression.",
+      "durationMs": 4000
+    },
+    {
+      "id": "decompose-layers",
+      "title": "Peel the layers",
+      "caption": "Name each layer from the outside inward so no factor is forgotten later.",
+      "equations": [
+        {
+          "label": "Composite form",
+          "latex": "y=f(g(h(x))),\\qquad f(u)=u^{3},\\quad g(v)=\\sin v,\\quad h(x)=2x",
+          "style": "primary"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Outer layer",
+          "latex": "u^{3}\\ \\text{ with }\\ u=\\sin(2x)",
+          "tone": "blue"
+        },
+        {
+          "label": "Inner layers",
+          "latex": "\\sin v\\ \\text{ with }\\ v=2x",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "tip",
+        "title": "Outside-in ordering",
+        "text": "Always ask what operation happens last. That operation is the outermost layer."
+      },
+      "narration": "Let the outer layer be the cube, the middle layer be the sine, and the inner layer be two x.",
+      "durationMs": 4600
+    },
+    {
+      "id": "state-chain-rule",
+      "title": "State the chain rule",
+      "caption": "The derivative of a composition is the product of the derivatives of every layer, each evaluated at its own input.",
+      "equations": [
+        {
+          "label": "Chain rule",
+          "latex": "\\frac{d}{dx}f(g(x))=f'(g(x))\\cdot g'(x)",
+          "style": "rule"
+        },
+        {
+          "label": "Three layers",
+          "latex": "\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dv}\\cdot\\frac{dv}{dx}",
+          "style": "rule"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "memory",
+        "title": "Memory cue",
+        "text": "Differentiate the outside, keep the inside unchanged, then multiply by the derivative of the inside."
+      },
+      "narration": "With three layers the chain rule produces a product of three derivative factors.",
+      "durationMs": 5000
+    },
+    {
+      "id": "differentiate-outer",
+      "title": "Differentiate the outer layer",
+      "caption": "Apply the power rule to the cube while treating the sine as an untouched single quantity.",
+      "equations": [
+        {
+          "label": "Power rule on the cube",
+          "latex": "\\frac{dy}{du}=3u^{2}=3\\sin^{2}(2x)",
+          "style": "secondary"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Correct",
+          "latex": "3\\left[\\sin(2x)\\right]^{2}",
+          "tone": "blue"
+        },
+        {
+          "label": "Not yet complete",
+          "latex": "3\\sin^{2}(2x)\\ \\text{alone is missing two factors}",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "warning",
+        "title": "Do not stop here",
+        "text": "The power rule alone ignores the sine and the linear input, so the answer would be incomplete."
+      },
+      "narration": "The derivative of u cubed is three u squared, where u is sine of two x.",
+      "durationMs": 4600
+    },
+    {
+      "id": "differentiate-inner",
+      "title": "Differentiate the inner layers",
+      "caption": "The sine differentiates to cosine at the same input, and the linear expression contributes a constant factor.",
+      "equations": [],
+      "cards": [
+        {
+          "label": "Middle layer",
+          "latex": "\\frac{du}{dv}=\\cos v=\\cos(2x)",
+          "tone": "blue"
+        },
+        {
+          "label": "Innermost layer",
+          "latex": "\\frac{dv}{dx}=\\frac{d}{dx}(2x)=2",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "check",
+        "title": "Input check",
+        "text": "The cosine keeps the argument two x. The argument never changes when differentiating the outer layers."
+      },
+      "narration": "The sine of v differentiates to cosine of v, and the derivative of two x is two.",
+      "durationMs": 4400
+    },
+    {
+      "id": "assemble-derivative",
+      "title": "Multiply the three factors",
+      "caption": "Combine every layer derivative into one product, keeping each argument intact.",
+      "equations": [
+        {
+          "label": "Assembled product",
+          "latex": "\\frac{dy}{dx}=3\\sin^{2}(2x)\\cdot\\cos(2x)\\cdot 2",
+          "style": "primary"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "tip",
+        "title": "Count your factors",
+        "text": "Three layers must yield three factors. A missing constant factor is the most common source of error."
+      },
+      "narration": "Multiply three sine squared of two x by cosine of two x and by two.",
+      "durationMs": 4600
+    },
+    {
+      "id": "simplify-derivative",
+      "title": "Simplify the derivative",
+      "caption": "Collect the numerical coefficients into a single constant.",
+      "equations": [
+        {
+          "label": "General derivative",
+          "latex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x)",
+          "style": "final"
+        }
+      ],
+      "cards": [],
+      "callout": {
+        "type": "success",
+        "title": "First requested result",
+        "text": "This expression is the derivative valid for every real value of x."
+      },
+      "narration": "Three times two gives six, so the derivative is six sine squared of two x times cosine of two x.",
+      "durationMs": 4400
+    },
+    {
+      "id": "evaluate-point",
+      "title": "Evaluate at the given point",
+      "caption": "Substitute the point, simplify the argument first, then use exact unit-circle values.",
+      "equations": [
+        {
+          "label": "Argument",
+          "latex": "x=\\frac{\\pi}{12}\\ \\Longrightarrow\\ 2x=\\frac{\\pi}{6}",
+          "style": "secondary"
+        },
+        {
+          "label": "Substitution",
+          "latex": "\\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=6\\left(\\frac{1}{2}\\right)^{2}\\left(\\frac{\\sqrt{3}}{2}\\right)",
+          "style": "primary"
+        },
+        {
+          "label": "Exact value",
+          "latex": "=6\\cdot\\frac{1}{4}\\cdot\\frac{\\sqrt{3}}{2}=\\frac{6\\sqrt{3}}{8}=\\frac{3\\sqrt{3}}{4}",
+          "style": "final"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Sine value",
+          "latex": "\\sin\\frac{\\pi}{6}=\\frac{1}{2}",
+          "tone": "blue"
+        },
+        {
+          "label": "Cosine value",
+          "latex": "\\cos\\frac{\\pi}{6}=\\frac{\\sqrt{3}}{2}",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "warning",
+        "title": "Square the sine, not the angle",
+        "text": "The exponent applies to the sine value, so one half is squared to give one quarter."
+      },
+      "narration": "At x equal to pi over twelve the argument is pi over six, giving three root three over four.",
+      "durationMs": 5600
+    },
+    {
+      "id": "verify-answer",
+      "title": "Verify and interpret",
+      "caption": "A second method confirms the derivative, and a decimal estimate confirms the size and sign.",
+      "equations": [
+        {
+          "label": "Identity check",
+          "latex": "\\frac{d}{dx}\\left[\\frac{3\\sin(2x)-\\sin(6x)}{4}\\right]=\\frac{6\\cos(2x)-6\\cos(6x)}{4}",
+          "style": "secondary"
+        },
+        {
+          "label": "Final answer",
+          "latex": "\\boxed{\\ \\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299\\ }",
+          "style": "final"
+        }
+      ],
+      "cards": [
+        {
+          "label": "Rewritten form check at the point",
+          "latex": "\\frac{6\\cos\\frac{\\pi}{6}-6\\cos\\frac{\\pi}{2}}{4}=\\frac{3\\sqrt{3}-0}{4}",
+          "tone": "blue"
+        },
+        {
+          "label": "Sign reasoning",
+          "latex": "\\sin^{2}(2x)>0,\\ \\cos\\frac{\\pi}{6}>0\\ \\Rightarrow\\ \\frac{dy}{dx}>0",
+          "tone": "violet"
+        }
+      ],
+      "callout": {
+        "type": "success",
+        "title": "Consistent",
+        "text": "The identity route gives the same value, and the positive result matches a function that is increasing there."
+      },
+      "narration": "Rewriting sine cubed with a power reducing identity reproduces the same value, confirming the answer.",
+      "durationMs": 5600
+    }
+  ],
+  "reference": {
+    "equations": [
+      {
+        "title": "Chain rule",
+        "latex": "\\frac{d}{dx}f(g(x))=f'(g(x))\\cdot g'(x)",
+        "text": "Here f is the outer function and g is the inner function. The outer derivative is evaluated at the unchanged inner expression, then multiplied by the inner derivative.",
+        "stepId": "state-chain-rule"
+      },
+      {
+        "title": "Three-layer chain rule",
+        "latex": "\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dv}\\cdot\\frac{dv}{dx}",
+        "text": "With u the outer input, v the middle input, and x the variable, each nesting level contributes one derivative factor.",
+        "stepId": "decompose-layers"
+      },
+      {
+        "title": "Power rule",
+        "latex": "\\frac{d}{du}\\left[u^{n}\\right]=nu^{n-1}",
+        "text": "Used for the outer cube, with n equal to three and u equal to sine of two x.",
+        "stepId": "differentiate-outer"
+      },
+      {
+        "title": "Derivative of sine",
+        "latex": "\\frac{d}{dv}\\left[\\sin v\\right]=\\cos v",
+        "text": "Valid when v is measured in radians. The argument is carried through unchanged.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Linear inner function",
+        "latex": "\\frac{d}{dx}(ax+b)=a",
+        "text": "A linear inner layer contributes only the constant a, which here equals two.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Power reducing identity for sine cubed",
+        "latex": "\\sin^{3}\\theta=\\frac{3\\sin\\theta-\\sin 3\\theta}{4}",
+        "text": "Used only as an independent verification route with theta equal to two x.",
+        "stepId": "verify-answer"
+      }
+    ],
+    "tips": [
+      {
+        "title": "Read the notation carefully",
+        "text": "Sine cubed of two x means the sine is computed first and then cubed. Rewriting it with explicit brackets prevents mixing up the layer order.",
+        "stepId": "identify-composition"
+      },
+      {
+        "title": "Write the layers down",
+        "text": "Listing u, v, and x with their formulas before differentiating makes it obvious how many factors the final product needs.",
+        "stepId": "decompose-layers"
+      },
+      {
+        "title": "Simplify the argument before substituting",
+        "text": "Reducing two times pi over twelve to pi over six first turns the evaluation into standard unit-circle values.",
+        "stepId": "evaluate-point"
+      }
+    ],
+    "shortcuts": [
+      {
+        "title": "Constant multiplier shortcut for linear inner layers",
+        "text": "When the innermost layer has the form ax plus b, its derivative is just a, so the whole chain contributes a single constant factor. This applies only when the inner layer is genuinely linear.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Collect coefficients at the end",
+        "text": "Leave the numerical factors unmultiplied while assembling, then combine them once. This keeps the layer structure visible until the algebra is finished.",
+        "stepId": "assemble-derivative"
+      }
+    ],
+    "tricks": [
+      {
+        "title": "Count layers, count factors",
+        "text": "The number of nesting levels equals the number of factors in the derivative. Three layers here means exactly three factors before simplifying.",
+        "stepId": "assemble-derivative"
+      },
+      {
+        "title": "Bracket rewriting",
+        "text": "Rewriting sine cubed of two x as a bracketed sine raised to the third power converts an unfamiliar notation into an ordinary power-rule problem.",
+        "stepId": "identify-composition"
+      }
+    ],
+    "commonMistakes": [
+      {
+        "title": "Dropping the innermost factor",
+        "text": "Writing the derivative as three sine squared of two x times cosine of two x omits the factor of two from the linear layer, halving the answer. Every layer must contribute.",
+        "stepId": "assemble-derivative"
+      },
+      {
+        "title": "Differentiating only the outer layer",
+        "text": "Three sine squared of two x is not the derivative, because the power rule alone treats the sine as the variable. Multiply by the derivatives of the remaining layers.",
+        "stepId": "differentiate-outer"
+      },
+      {
+        "title": "Changing the argument",
+        "text": "The cosine that appears must keep the argument two x, not x. Differentiating the outer layers never alters the inner expression.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Squaring the angle instead of the sine value",
+        "text": "The exponent applies to the sine, so the substitution squares one half rather than pi over six. Squaring the angle gives a meaningless quantity.",
+        "stepId": "evaluate-point"
+      }
+    ],
+    "checks": [
+      {
+        "title": "Independent identity check",
+        "text": "Rewrite sine cubed of two x using the power reducing identity, differentiate the resulting sum of sines, and confirm the same value at the point.",
+        "stepId": "verify-answer"
+      },
+      {
+        "title": "Sign and magnitude check",
+        "text": "The squared sine is positive and cosine of pi over six is positive, so the derivative must be positive. The decimal value near one point three is consistent with a coefficient of six times small fractional factors.",
+        "stepId": "verify-answer"
+      },
+      {
+        "title": "Zero-derivative check",
+        "text": "Setting the derivative to zero gives sine of two x equal to zero or cosine of two x equal to zero, which matches the minima and maxima expected for a cubed sine wave.",
+        "stepId": "simplify-derivative"
+      }
+    ]
+  }
+}
+  </script>
+  <!-- END GENERATED ANIMATION DATA -->
+
+  <script>
+    const DEFAULT_ANIMATION = JSON.parse(document.getElementById('animation-data').textContent);
+
+    const els = {
+      stage: document.getElementById('stage'),
+      title: document.getElementById('animationTitle'),
+      subtitle: document.getElementById('animationSubtitle'),
+      stepCount: document.getElementById('stepCount'),
+      progressFill: document.getElementById('progressFill'),
+      problemMath: document.getElementById('problemMath'),
+      timeline: document.getElementById('timeline'),
+      prevBtn: document.getElementById('prevBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      playBtn: document.getElementById('playBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      speedSelect: document.getElementById('speedSelect'),
+      jsonInput: document.getElementById('jsonInput'),
+      applyJsonBtn: document.getElementById('applyJsonBtn'),
+      fileInput: document.getElementById('fileInput'),
+      status: document.getElementById('status'),
+      referenceSections: document.getElementById('referenceSections')
+    };
+
+    let animation = structuredClone(DEFAULT_ANIMATION);
+    let currentStep = 0;
+    let playing = false;
+    let playTimer = null;
+
+    function escapeHtml(value = '') {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function validateAnimation(data) {
+      if (!data || typeof data !== 'object') throw new Error('Top-level JSON must be an object.');
+      if (data.renderer?.id && data.renderer.id !== 'math-animation-dark-sidebar') throw new Error('This JSON targets a different renderer.');
+      if (!Array.isArray(data.steps) || data.steps.length === 0) throw new Error('The JSON must contain a non-empty steps array.');
+      data.steps.forEach((step, index) => {
+        if (!step.title) throw new Error(`Step ${index + 1} is missing a title.`);
+        if (step.equations && !Array.isArray(step.equations)) throw new Error(`Step ${index + 1} equations must be an array.`);
+        if (step.cards && !Array.isArray(step.cards)) throw new Error(`Step ${index + 1} cards must be an array.`);
+      });
+      return true;
+    }
+
+    function mathWrap(latex) {
+      return `\\[${latex || ''}\\]`;
+    }
+
+    function iconFor(type) {
+      return ({
+        goal: '◎', tip: '✦', memory: '↺', check: '✓', warning: '!', success: '✓'
+      })[type] || '•';
+    }
+
+    function renderTimeline() {
+      els.timeline.innerHTML = animation.steps.map((step, i) => `
+        <button type="button" data-step="${i}" class="${i === currentStep ? 'active' : ''}">
+          <span class="timeline-index">${i + 1}</span>
+          <span class="timeline-title">${escapeHtml(step.title)}</span>
+        </button>
+      `).join('');
+      els.timeline.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          pause();
+          currentStep = Number(button.dataset.step);
+          render();
+        });
+      });
+    }
+
+    async function typeset(elements) {
+      if (!window.MathJax?.typesetPromise) return;
+      try {
+        await window.MathJax.typesetPromise(elements);
+      } catch (error) {
+        console.error('MathJax typesetting error:', error);
+      }
+    }
+
+    async function render() {
+      const step = animation.steps[currentStep];
+      const equations = (step.equations || []).map((eq, index) => `
+        <div class="equation-row ${escapeHtml(eq.style || 'secondary')}" style="animation-delay:${index * 110}ms">
+          <div class="equation-label">${escapeHtml(eq.label || '')}</div>
+          <div class="equation">${mathWrap(eq.latex)}</div>
+        </div>
+      `).join('');
+
+      const cards = (step.cards || []).map((card, index) => `
+        <div class="math-card ${escapeHtml(card.tone || '')}" style="animation-delay:${(index + 1) * 120}ms">
+          <div class="card-label">${escapeHtml(card.label || '')}</div>
+          <div class="card-math">${mathWrap(card.latex)}</div>
+        </div>
+      `).join('');
+
+      const callout = step.callout ? `
+        <div class="callout ${escapeHtml(step.callout.type || '')}">
+          <div class="callout-icon">${iconFor(step.callout.type)}</div>
+          <div>
+            <h3>${escapeHtml(step.callout.title || '')}</h3>
+            <p>${escapeHtml(step.callout.text || '')}</p>
+          </div>
+        </div>
+      ` : '';
+
+      els.stage.innerHTML = `
+        <article class="step-content">
+          <div class="eyebrow">Step ${currentStep + 1}</div>
+          <h2 class="step-title">${escapeHtml(step.title)}</h2>
+          <p class="caption">${escapeHtml(step.caption || '')}</p>
+          ${equations ? `<div class="equation-stack">${equations}</div>` : ''}
+          ${cards ? `<div class="cards">${cards}</div>` : ''}
+          ${callout}
+        </article>
+      `;
+
+      els.title.textContent = animation.title || 'Math Animation';
+      els.subtitle.textContent = animation.subtitle || '';
+      els.stepCount.textContent = `Step ${currentStep + 1} of ${animation.steps.length}`;
+      els.progressFill.style.width = `${((currentStep + 1) / animation.steps.length) * 100}%`;
+      els.prevBtn.disabled = currentStep === 0;
+      els.nextBtn.disabled = currentStep === animation.steps.length - 1;
+      els.problemMath.innerHTML = mathWrap(animation.problem?.latex || '');
+
+      renderTimeline();
+      await typeset([els.stage, els.problemMath]);
+    }
+
+
+    function renderReference() {
+      const groups = [
+        ['equations', 'Key Equations & Formulas'],
+        ['tips', 'Solving Tips'],
+        ['shortcuts', 'Shortcuts & Efficiency'],
+        ['tricks', 'Useful Tricks'],
+        ['commonMistakes', 'Common Mistakes'],
+        ['checks', 'Final Checks']
+      ];
+
+      const reference = animation.reference || {};
+      els.referenceSections.innerHTML = groups.map(([key, label], index) => {
+        const items = Array.isArray(reference[key]) ? reference[key] : [];
+        return `
+          <details class="reference-group" ${index === 0 ? 'open' : ''}>
+            <summary>${escapeHtml(label)}</summary>
+            <div class="reference-items">
+              ${items.length ? items.map(item => `
+                <article class="reference-item">
+                  <div class="reference-item-top">
+                    <div>
+                      <h3>${escapeHtml(item.title || '')}</h3>
+                      ${item.latex ? `<div class="reference-math">${mathWrap(item.latex)}</div>` : ''}
+                      <p>${escapeHtml(item.text || '')}</p>
+                    </div>
+                    ${item.stepId ? `<button type="button" class="reference-jump" data-step-id="${escapeHtml(item.stepId)}">View step</button>` : ''}
+                  </div>
+                </article>
+              `).join('') : `
+                <article class="reference-item">
+                  <p>No topic-specific items are required for this category.</p>
+                </article>
+              `}
+            </div>
+          </details>
+        `;
+      }).join('');
+
+      els.referenceSections.querySelectorAll('.reference-jump').forEach(button => {
+        button.addEventListener('click', () => {
+          const targetIndex = animation.steps.findIndex(step => step.id === button.dataset.stepId);
+          if (targetIndex < 0) return;
+          pause();
+          currentStep = targetIndex;
+          render();
+          document.querySelector('.stage-shell')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      typeset([els.referenceSections]);
+    }
+
+    function getStepDuration() {
+      const speed = Number(els.speedSelect.value) || 1;
+      const raw = animation.steps[currentStep]?.durationMs || animation.settings?.defaultStepDurationMs || 4300;
+      return Math.max(700, raw / speed);
+    }
+
+    function scheduleNext() {
+      clearTimeout(playTimer);
+      if (!playing) return;
+      playTimer = setTimeout(() => {
+        if (currentStep < animation.steps.length - 1) {
+          currentStep += 1;
+          render().then(scheduleNext);
+        } else {
+          pause();
+        }
+      }, getStepDuration());
+    }
+
+    function play() {
+      if (playing) return;
+      if (currentStep === animation.steps.length - 1) currentStep = 0;
+      playing = true;
+      els.playBtn.textContent = '❚❚ Pause';
+      render().then(scheduleNext);
+    }
+
+    function pause() {
+      playing = false;
+      clearTimeout(playTimer);
+      playTimer = null;
+      els.playBtn.textContent = '▶ Play';
+    }
+
+    function loadAnimation(data, sourceLabel = 'JSON loaded') {
+      validateAnimation(data);
+      pause();
+      animation = data;
+      currentStep = 0;
+      els.jsonInput.value = JSON.stringify(animation, null, 2);
+      els.status.textContent = sourceLabel;
+      renderReference();
+      render();
+    }
+
+    els.prevBtn.addEventListener('click', () => {
+      pause();
+      currentStep = Math.max(0, currentStep - 1);
+      render();
+    });
+
+    els.nextBtn.addEventListener('click', () => {
+      pause();
+      currentStep = Math.min(animation.steps.length - 1, currentStep + 1);
+      render();
+    });
+
+    els.playBtn.addEventListener('click', () => playing ? pause() : play());
+
+    els.resetBtn.addEventListener('click', () => {
+      pause();
+      currentStep = 0;
+      render();
+    });
+
+    els.speedSelect.addEventListener('change', () => {
+      if (playing) scheduleNext();
+    });
+
+    els.applyJsonBtn.addEventListener('click', () => {
+      try {
+        loadAnimation(JSON.parse(els.jsonInput.value), 'Pasted JSON applied.');
+      } catch (error) {
+        els.status.textContent = `Error: ${error.message}`;
+      }
+    });
+
+    els.fileInput.addEventListener('change', async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        loadAnimation(JSON.parse(text), `Loaded ${file.name}`);
+      } catch (error) {
+        els.status.textContent = `Error: ${error.message}`;
+      } finally {
+        event.target.value = '';
+      }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.target.matches('textarea, input, select')) return;
+      if (event.code === 'Space') {
+        event.preventDefault();
+        playing ? pause() : play();
+      } else if (event.key === 'ArrowRight') {
+        pause();
+        currentStep = Math.min(animation.steps.length - 1, currentStep + 1);
+        render();
+      } else if (event.key === 'ArrowLeft') {
+        pause();
+        currentStep = Math.max(0, currentStep - 1);
+        render();
+      }
+    });
+
+    window.addEventListener('load', () => {
+      els.jsonInput.value = JSON.stringify(animation, null, 2);
+      renderReference();
+      render();
+      if (animation.settings?.autoPlay) play();
+    });
+  </script>
+</body>
+</html>
