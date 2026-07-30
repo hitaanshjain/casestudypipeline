@@ -15,3 +15,5 @@ webapp/node_modules/
 webapp/.next/
 webapp/.env.local
 webapp/next-env.d.ts
+
+/OpenStax_Calculus_Volume_1_Concept_Only_Flashcards/
