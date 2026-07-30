@@ -18,6 +18,8 @@ let readState: typeof import("../lib/runStore").readState;
 let runDir: typeof import("../lib/runStore").runDir;
 let mockCalls: typeof import("../lib/llm").mockCalls;
 let dbAvailable: typeof import("../lib/db").dbAvailable;
+let resolveChapter: typeof import("../lib/db").resolveChapter;
+let _testPool: typeof import("../lib/db")._testPool;
 let ConceptCardsPayload: typeof import("../lib/contracts").ConceptCardsPayload;
 let artifactsGET: typeof import("../app/api/runs/[id]/artifacts/[name]/route").GET;
 
@@ -39,6 +41,8 @@ beforeAll(async () => {
   runDir = runStore.runDir;
   mockCalls = llm.mockCalls;
   dbAvailable = db.dbAvailable;
+  resolveChapter = db.resolveChapter;
+  _testPool = db._testPool;
   ConceptCardsPayload = contracts.ConceptCardsPayload;
   artifactsGET = artifactsRoute.GET;
 });
@@ -111,30 +115,77 @@ describe("pipeline e2e (mock mode)", () => {
     E2E_TIMEOUT
   );
 
-  it(
-    "cache path: a second run reuses cached concept cards without calling the LLM for that stage (only when flashcards_db is reachable)",
-    async () => {
-      const up = await dbAvailable();
-      if (!up) {
-        // Documented per Task 9 brief decision 5: reviewers may rerun this suite
-        // with the container down; the cache path is then simply unverifiable.
-        return;
-      }
+  describe("cache path (requires live flashcards_db)", () => {
+    // Resolved once in beforeAll; if it can't resolve/clear the chapter the test
+    // skips itself, same as dbUp=false (this isn't the thing under test here).
+    let dbUp = false;
+    let chapterId: number | undefined;
 
-      // Prime the cache: any prior run in this file (the happy path above) may
-      // already have populated it, and a dedicated run here guarantees it does.
-      const seedId = await startRun({ problem: "Seed run so flashcards_db has a card for this run's chapter." });
-      await pollUntilDone(seedId, E2E_TIMEOUT);
+    beforeAll(async () => {
+      dbUp = await dbAvailable();
+      if (!dbUp) return;
+      const ch = await resolveChapter("openstax_calc1", "5.4");
+      if (!ch) return;
+      chapterId = ch.chapterId;
 
-      mockCalls.length = 0;
-      const id = await startRun({ problem: "Second run should hit the concept-card cache for the same chapter." });
-      const state = await pollUntilDone(id, E2E_TIMEOUT);
+      // db.integration.test.ts (a different test file) seeds rows into this same
+      // chapter, which would let this test pass even if the pipeline's own
+      // storeConceptCards call were deleted. Clear this chapter's concepts (and,
+      // via the FK, its flashcards) so the write-then-read cycle below is
+      // provably the pipeline's own.
+      const pool = _testPool!();
+      await pool.query(
+        `DELETE f FROM flashcard f
+         JOIN concept co ON co.id = f.concept_id
+         JOIN learning_objective lo ON lo.id = co.lo_id
+         WHERE lo.chapter_id = ?`,
+        [chapterId]
+      );
+      await pool.query(
+        `DELETE co FROM concept co
+         JOIN learning_objective lo ON lo.id = co.lo_id
+         WHERE lo.chapter_id = ?`,
+        [chapterId]
+      );
+    });
 
-      expect(state.stages.concept_cards.status).toBe("cached");
-      expect(mockCalls).not.toContain("concept_cards");
-    },
-    E2E_TIMEOUT
-  );
+    it(
+      "first run generates and stores concept cards; second run reuses them without calling the LLM for that stage",
+      async () => {
+        if (!dbUp || chapterId === undefined) {
+          // Documented per Task 9 brief decision 5: reviewers may rerun this suite
+          // with the container down; the cache path is then simply unverifiable.
+          return;
+        }
+
+        mockCalls.length = 0;
+        const firstId = await startRun({ problem: "First run should generate and store concept cards for this chapter." });
+        const firstState = await pollUntilDone(firstId, E2E_TIMEOUT);
+
+        expect(firstState.stages.concept_cards.status).toBe("done");
+        expect(mockCalls).toContain("concept_cards");
+
+        // Prove the stored row is attributable to THIS pipeline run (not a
+        // fixture another test file seeded): query the DB directly for the mock
+        // fixture's concept_name under the chapter this run resolved to.
+        const [rows] = await _testPool!().query(
+          `SELECT co.name FROM concept co
+           JOIN learning_objective lo ON lo.id = co.lo_id
+           WHERE lo.chapter_id = ? AND co.name = ?`,
+          [chapterId, "Net Change Theorem"]
+        );
+        expect((rows as unknown[]).length).toBeGreaterThan(0);
+
+        mockCalls.length = 0;
+        const secondId = await startRun({ problem: "Second run should hit the concept-card cache for the same chapter." });
+        const secondState = await pollUntilDone(secondId, E2E_TIMEOUT);
+
+        expect(secondState.stages.concept_cards.status).toBe("cached");
+        expect(mockCalls).not.toContain("concept_cards");
+      },
+      E2E_TIMEOUT
+    );
+  });
 
   it(
     "critic failure path: MOCK_STAGE_OVERRIDES redirects to the calibration-mismatch fixture, run fails, no downstream artifacts are written",

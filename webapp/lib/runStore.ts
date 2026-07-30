@@ -3,7 +3,7 @@
 // artifact directory. Read-modify-write; callers that mutate concurrently (the
 // pipeline's fan-out stages) must serialize through pipeline.ts's per-run mutex,
 // not through this module (this module has no locking of its own).
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
+import { mkdirSync, readFileSync, writeFileSync, existsSync, renameSync } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import { RUNS_DIR } from "./paths";
@@ -16,7 +16,7 @@ export type RunState = {
   input: { problem: string; preferredContext?: string };
   createdAt: string;
   stages: Record<StageKey, { status: StageStatus; message?: string }>;
-  topic?: { bookTag: string; section: string; chapterId?: number };
+  topic?: { bookTag: string; section: string; chapterId?: number; title?: string };
   cacheOffline?: boolean;
   done: boolean;
   failed: boolean;
@@ -39,7 +39,13 @@ export function readState(id: string): RunState {
 }
 
 export function writeState(id: string, state: RunState): void {
-  writeFileSync(path.join(runDir(id), "state.json"), JSON.stringify(state, null, 2));
+  // Atomic write: a crash or unhandled error mid-write must never leave a
+  // truncated/corrupt state.json behind, since every later read-modify-write in
+  // pipeline.ts's per-run mutex chain depends on state.json always parsing.
+  const finalPath = path.join(runDir(id), "state.json");
+  const tmpPath = `${finalPath}.tmp`;
+  writeFileSync(tmpPath, JSON.stringify(state, null, 2));
+  renameSync(tmpPath, finalPath);
 }
 
 export function runExists(id: string): boolean {

@@ -74,16 +74,28 @@ export async function startRun(input: RunInput): Promise<string> {
   };
   writeState(id, state);
   void execute(id, dir, input).catch((e) => {
-    const s = readState(id);
-    s.failed = true;
-    s.done = true;
-    for (const k of Object.keys(s.stages) as StageKey[]) {
-      if (s.stages[k].status === "running" || s.stages[k].status === "pending") {
-        s.stages[k] = { status: "failed", message: String(e?.message ?? e) };
+    // execute()'s own rejection is already the unhappy path; readState/writeState
+    // here can themselves throw (run dir vanished, disk full, etc.). That must
+    // never become an unhandled rejection, since Node treats one as a crash of
+    // the whole server. Never let a failure while recording a failure escape.
+    try {
+      const s = readState(id);
+      s.failed = true;
+      s.done = true;
+      for (const k of Object.keys(s.stages) as StageKey[]) {
+        if (s.stages[k].status === "running" || s.stages[k].status === "pending") {
+          s.stages[k] = { status: "failed", message: String(e?.message ?? e) };
+        }
       }
+      writeState(id, s);
+    } catch (writeErr) {
+      console.error(
+        `startRun: run ${id} failed (${String(e?.message ?? e)}) and recording that failure also failed:`,
+        writeErr
+      );
+    } finally {
+      stateChains.delete(id);
     }
-    writeState(id, s);
-    stateChains.delete(id);
   });
   return id;
 }
@@ -380,9 +392,10 @@ async function runConceptCards(
 // ---------------------------------------------------------------------------
 // Practice deck (mirror of concept cards)
 // ---------------------------------------------------------------------------
-function buildPracticeDeckUser(dir: string, input: RunInput): string {
+function buildPracticeDeckUser(dir: string, input: RunInput, topic: string | undefined): string {
   const themeLine = input.preferredContext ? `\npreferred_context: ${input.preferredContext}` : "";
-  return `${readStage1Files(dir)}\n\nFILE question.txt:\n\`\`\`\n${input.problem}\n\`\`\`${themeLine}`;
+  const topicLine = topic ? `\ntopic: ${topic}` : "";
+  return `${readStage1Files(dir)}\n\nFILE question.txt:\n\`\`\`\n${input.problem}\n\`\`\`${themeLine}${topicLine}`;
 }
 
 async function runPracticeDeck(
@@ -390,7 +403,8 @@ async function runPracticeDeck(
   dir: string,
   input: RunInput,
   chapterId: number | undefined,
-  cacheAvailable: boolean
+  cacheAvailable: boolean,
+  topicLabel: string | undefined
 ): Promise<boolean> {
   await updateState(id, (s) => {
     s.stages.practice_deck = { status: "running" };
@@ -421,7 +435,7 @@ async function runPracticeDeck(
     }
   }
 
-  const user = buildPracticeDeckUser(dir, input);
+  const user = buildPracticeDeckUser(dir, input, topicLabel);
   let reply = await runLlm({ stage: "practice_deck", system: loadPrompt("practice_deck_prompt"), user });
   let parsed = parseModelJson(PracticeDeck, reply);
   if (!parsed.ok) {
@@ -501,10 +515,16 @@ async function execute(id: string, dir: string, input: RunInput): Promise<void> 
     // every fan-out stage still runs and generates its own content.
     let chapterId: number | undefined;
     let cacheAvailable = false;
+    // Fallback per practice_deck_prompt.md's <input> contract: the resolved
+    // chapter title when the DB has one, else the lo_mapping PRIMARY section
+    // number, so the deck prompt's "topic" input is never silently omitted
+    // just because flashcards_db is offline.
+    let topicLabel: string | undefined;
     try {
       const loMapping = JSON.parse(readFileSync(path.join(dir, "lo_mapping.json"), "utf8"));
       const primary = parsePrimarySection(loMapping);
       if (primary) {
+        topicLabel = primary.section;
         await updateState(id, (s) => {
           s.topic = { bookTag: primary.bookTag, section: primary.section };
         });
@@ -513,8 +533,9 @@ async function execute(id: string, dir: string, input: RunInput): Promise<void> 
           if (chapter) {
             chapterId = chapter.chapterId;
             cacheAvailable = true;
+            topicLabel = chapter.title;
             await updateState(id, (s) => {
-              s.topic = { bookTag: primary.bookTag, section: primary.section, chapterId };
+              s.topic = { bookTag: primary.bookTag, section: primary.section, chapterId, title: chapter.title };
             });
           } else {
             await updateState(id, (s) => {
@@ -540,7 +561,7 @@ async function execute(id: string, dir: string, input: RunInput): Promise<void> 
     const results = await Promise.allSettled([
       safeStage(id, "case_study", () => runCaseStudy(id, dir, input)),
       safeStage(id, "concept_cards", () => runConceptCards(id, dir, input, chapterId, cacheAvailable)),
-      safeStage(id, "practice_deck", () => runPracticeDeck(id, dir, input, chapterId, cacheAvailable)),
+      safeStage(id, "practice_deck", () => runPracticeDeck(id, dir, input, chapterId, cacheAvailable, topicLabel)),
     ]);
     const anySucceeded = results.some((r) => r.status === "fulfilled" && r.value === true);
 
