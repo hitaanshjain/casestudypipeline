@@ -39,6 +39,21 @@ async function q<T = any>(sql: string, params: any[] = []): Promise<T[]> {
   }
 }
 
+// Sibling to q() for INSERTs: same catch-and-map logic, but returns the mysql2 result
+// header (insertId) instead of rows. Every write in this file must go through here so
+// connection-level failures surface as DbUnavailableError, per the module's contract.
+async function exec(sql: string, params: any[] = []): Promise<{ insertId: number }> {
+  try {
+    const [result]: any = await getPool().query(sql, params);
+    return result as { insertId: number };
+  } catch (e: any) {
+    if (["ECONNREFUSED", "ETIMEDOUT", "ENOTFOUND", "PROTOCOL_CONNECTION_LOST"].includes(e.code)) {
+      throw new DbUnavailableError(e.message);
+    }
+    throw e;
+  }
+}
+
 export async function dbAvailable(): Promise<boolean> {
   try {
     await q("SELECT 1");
@@ -81,7 +96,8 @@ export async function getCachedConceptCards(chapterId: number): Promise<TConcept
     `SELECT f.front_content, f.back_content FROM flashcard f
      JOIN concept co ON co.id = f.concept_id
      JOIN learning_objective lo ON lo.id = co.lo_id
-     WHERE lo.chapter_id = ? AND f.card_type = 'concept_example'`,
+     WHERE lo.chapter_id = ? AND f.card_type = 'concept_example'
+       AND f.front_format = 'json' AND f.back_format = 'json'`,
     [chapterId]
   );
   return rows.map((r) => {
@@ -100,7 +116,8 @@ export async function getCachedPracticeDeck(chapterId: number): Promise<TPractic
     `SELECT f.back_content FROM flashcard f
      JOIN concept co ON co.id = f.concept_id
      JOIN learning_objective lo ON lo.id = co.lo_id
-     WHERE lo.chapter_id = ? AND f.card_type = 'problem_solution' LIMIT 1`,
+     WHERE lo.chapter_id = ? AND f.card_type = 'problem_solution'
+       AND f.front_format = 'json' AND f.back_format = 'json' LIMIT 1`,
     [chapterId]
   );
   return rows[0] ? JSON.parse(rows[0].back_content.toString()) : null;
@@ -143,18 +160,17 @@ export async function storeConceptCards(
     const ordinal = await nextConceptOrdinal(loId);
     // concept has UNIQUE(lo_id, name): storing the same concept_name twice under the
     // same LO is rejected by the schema, not silently allowed as a new row.
-    const [res]: any = await getPool().query(
+    const { insertId: conceptId } = await exec(
       `INSERT INTO concept (lo_id, name, ordinal) VALUES (?, ?, ?)`,
       [loId, card.concept_name, ordinal]
     );
-    const conceptId = res.insertId;
     const frontBlob = JSON.stringify({
       concept_name: card.concept_name,
       front: card.front,
       source: card.source,
     });
     const backBlob = JSON.stringify(card.back);
-    await getPool().query(
+    await exec(
       `INSERT INTO flashcard (concept_id, card_type, front_content, front_format, back_content, back_format)
        VALUES (?, 'concept_example', ?, 'json', ?, 'json')`,
       [conceptId, frontBlob, backBlob]
@@ -181,13 +197,13 @@ export async function storePracticeDeck(
   } else {
     const loId = await loIdForOrdinal(chapterId, null);
     const ordinal = await nextConceptOrdinal(loId);
-    const [res]: any = await getPool().query(
+    const inserted = await exec(
       `INSERT INTO concept (lo_id, name, ordinal) VALUES (?, ?, ?)`,
       [loId, deck.title, ordinal]
     );
-    conceptId = res.insertId;
+    conceptId = inserted.insertId;
   }
-  await getPool().query(
+  await exec(
     `INSERT INTO flashcard (concept_id, card_type, front_content, front_format, back_content, back_format)
      VALUES (?, 'problem_solution', ?, 'json', ?, 'json')`,
     [conceptId, JSON.stringify(problemFront), JSON.stringify(deck)]
