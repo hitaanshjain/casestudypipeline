@@ -43,18 +43,37 @@
   white-space: nowrap;
 }
 
+/* All steps share grid cell 1/1, so the stage's height is the tallest step's
+   height and stays constant while navigating (the controls below never move).
+   Shorter steps center vertically via align-items. */
 .stage {
   min-height: 460px;
   padding: clamp(24px, 5vw, 48px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  /* minmax(0, 1fr) caps the single shared track at the stage's own width:
+     with the default (auto) min sizing, one wide step (e.g. raw pre-typeset
+     LaTeX, which has no break points) would widen the track past the panel
+     and MathJax would then line-break against that too-wide measure. */
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
   position: relative;
 }
 
 .stepContent {
+  grid-area: 1 / 1;
+  min-width: 0;
   position: relative;
+}
+
+/* Switching stepHidden -> stepActive changes animation-name from none to
+   practiceDeckEnter, which restarts the enter animation on each navigation. */
+.stepActive {
   animation: practiceDeckEnter 0.42s ease both;
+}
+
+.stepHidden {
+  visibility: hidden;
+  animation: none;
 }
 
 @keyframes practiceDeckEnter {
@@ -124,7 +143,6 @@
 .problemMath {
   margin-top: 9px;
   font-size: 1.02rem;
-  overflow-x: auto;
 }
 
 .referenceShell {
@@ -187,7 +205,6 @@
 
 .referenceMath {
   margin-top: 8px;
-  overflow-x: auto;
   font-size: 1rem;
 }
 

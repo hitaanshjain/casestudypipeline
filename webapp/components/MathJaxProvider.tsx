@@ -12,6 +12,10 @@ export default function MathJaxProvider({ children }: { children: React.ReactNod
     loaded.current = true;
     (window as any).MathJax = {
       tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+      // v4 line breaking: wide display math wraps to the container width and
+      // inline math may break across lines, so no element ever needs an
+      // overflow-x scrollbox (a Hitaansh requirement: no scrollables).
+      output: { displayOverflow: "linebreak", linebreaks: { inline: true } },
       chtml: { scale: 1.05, displayAlign: "center" },
       startup: { pageReady: () => (window as any).MathJax.startup.defaultPageReady().then(() => setReady(true)) },
     };

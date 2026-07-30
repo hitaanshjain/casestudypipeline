@@ -61,8 +61,13 @@ button, select, textarea, input {
   transition: width .35s ease;
 }
 
+/* minmax(0, 1fr) everywhere a grid holds math: an implicit (auto) column
+   sizes to its content's min-content width, and pre-typeset raw LaTeX is one
+   long unbreakable string, so it would widen the track past the panel and
+   MathJax would then line-break against that too-wide measure. */
 .equation-stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   margin: 0 0 18px;
 }
@@ -93,10 +98,10 @@ button, select, textarea, input {
   margin-bottom: 7px;
 }
 
+/* No overflow-x scrollbox: MathJax is configured with displayOverflow
+   "linebreak" (MathJaxProvider), so wide math wraps instead of scrolling. */
 .equation {
   font-size: clamp(1.15rem, 2.7vw, 1.8rem);
-  overflow-x: auto;
-  overflow-y: hidden;
   padding: 3px 0;
 }
 
@@ -133,7 +138,6 @@ button, select, textarea, input {
 
 .card-math {
   font-size: clamp(1rem, 2.3vw, 1.45rem);
-  overflow-x: auto;
 }
 
 .callout {

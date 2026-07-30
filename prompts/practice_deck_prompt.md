@@ -80,7 +80,7 @@ Steps: 4 to 7 entries. Fewer than 4 means the moves are too coarse; more than 7 
 
 The first step's equations array carries a style "primary" entry that restates the given.
 
-Exactly the last step's equations array contains one entry with style "final" whose latex is the complete final answer wrapped in \boxed{...}, including every quantity the problem asked for. That same last step also carries a style "secondary" equation that independently re-derives or re-checks the answer (an alternate method, a substitution back into the original relation, or a numerical sanity check), so the final step both answers and verifies.
+Exactly the last step's equations array contains one entry with style "final" whose latex is the final answer wrapped in \boxed{...}. When the problem asks for several quantities, each earlier quantity gets its own separate equations entry (style "primary" or "secondary") in that same last step, and the \boxed final holds only the last asked-for quantity; never pack multiple results into one \boxed group (see the one-statement LaTeX rule below). That same last step also carries a style "secondary" equation that independently re-derives or re-checks the answer (an alternate method, a substitution back into the original relation, or a numerical sanity check), so the final step both answers and verifies.
 
 callout is optional on every step: omit the key, or set it to null, whenever a step needs no added judgment. Include one only when it teaches something beyond the algebra already visible in the equations. Choose type by teaching intent, never by habit:
 - goal: states what this step, or the deck as a whole, is trying to accomplish.
@@ -107,6 +107,7 @@ LaTeX rules, applied to every latex field (problem.latex, problem.answerLatex, e
 - never use \textcolor, \color, or any other LaTeX text-coloring or box-fill command.
 - every ^ and _ is braced: x^{2} and a_{n}, never x^2 or a_n.
 - use \left( \right) for delimiters that need to auto-size, and \dfrac for a fraction that should render at display size even inline.
+- keep every equation entry to ONE statement: never join two results in one latex field with \qquad or a comma, and never wrap more than a single result in \boxed{...}. The renderer wraps long equations onto multiple lines, but it cannot break inside a \boxed group or a fraction, so a doubled-up equation renders shrunken. When a step produces two results (a general form and an evaluated value), give each its own equations entry.
 
 animationId and every step id are kebab-case, unique within the deck, and describe the specific problem or step, never a generic label like "step-1".
 </field_rules>

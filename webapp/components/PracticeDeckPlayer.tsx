@@ -18,7 +18,6 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
   const [stepIndex, setStepIndex] = useState(0);
   const stageShellRef = useRef<HTMLElement>(null);
   const total = deck.steps.length;
-  const step = deck.steps[stepIndex];
 
   const goPrev = useCallback(() => setStepIndex((i) => Math.max(0, i - 1)), []);
   const goNext = useCallback(() => setStepIndex((i) => Math.min(total - 1, i + 1)), [total]);
@@ -72,56 +71,70 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
           <div className="progress-fill" style={{ width: `${((stepIndex + 1) / total) * 100}%` }} />
         </div>
 
+        {/* Every step is mounted, all stacked in grid cell 1/1 of .stage, with
+            only the active one visible. The stage's height is therefore the
+            TALLEST step's height and never changes as the student navigates,
+            so the Previous/Next controls below it stay put (Hitaansh: the
+            buttons must not move up and down between steps). MathJax also
+            typesets every step once on mount; hidden steps keep layout
+            (visibility: hidden, not display: none) so line-break measurement
+            still sees a real width. */}
         <div className={styles.stage}>
-          <article className={styles.stepContent} key={step.id}>
-            <p className="eyebrow">Step {stepIndex + 1}</p>
-            <h3 className={styles.stepTitle}>{step.title}</h3>
-            {step.caption && (
-              <p className={styles.caption}>
-                <Prose text={step.caption} />
-              </p>
-            )}
+          {deck.steps.map((s, i) => (
+            <article
+              key={s.id}
+              className={`${styles.stepContent} ${i === stepIndex ? styles.stepActive : styles.stepHidden}`}
+              aria-hidden={i !== stepIndex}
+            >
+              <p className="eyebrow">Step {i + 1}</p>
+              <h3 className={styles.stepTitle}>{s.title}</h3>
+              {s.caption && (
+                <p className={styles.caption}>
+                  <Prose text={s.caption} />
+                </p>
+              )}
 
-            {step.equations.length > 0 && (
-              <div className="equation-stack">
-                {step.equations.map((eq, i) => (
-                  <div key={i} className={`equation-row ${eq.style}`}>
-                    <div className="equation-label">{eq.label}</div>
-                    <div className="equation">
-                      <MathBlock latex={eq.latex} />
+              {s.equations.length > 0 && (
+                <div className="equation-stack">
+                  {s.equations.map((eq, j) => (
+                    <div key={j} className={`equation-row ${eq.style}`}>
+                      <div className="equation-label">{eq.label}</div>
+                      <div className="equation">
+                        <MathBlock latex={eq.latex} />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {step.cards.length > 0 && (
-              <div className="cards">
-                {step.cards.map((c, i) => (
-                  <div key={i} className={`math-card ${c.tone}`}>
-                    <div className="card-label">{c.label}</div>
-                    <div className="card-math">
-                      <MathBlock latex={c.latex} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {step.callout && (
-              <div className={`callout ${step.callout.type}`}>
-                <div className="callout-icon">{CALLOUT_ICONS[step.callout.type] ?? "•"}</div>
-                <div>
-                  <h3>
-                    <Prose text={step.callout.title} />
-                  </h3>
-                  <p>
-                    <Prose text={step.callout.text} />
-                  </p>
+                  ))}
                 </div>
-              </div>
-            )}
-          </article>
+              )}
+
+              {s.cards.length > 0 && (
+                <div className="cards">
+                  {s.cards.map((c, j) => (
+                    <div key={j} className={`math-card ${c.tone}`}>
+                      <div className="card-label">{c.label}</div>
+                      <div className="card-math">
+                        <MathBlock latex={c.latex} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {s.callout && (
+                <div className={`callout ${s.callout.type}`}>
+                  <div className="callout-icon">{CALLOUT_ICONS[s.callout.type] ?? "•"}</div>
+                  <div>
+                    <h3>
+                      <Prose text={s.callout.title} />
+                    </h3>
+                    <p>
+                      <Prose text={s.callout.text} />
+                    </p>
+                  </div>
+                </div>
+              )}
+            </article>
+          ))}
         </div>
 
         <footer className={styles.controls}>

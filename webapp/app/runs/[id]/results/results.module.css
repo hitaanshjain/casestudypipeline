@@ -88,8 +88,7 @@
   gap: 8px;
 }
 
-.badgeFailed,
-.badgeCached {
+.badgeFailed {
   font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -97,26 +96,12 @@
   padding: 2px 7px;
   border-radius: 999px;
   line-height: 1.5;
-}
-
-.badgeFailed {
   background: rgba(255, 211, 138, 0.18);
   color: var(--warning);
 }
 
-.badgeCached {
-  background: rgba(139, 224, 177, 0.16);
-  color: var(--success);
-}
-
 .tabBody {
   min-height: 200px;
-}
-
-.cacheNote {
-  margin: 0 0 16px;
-  color: var(--muted);
-  font-size: 0.85rem;
 }
 
 .downloadRow {

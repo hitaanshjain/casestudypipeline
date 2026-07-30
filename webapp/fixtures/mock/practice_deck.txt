@@ -221,8 +221,13 @@
           "style": "secondary"
         },
         {
+          "label": "Derivative",
+          "latex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x)",
+          "style": "primary"
+        },
+        {
           "label": "Final answer",
-          "latex": "\\boxed{\\ \\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299\\ }",
+          "latex": "\\boxed{\\ \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299\\ }",
           "style": "final"
         }
       ],

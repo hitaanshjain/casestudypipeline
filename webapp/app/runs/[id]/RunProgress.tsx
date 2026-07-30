@@ -152,10 +152,7 @@ export default function RunProgress({ id }: { id: string }) {
               <li key={key} className={styles.stageRow}>
                 <span className={`${styles.icon} ${styles[display]}`} aria-hidden="true" />
                 <div className={styles.stageBody}>
-                  <span className={styles.label}>
-                    {STAGE_LABELS[key]}
-                    {stage.status === "cached" && <span className={styles.cachedTag}> (from cache)</span>}
-                  </span>
+                  <span className={styles.label}>{STAGE_LABELS[key]}</span>
                   {stage.status === "failed" && stage.message && (
                     <p className={styles.failMessage}>{stage.message}</p>
                   )}
@@ -164,10 +161,6 @@ export default function RunProgress({ id }: { id: string }) {
             );
           })}
         </ul>
-
-        {state.cacheOffline && (
-          <p className={styles.muted}>Flashcard cache offline, generating fresh.</p>
-        )}
 
         {state.failed && (
           <div className="callout warning">

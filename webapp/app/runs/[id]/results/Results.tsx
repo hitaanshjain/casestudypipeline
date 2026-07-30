@@ -23,14 +23,10 @@ const TAB_LABELS: Record<TabKey, string> = {
   practice_deck: "Practice Deck",
 };
 
-// Cache is section-scoped, not problem-scoped (progress.md, Task 9 note): a
-// "cached" stage means this exact content was generated for an earlier run on
-// the same textbook section, not for this specific problem.
-const CACHE_NOTES: Record<Exclude<TabKey, "case_study">, string> = {
-  concept_cards: "These flashcards were generated earlier for this topic.",
-  practice_deck: "This practice deck was generated earlier for this topic.",
-};
-
+// Cache provenance (the "cached" stage status, cacheOffline) is deliberately
+// NOT surfaced anywhere on this page: Hitaansh's July 30 direction is that
+// students never need to know whether content was cached or generated fresh.
+// The status still exists in RunState for the pipeline and progress page.
 type StageEntry = { status: StageStatus; message?: string };
 
 export default function Results({ id }: { id: string }) {
@@ -186,17 +182,10 @@ export default function Results({ id }: { id: string }) {
                 >
                   {TAB_LABELS[key]}
                   {status === "failed" && <span className={styles.badgeFailed}>failed</span>}
-                  {status === "cached" && <span className={styles.badgeCached}>from cache</span>}
                 </button>
               );
             })}
           </div>
-
-          {state.cacheOffline && (effectiveTab === "concept_cards" || effectiveTab === "practice_deck") && (
-            <p className={styles.cacheNote}>
-              Flashcard cache was offline for this run; cards were generated fresh and not saved.
-            </p>
-          )}
 
           <div className={styles.tabBody}>
             {effectiveTab === "case_study" && (
@@ -204,7 +193,6 @@ export default function Results({ id }: { id: string }) {
             )}
             {effectiveTab === "concept_cards" && (
               <ConceptCardsTab
-                id={id}
                 stage={state.stages.concept_cards}
                 payload={conceptCards}
                 attempted={artifactsAttempted}
@@ -213,7 +201,6 @@ export default function Results({ id }: { id: string }) {
             )}
             {effectiveTab === "practice_deck" && (
               <PracticeDeckTab
-                id={id}
                 stage={state.stages.practice_deck}
                 deck={practiceDeck}
                 attempted={artifactsAttempted}
@@ -334,13 +321,11 @@ function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; fa
 // Concept Cards tab
 // ---------------------------------------------------------------------------
 function ConceptCardsTab({
-  id,
   stage,
   payload,
   attempted,
   failed,
 }: {
-  id: string;
   stage: StageEntry;
   payload: TConceptCardsPayload | null;
   attempted: boolean;
@@ -362,42 +347,34 @@ function ConceptCardsTab({
     );
   }
 
-  return (
-    <div>
-      {stage.status === "cached" && <p className={styles.cacheNote}>{CACHE_NOTES.concept_cards}</p>}
-      {payload ? (
-        <ConceptCardGrid cards={payload.cards} />
-      ) : attempted ? (
-        <div className="callout warning">
-          <div className="callout-icon">!</div>
-          <div>
-            <h3>Concept cards could not be loaded</h3>
-            <p>The stage reported success but the card data could not be read.</p>
-          </div>
+  if (payload) {
+    return <ConceptCardGrid cards={payload.cards} />;
+  }
+
+  if (attempted) {
+    return (
+      <div className="callout warning">
+        <div className="callout-icon">!</div>
+        <div>
+          <h3>Concept cards could not be loaded</h3>
+          <p>The stage reported success but the card data could not be read.</p>
         </div>
-      ) : (
-        <p className={styles.muted}>Loading concept cards...</p>
-      )}
-      <div className={styles.downloadRow}>
-        <a className="btn" href={`/api/runs/${id}/artifacts/concept_cards.json`} download>
-          Download JSON
-        </a>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <p className={styles.muted}>Loading concept cards...</p>;
 }
 
 // ---------------------------------------------------------------------------
 // Practice Deck tab
 // ---------------------------------------------------------------------------
 function PracticeDeckTab({
-  id,
   stage,
   deck,
   attempted,
   failed,
 }: {
-  id: string;
   stage: StageEntry;
   deck: TPracticeDeck | null;
   attempted: boolean;
@@ -419,27 +396,21 @@ function PracticeDeckTab({
     );
   }
 
-  return (
-    <div>
-      {stage.status === "cached" && <p className={styles.cacheNote}>{CACHE_NOTES.practice_deck}</p>}
-      {deck ? (
-        <PracticeDeckPlayer deck={deck} />
-      ) : attempted ? (
-        <div className="callout warning">
-          <div className="callout-icon">!</div>
-          <div>
-            <h3>Practice deck could not be loaded</h3>
-            <p>The stage reported success but the deck data could not be read.</p>
-          </div>
+  if (deck) {
+    return <PracticeDeckPlayer deck={deck} />;
+  }
+
+  if (attempted) {
+    return (
+      <div className="callout warning">
+        <div className="callout-icon">!</div>
+        <div>
+          <h3>Practice deck could not be loaded</h3>
+          <p>The stage reported success but the deck data could not be read.</p>
         </div>
-      ) : (
-        <p className={styles.muted}>Loading practice deck...</p>
-      )}
-      <div className={styles.downloadRow}>
-        <a className="btn" href={`/api/runs/${id}/artifacts/practice_deck.json`} download>
-          Download JSON
-        </a>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <p className={styles.muted}>Loading practice deck...</p>;
 }

@@ -31,8 +31,12 @@
   border-radius: 16px;
 }
 
+/* Both faces share grid cell 1/1, so .inner's height is natively the taller
+   face's height (no JS measurement; see ConceptCardGrid.tsx). */
 .inner {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   min-height: 380px;
   transform-style: preserve-3d;
   transition: transform 0.5s;
@@ -43,8 +47,8 @@
 }
 
 .face {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
+  min-width: 0;
   backface-visibility: hidden;
   border-radius: 14px;
   box-sizing: border-box;
@@ -112,6 +116,7 @@
 
 .variableKey {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 4px;
   font-size: 0.82rem;
   color: var(--cc-front-accent);
@@ -184,12 +189,14 @@
 .steps {
   flex: 1;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   align-content: start;
 }
 
 .step {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 4px;
   text-align: left;
 }

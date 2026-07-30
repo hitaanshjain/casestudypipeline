@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { MathBlock, Prose } from "./Math";
-import { useMathJaxReady } from "./MathJaxProvider";
 import type { TConceptCard } from "@/lib/contracts";
 import styles from "./conceptCards.module.css";
 
@@ -17,67 +16,16 @@ export default function ConceptCardGrid({ cards }: { cards: TConceptCard[] }) {
 }
 
 // Both faces are always mounted (never conditionally rendered) so MathJax can
-// typeset the hidden face on mount, per the results-page brief: "The FLIPPED
-// (hidden) face still typesets fine since MathJax runs on mount; do not
-// re-typeset on flip." Height is measured from both faces via ResizeObserver
-// and applied to .inner so the card grows to fit whichever face is taller,
-// satisfying "grows with content, no internal scrolling" while keeping the
-// brief's literal flip technique (rotateY on .inner; faces backface-visibility:
-// hidden; position: absolute; inset: 0 — which by itself would NOT let the
-// container's height track content, since absolutely positioned children are
-// out of flow).
-const MIN_CARD_HEIGHT = 380;
-
+// typeset the hidden face on mount. Both faces occupy the SAME grid cell of
+// .inner (grid-area 1/1), so they stay in normal flow and .inner's height is
+// natively the taller face's height, re-flowing whenever MathJax typesetting
+// changes content size. The earlier absolute-position + measured-height
+// pattern is gone for cause: pinning the faces to a measured height let a
+// tall back face shrink .backBody and overflow its content over the footer,
+// and because that overflow landed inside the pinned box, scrollHeight never
+// reported a larger value, so the measurement could not correct itself.
 function FlipCard({ card }: { card: TConceptCard }) {
   const [flipped, setFlipped] = useState(false);
-  const [height, setHeight] = useState(MIN_CARD_HEIGHT);
-  const frontRef = useRef<HTMLDivElement>(null);
-  const backRef = useRef<HTMLDivElement>(null);
-  const mathJaxReady = useMathJaxReady();
-
-  useEffect(() => {
-    const measure = () => {
-      const frontHeight = frontRef.current?.scrollHeight ?? 0;
-      const backHeight = backRef.current?.scrollHeight ?? 0;
-      setHeight(Math.max(MIN_CARD_HEIGHT, frontHeight, backHeight));
-    };
-    measure();
-
-    const ro = new ResizeObserver(measure);
-    if (frontRef.current) ro.observe(frontRef.current);
-    if (backRef.current) ro.observe(backRef.current);
-
-    // ResizeObserver alone is not enough: each face is `position: absolute;
-    // inset: 0` inside `.inner` (an explicit pixel height, applied via the
-    // inline `height` style below), so a face's own border-box is pinned by
-    // its parent and never itself resizes as content grows inside its
-    // `overflow: hidden` box -- the observer above never re-fires when
-    // MathJax-typeset math grows taller than the raw text it replaced. The
-    // initial measure() call above also runs on mount before MathJax has
-    // typeset anything: MathBlock/Prose (Math.tsx) write raw
-    // "\(...\)"/"\[...\]" textContent synchronously, then call
-    // MathJax.typesetPromise asynchronously, only once useMathJaxReady()
-    // flips true. Typesetting replaces those raw text nodes with rendered
-    // `mjx-container` elements, which IS a DOM mutation, so a
-    // MutationObserver on each face catches the moment typesetting actually
-    // finishes (whenever the CDN script/typeset call completes, regardless
-    // of load timing) and re-measures scrollHeight then, which is the
-    // moment it is correct. `mathJaxReady` is also in the dependency array
-    // so a fresh measure + observer pair is installed as soon as MathJax
-    // becomes available, not just at initial mount.
-    const mo = new MutationObserver(measure);
-    if (frontRef.current) {
-      mo.observe(frontRef.current, { childList: true, subtree: true, characterData: true });
-    }
-    if (backRef.current) {
-      mo.observe(backRef.current, { childList: true, subtree: true, characterData: true });
-    }
-
-    return () => {
-      ro.disconnect();
-      mo.disconnect();
-    };
-  }, [card, mathJaxReady]);
 
   return (
     <button
@@ -87,8 +35,8 @@ function FlipCard({ card }: { card: TConceptCard }) {
       aria-pressed={flipped}
       aria-label={`${card.front.title}. Press to flip between the concept and the worked example.`}
     >
-      <div className={`${styles.inner} ${flipped ? styles.flipped : ""}`} style={{ height }}>
-        <div ref={frontRef} className={`${styles.face} ${styles.front}`}>
+      <div className={`${styles.inner} ${flipped ? styles.flipped : ""}`}>
+        <div className={`${styles.face} ${styles.front}`}>
           <div className={styles.frontBody}>
             <h3 className={styles.frontTitle}>{card.front.title}</h3>
             <p className={styles.frontSubtitle}>{card.front.subtitle}</p>
@@ -120,7 +68,7 @@ function FlipCard({ card }: { card: TConceptCard }) {
           <p className={styles.frontFooter}>Flip for a worked example</p>
         </div>
 
-        <div ref={backRef} className={`${styles.face} ${styles.back}`}>
+        <div className={`${styles.face} ${styles.back}`}>
           <div className={styles.backBody}>
             <h3 className={styles.backHeading}>Worked Example</h3>
             <p className={styles.question}>
