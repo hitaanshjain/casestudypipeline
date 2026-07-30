@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.1",
+  "renderer": {
+    "id": "math-animation-dark-sidebar",
+    "version": "1.1.0"
+  },
+  "animationId": "chain-rule-sine-cubed-001",
+  "title": "Chain Rule on a Nested Power",
+  "subtitle": "Differentiating sine cubed of a linear input",
+  "problem": {
+    "prompt": "Differentiate the function using the chain rule, then evaluate the derivative at the given point. Give the exact value.",
+    "latex": "y=\\sin^{3}(2x),\\qquad \\text{find } \\frac{dy}{dx} \\text{ and } \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}",
+    "answerLatex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299"
+  },
+  "steps": [],
+  "reference": {
+    "equations": [
+      {
+        "title": "Chain rule",
+        "latex": "\\frac{d}{dx}f(g(x))=f'(g(x))\\cdot g'(x)",
+        "text": "Here f is the outer function and g is the inner function. The outer derivative is evaluated at the unchanged inner expression, then multiplied by the inner derivative.",
+        "stepId": "state-chain-rule"
+      },
+      {
+        "title": "Three-layer chain rule",
+        "latex": "\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dv}\\cdot\\frac{dv}{dx}",
+        "text": "With u the outer input, v the middle input, and x the variable, each nesting level contributes one derivative factor.",
+        "stepId": "decompose-layers"
+      },
+      {
+        "title": "Power rule",
+        "latex": "\\frac{d}{du}\\left[u^{n}\\right]=nu^{n-1}",
+        "text": "Used for the outer cube, with n equal to three and u equal to sine of two x.",
+        "stepId": "differentiate-outer"
+      },
+      {
+        "title": "Derivative of sine",
+        "latex": "\\frac{d}{dv}\\left[\\sin v\\right]=\\cos v",
+        "text": "Valid when v is measured in radians. The argument is carried through unchanged.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Linear inner function",
+        "latex": "\\frac{d}{dx}(ax+b)=a",
+        "text": "A linear inner layer contributes only the constant a, which here equals two.",
+        "stepId": "differentiate-inner"
+      },
+      {
+        "title": "Power reducing identity for sine cubed",
+        "latex": "\\sin^{3}\\theta=\\frac{3\\sin\\theta-\\sin 3\\theta}{4}",
+        "text": "Used only as an independent verification route with theta equal to two x.",
+        "stepId": "verify-answer"
+      }
+    ]
+  }
+}
