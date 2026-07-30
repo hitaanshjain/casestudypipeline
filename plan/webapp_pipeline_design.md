@@ -274,6 +274,12 @@ New: webapp/ (Next.js app), runs/ output directory (gitignored).
 ## 8. Out of scope (explicit)
 
 - No auth, no multi-user run history UI, no deployment config (localhost demo).
+  Deployment TARGET decided July 29 (Hitaansh): Render free tier as a single
+  Docker web service (Vercel rejected: serverless kills the long-running
+  pipeline, the tectonic child process, and disk-backed runs/). Needs a Linux
+  tectonic binary via TECTONIC_PATH and a hosted MySQL (Render free DB is
+  Postgres-only; candidates Aiven / TiDB Cloud serverless). Deferred until the
+  API key exists; backlogged in CLAUDE.md.
 - No GIF export of decks; browser JSON is the settled animation format.
 - No graph/diagram generation inside concept cards (v1: formula/prose cards).
 - No regeneration of the 75 legacy decks; they live in git history and the
