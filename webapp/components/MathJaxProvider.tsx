@@ -17,6 +17,11 @@ export default function MathJaxProvider({ children }: { children: React.ReactNod
       // overflow-x scrollbox (a Hitaansh requirement: no scrollables).
       output: { displayOverflow: "linebreak", linebreaks: { inline: true } },
       chtml: { scale: 1.05, displayAlign: "center" },
+      // v4 ships the accessibility explorer on by default: expressions become
+      // focusable (blue highlight box) with an (i) help icon top-right.
+      // Hitaansh wants neither (July 31). Cost: screen readers lose MathJax's
+      // interactive math exploration on these pages.
+      options: { enableExplorer: false, enableSpeech: false, enableBraille: false },
       startup: { pageReady: () => (window as any).MathJax.startup.defaultPageReady().then(() => setReady(true)) },
     };
     const s = document.createElement("script");
