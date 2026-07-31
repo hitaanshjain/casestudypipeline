@@ -43,35 +43,38 @@
   white-space: nowrap;
 }
 
-/* All steps share grid cell 1/1, so the stage's height is the tallest step's
-   height and stays constant while navigating (the controls below never move).
-   Shorter steps center vertically via align-items. */
+/* The stage takes exactly the ACTIVE step's height (no tallest-step
+   whitespace); hidden steps are absolutely positioned at the same width so
+   they stay laid out for MathJax without contributing height. The controls
+   sit above the stage, so nothing the student clicks ever moves. */
 .stage {
-  min-height: 460px;
-  padding: clamp(24px, 5vw, 48px);
-  display: grid;
-  /* minmax(0, 1fr) caps the single shared track at the stage's own width:
-     with the default (auto) min sizing, one wide step (e.g. raw pre-typeset
-     LaTeX, which has no break points) would widen the track past the panel
-     and MathJax would then line-break against that too-wide measure. */
-  grid-template-columns: minmax(0, 1fr);
-  align-items: center;
+  min-height: 220px;
+  padding: clamp(20px, 3.5vw, 36px) clamp(24px, 5vw, 48px) clamp(24px, 5vw, 44px);
+}
+
+/* The positioned ancestor for hidden steps: absolute children resolve
+   against this box (the stage's CONTENT area), so hidden steps lay out at
+   exactly the active step's width and MathJax measures the right column. */
+.stepsHost {
   position: relative;
 }
 
 .stepContent {
-  grid-area: 1 / 1;
   min-width: 0;
-  position: relative;
 }
 
 /* Switching stepHidden -> stepActive changes animation-name from none to
    practiceDeckEnter, which restarts the enter animation on each navigation. */
 .stepActive {
+  position: relative;
   animation: practiceDeckEnter 0.42s ease both;
 }
 
 .stepHidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   visibility: hidden;
   animation: none;
 }
@@ -102,13 +105,15 @@
   max-width: 760px;
 }
 
+/* Sits directly under the progress bar, above the step content, so its
+   position is independent of the current step's height. */
 .controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  padding: 16px 18px 19px;
-  border-top: 1px solid var(--border);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
   background: rgba(8, 18, 32, 0.45);
 }
 
@@ -239,8 +244,8 @@
 
 @media (max-width: 620px) {
   .stage {
-    padding: 22px 18px;
-    min-height: 400px;
+    padding: 20px 18px 24px;
+    min-height: 160px;
   }
   .topbar {
     align-items: flex-start;

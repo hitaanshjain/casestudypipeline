@@ -68,19 +68,39 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
         </header>
 
         <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${((stepIndex + 1) / total) * 100}%` }} />
+          <div className="progress-fill" style={{ transform: `scaleX(${(stepIndex + 1) / total})` }} />
         </div>
 
-        {/* Every step is mounted, all stacked in grid cell 1/1 of .stage, with
-            only the active one visible. The stage's height is therefore the
-            TALLEST step's height and never changes as the student navigates,
-            so the Previous/Next controls below it stay put (Hitaansh: the
-            buttons must not move up and down between steps). MathJax also
-            typesets every step once on mount; hidden steps keep layout
-            (visibility: hidden, not display: none) so line-break measurement
-            still sees a real width. */}
+        {/* Controls live ABOVE the step content, directly under the progress
+            bar, so their position never depends on the current step's height.
+            That lets each step size naturally (no tallest-step whitespace,
+            Hitaansh's July 30 complaint) while still never moving the buttons
+            (his earlier complaint). */}
+        <div className={styles.controls}>
+          <button type="button" className="btn" onClick={goPrev} disabled={stepIndex === 0}>
+            &larr; Previous
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={goNext}
+            disabled={stepIndex === total - 1}
+          >
+            Next &rarr;
+          </button>
+          <button type="button" className="btn" onClick={goFinal} disabled={stepIndex === total - 1}>
+            Final Slide &#8677;
+          </button>
+        </div>
+
+        {/* Every step stays mounted so MathJax typesets everything once and
+            switching is instant. The ACTIVE step is in normal flow (the stage
+            takes exactly its height); hidden steps are absolutely positioned
+            at the same width, invisible but laid out, so line-break
+            measurement still sees the real column width. */}
         <div className={styles.stage}>
-          {deck.steps.map((s, i) => (
+          <div className={styles.stepsHost}>
+            {deck.steps.map((s, i) => (
             <article
               key={s.id}
               className={`${styles.stepContent} ${i === stepIndex ? styles.stepActive : styles.stepHidden}`}
@@ -134,25 +154,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
                 </div>
               )}
             </article>
-          ))}
+            ))}
+          </div>
         </div>
-
-        <footer className={styles.controls}>
-          <button type="button" className="btn" onClick={goPrev} disabled={stepIndex === 0}>
-            &larr; Previous
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={goNext}
-            disabled={stepIndex === total - 1}
-          >
-            Next &rarr;
-          </button>
-          <button type="button" className="btn" onClick={goFinal} disabled={stepIndex === total - 1}>
-            Final Slide &#8677;
-          </button>
-        </footer>
       </section>
 
       <aside className={`panel ${styles.sidebar}`}>

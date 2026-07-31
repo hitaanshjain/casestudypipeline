@@ -237,26 +237,32 @@ function StageNotRun() {
 // ---------------------------------------------------------------------------
 // Case Study tab
 // ---------------------------------------------------------------------------
+function DownloadIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M8 2.5v7.6m0 0 3.2-3.2M8 10.1 4.8 6.9M3 13h10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; failed: boolean }) {
-  const [texExists, setTexExists] = useState(false);
   const [logExists, setLogExists] = useState(false);
 
   useEffect(() => {
     if (stage.status !== "failed") return;
     let cancelled = false;
-    Promise.all([
-      fetch(`/api/runs/${id}/artifacts/case_study.tex`, { method: "HEAD" })
-        .then((r) => r.ok)
-        .catch(() => false),
-      fetch(`/api/runs/${id}/artifacts/compile.log`, { method: "HEAD" })
-        .then((r) => r.ok)
-        .catch(() => false),
-    ]).then(([tex, log]) => {
-      if (!cancelled) {
-        setTexExists(tex);
-        setLogExists(log);
-      }
-    });
+    fetch(`/api/runs/${id}/artifacts/compile.log`, { method: "HEAD" })
+      .then((r) => r.ok)
+      .catch(() => false)
+      .then((log) => {
+        if (!cancelled) setLogExists(log);
+      });
     return () => {
       cancelled = true;
     };
@@ -276,18 +282,11 @@ function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; fa
             <p>{stage.message ?? "The case study stage failed."}</p>
           </div>
         </div>
-        {(texExists || logExists) && (
+        {logExists && (
           <div className={styles.downloadRow}>
-            {texExists && (
-              <a className="btn" href={`/api/runs/${id}/artifacts/case_study.tex`} download>
-                Download .tex
-              </a>
-            )}
-            {logExists && (
-              <a className="btn" href={`/api/runs/${id}/artifacts/compile.log`} download>
-                Download compile.log
-              </a>
-            )}
+            <a className="btn" href={`/api/runs/${id}/artifacts/compile.log`} download>
+              Download compile.log
+            </a>
           </div>
         )}
       </div>
@@ -306,11 +305,9 @@ function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; fa
         </p>
       </object>
       <div className={styles.downloadRow}>
-        <a className="btn btn-primary" href={`/api/runs/${id}/artifacts/case_study.pdf`} download>
-          Download PDF
-        </a>
-        <a className="btn" href={`/api/runs/${id}/artifacts/case_study.tex`} download>
-          Download .tex
+        <a className={`btn btn-primary ${styles.downloadBtn}`} href={`/api/runs/${id}/artifacts/case_study.pdf`} download>
+          <DownloadIcon />
+          Download worksheet PDF
         </a>
       </div>
     </div>

@@ -138,7 +138,7 @@ export default function RunProgress({ id }: { id: string }) {
         <h1 className={styles.title}>Generating your case study</h1>
 
         <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${progressPct}%` }} />
+          <div className="progress-fill" style={{ transform: `scaleX(${progressPct / 100})` }} />
         </div>
 
         <ul className={styles.stageList}>
