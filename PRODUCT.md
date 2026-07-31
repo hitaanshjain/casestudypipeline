@@ -39,7 +39,7 @@ A student pastes a textbook problem, optionally picks a scenario theme (soccer, 
 ## Brand Commitments
 
 - Client: MathGPT.ai (instructor-led learning platform; Socratic, cheat-proof AI tutor). This pipeline is a content engine feeding it.
-- The dark webapp UI is ported from the team's animation renderer page; Hitaansh: keep UI and formatting consistent across pages, "we like what we have so far".
+- The webapp's visual world is the Worksheet direction, chosen by Hitaansh on July 30, 2026 from three served drafts (direction-approved.md; the built system is recorded in DESIGN.md): the deck-brand navy-ink-on-ivory print world. Keep UI and formatting consistent across pages. (Supersedes the earlier dark UI ported from the animation renderer page.)
 - Flashcards keep the deck brand two-tone: navy #011E4F fronts, ivory #FAF8F4 backs, with periwinkle #82A4F5 and blue #176CF8 accents (from the team's source decks).
 - Student surfaces: no scrollables (wrap or shrink instead), no cache/provenance labels, no childish wording, and technique names never appear in student-facing text (the topic-in-title prefix is the single sanctioned exception).
 - Printed worksheets are grayscale print-safe with visible OER attribution when metadata exists.
