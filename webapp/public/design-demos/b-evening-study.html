@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B · Evening Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }, chtml: { scale: 1.04 } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+<style>
+  :root {
+    --bg: #101314;         /* warm near-black, not blue */
+    --panel: #16191b;
+    --ink: #ecebe6;        /* warm off-white text */
+    --dim: #9a9a92;
+    --peri: #82a4f5;       /* the single accent, from the deck brand */
+    --hair: rgba(236, 235, 230, 0.14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Schibsted Grotesk", sans-serif;
+    min-height: 100vh;
+  }
+  .frame { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; }
+  /* Left rail replaces horizontal tabs: the session's table of contents */
+  .rail { border-right: 1px solid var(--hair); padding: 30px 22px; display: flex; flex-direction: column; gap: 4px; }
+  .wordmark { font-family: "Instrument Serif", serif; font-size: 1.3rem; letter-spacing: 0.01em; margin: 0 0 26px; }
+  .wordmark em { color: var(--peri); font-style: italic; }
+  .railitem {
+    text-align: left; background: none; border: none; color: var(--dim);
+    font: 500 0.92rem "Schibsted Grotesk", sans-serif; padding: 9px 10px;
+    border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  }
+  .railitem.active { color: var(--ink); background: rgba(130, 164, 245, 0.09); }
+  .railitem.active::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--peri); }
+  .railfoot { margin-top: auto; font-size: 0.75rem; color: var(--dim); border-top: 1px solid var(--hair); padding-top: 14px; }
+  main { padding: 44px clamp(24px, 5vw, 72px) 80px; }
+  .prob { font-size: 0.9rem; color: var(--dim); margin: 0 0 4px; }
+  h1 {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    letter-spacing: 0.005em;
+    margin: 0 0 34px;
+  }
+  h1 em { font-style: italic; color: var(--peri); }
+  .block { border-top: 1px solid var(--hair); padding: 26px 0 30px; }
+  .blockhead { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 18px; }
+  h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 1.5rem; margin: 0; }
+  .meta { font-size: 0.78rem; color: var(--dim); }
+  /* Flashcard pair */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--hair); border-radius: 14px; padding: 24px 22px; }
+  .card .title { font-family: "Instrument Serif", serif; font-size: 1.3rem; margin: 0 0 2px; }
+  .card .sub { font-style: italic; font-size: 0.85rem; color: var(--peri); margin: 0 0 14px; font-family: "Instrument Serif", serif; }
+  .card .body { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
+  .card.back .q { color: var(--peri); font-size: 0.92rem; margin: 0 0 10px; }
+  .answerline { border-top: 1px solid var(--hair); margin-top: 14px; padding-top: 12px; font-weight: 700; }
+  /* Practice step */
+  .stepshell { background: var(--panel); border: 1px solid var(--hair); border-radius: 16px; overflow: hidden; }
+  .stepbar { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--hair); }
+  .btn {
+    font: 700 0.85rem "Schibsted Grotesk", sans-serif;
+    background: none; border: 1px solid var(--hair); color: var(--ink);
+    min-height: 38px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .btn:hover { border-color: var(--peri); }
+  .btn.primary { background: var(--peri); border-color: var(--peri); color: #101314; }
+  .btn.primary:hover { background: #9cb7f7; }
+  .stepcount { margin-left: auto; font-size: 0.8rem; color: var(--dim); }
+  .stepbody { padding: 26px clamp(18px, 3vw, 34px) 30px; }
+  .stepbody h3 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 1.9rem; margin: 0 0 6px; }
+  .stepbody .caption { margin: 0 0 20px; color: var(--dim); font-size: 0.95rem; max-width: 62ch; }
+  .mathrow { border: 1px solid var(--hair); border-radius: 12px; padding: 12px 20px; margin-bottom: 12px; }
+  .mathrow .label { font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--peri); font-weight: 700; }
+  .dl { display: inline-flex; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <nav class="rail">
+    <p class="wordmark">Math<em>GPT</em> Studio</p>
+    <button class="railitem active">Case study</button>
+    <button class="railitem">Concept cards</button>
+    <button class="railitem">Practice deck</button>
+    <div class="railfoot">Every number re-derived before you see it.</div>
+  </nav>
+  <main>
+    <p class="prob">From your problem: find \(\tfrac{dy}{dx}\) of \(y=\sin^{3}(2x)\)</p>
+    <h1>The Frost Night <em>Water Decision</em></h1>
+
+    <div class="block">
+      <div class="blockhead">
+        <h2>Worksheet</h2>
+        <span class="meta">one page &middot; compiled PDF</span>
+      </div>
+      <button class="btn primary dl">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2.5v7.6m0 0 3.2-3.2M8 10.1 4.8 6.9M3 13h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download worksheet PDF
+      </button>
+    </div>
+
+    <div class="block">
+      <div class="blockhead"><h2>Concept cards</h2><span class="meta">tap a card to flip</span></div>
+      <div class="cards">
+        <div class="card">
+          <p class="title">The Net Change Theorem</p>
+          <p class="sub">Accumulated Change</p>
+          <div>\[F(b)=F(a)+\int_{a}^{b}F'(x)\,dx\]</div>
+          <p class="body">A quantity's new value is its start plus accumulated change.</p>
+        </div>
+        <div class="card back">
+          <p class="q">Water flows in at \(r(t)=6t\) L/hr from 40 L. How much after 4 hours?</p>
+          <div>\[V(4)=V(0)+\int_{0}^{4}6t\,dt=40+48\]</div>
+          <div class="answerline">\(V(4)=88\) liters</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="blockhead"><h2>Practice deck</h2><span class="meta">9 steps</span></div>
+      <div class="stepshell">
+        <div class="stepbar">
+          <button class="btn">&larr; Previous</button>
+          <button class="btn primary">Next &rarr;</button>
+          <button class="btn">Final</button>
+          <span class="stepcount">Step 5 of 9</span>
+        </div>
+        <div class="stepbody">
+          <h3>Differentiate the inner layers</h3>
+          <p class="caption">The sine differentiates to cosine at the same input, and the linear expression contributes a constant factor.</p>
+          <div class="mathrow">
+            <span class="label">Middle layer</span>
+            <div>\[\frac{du}{dv}=\cos v=\cos(2x)\]</div>
+          </div>
+          <div class="mathrow">
+            <span class="label">Innermost layer</span>
+            <div>\[\frac{dv}{dx}=\frac{d}{dx}(2x)=2\]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

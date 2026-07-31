@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction C · Graph Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Fragment+Mono&display=swap" rel="stylesheet">
+<script>
+window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }, chtml: { scale: 1.02 } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+<style>
+  :root {
+    --paper: #f4f6f8;
+    --grid: rgba(23, 108, 248, 0.10);
+    --gridbold: rgba(23, 108, 248, 0.22);
+    --blue: #176cf8;       /* deck brand blue, committed */
+    --navy: #011e4f;       /* deck navy = ink */
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    color: var(--navy);
+    font-family: "Archivo", sans-serif;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+      var(--paper);
+    background-size: 24px 24px;
+  }
+  /* Committed blue header band */
+  header {
+    background: var(--blue);
+    color: #fff;
+    padding: 26px clamp(20px, 5vw, 56px) 30px;
+    border-bottom: 3px solid var(--navy);
+  }
+  .hrow { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  h1 { font-weight: 800; font-size: clamp(1.5rem, 3.6vw, 2.2rem); letter-spacing: -0.02em; margin: 0; }
+  .spec { font-family: "Fragment Mono", monospace; font-size: 0.78rem; opacity: 0.92; }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /* Fixed meta column ruled off with a bold grid line */
+  .metacol { border-right: 2px solid var(--gridbold); padding: 30px clamp(16px, 2.5vw, 28px) 60px; }
+  .metabox { background: var(--white); border: 2px solid var(--navy); margin-bottom: 18px; }
+  .metabox .cap { font-family: "Fragment Mono", monospace; font-size: 0.68rem; letter-spacing: 0.04em; background: var(--navy); color: #fff; padding: 5px 10px; }
+  .metabox .val { padding: 12px 14px; font-size: 0.9rem; }
+  .steplist { list-style: none; margin: 0; padding: 0; }
+  .steplist li {
+    display: flex; gap: 10px; align-items: center;
+    font-size: 0.84rem; font-weight: 500; padding: 7px 10px; cursor: pointer;
+  }
+  .steplist .n { font-family: "Fragment Mono", monospace; font-size: 0.72rem; color: var(--blue); width: 20px; }
+  .steplist li.active { background: var(--white); outline: 2px solid var(--blue); font-weight: 700; }
+  .content { padding: 30px clamp(18px, 3.5vw, 44px) 70px; }
+  .tabstrip { display: flex; gap: 0; margin-bottom: 26px; border: 2px solid var(--navy); width: fit-content; background: var(--white); }
+  .tabstrip button {
+    font: 700 0.85rem "Archivo", sans-serif; color: var(--navy);
+    background: none; border: none; padding: 10px 20px; cursor: pointer;
+  }
+  .tabstrip button + button { border-left: 2px solid var(--navy); }
+  .tabstrip button.active { background: var(--blue); color: #fff; }
+  h2 { font-weight: 800; font-size: clamp(1.5rem, 3.2vw, 2rem); letter-spacing: -0.02em; margin: 0 0 4px; }
+  .caption { margin: 0 0 22px; font-size: 0.95rem; max-width: 60ch; color: rgba(1,30,79,.75); }
+  .plot { background: var(--white); border: 2px solid var(--navy); padding: 16px 22px; margin-bottom: 14px; position: relative; }
+  .plot .cap {
+    position: absolute; top: -11px; left: 14px;
+    font-family: "Fragment Mono", monospace; font-size: 0.68rem;
+    background: var(--paper); color: var(--blue); padding: 1px 8px; border: 1px solid var(--gridbold);
+  }
+  .controls { display: flex; gap: 10px; align-items: center; margin-top: 22px; }
+  .btn {
+    font: 700 0.86rem "Archivo", sans-serif;
+    background: var(--white); color: var(--navy);
+    border: 2px solid var(--navy); padding: 9px 18px; cursor: pointer;
+    transition: transform .08s ease, background .12s ease;
+  }
+  .btn:hover { background: #eef3ff; }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--blue); border-color: var(--navy); color: #fff; }
+  .btn.primary:hover { background: #2f7dff; }
+  .count { font-family: "Fragment Mono", monospace; font-size: 0.78rem; margin-left: auto; color: var(--blue); }
+  .cardpair { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; margin-top: 8px; }
+  .fcard { border: 2px solid var(--navy); background: var(--navy); color: #faf8f4; padding: 20px; text-align: center; }
+  .fcard .t { font-weight: 800; font-size: 1.1rem; margin: 0 0 10px; }
+  .fcard.back { background: var(--white); color: var(--navy); text-align: left; }
+  .fcard.back .q { color: var(--blue); font-size: 0.9rem; margin: 0 0 8px; }
+  .dl { display: inline-flex; align-items: center; gap: 8px; margin-top: 6px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="hrow">
+      <h1>The Frost Night Water Decision</h1>
+      <span class="spec">W(t) = 200t &minus; 25t&sup2; &middot; verified 2/2 stages</span>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="metacol">
+      <div class="metabox">
+        <div class="cap">CURRENT PROBLEM</div>
+        <div class="val">Find \(\tfrac{dy}{dx}\) of \(y=\sin^{3}(2x)\) and evaluate at \(x=\pi/12\).</div>
+      </div>
+      <div class="metabox">
+        <div class="cap">STEPS 9</div>
+        <div class="val" style="padding:8px;">
+          <ul class="steplist">
+            <li><span class="n">04</span>Differentiate the outer layer</li>
+            <li class="active"><span class="n">05</span>Differentiate the inner layers</li>
+            <li><span class="n">06</span>Multiply the three factors</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+    <main class="content">
+      <div class="tabstrip">
+        <button>Case Study</button>
+        <button>Concept Cards</button>
+        <button class="active">Practice Deck</button>
+      </div>
+
+      <h2>Differentiate the inner layers</h2>
+      <p class="caption">The sine differentiates to cosine at the same input, and the linear expression contributes a constant factor.</p>
+
+      <div class="plot">
+        <span class="cap">MIDDLE LAYER</span>
+        <div>\[\frac{du}{dv}=\cos v=\cos(2x)\]</div>
+      </div>
+      <div class="plot">
+        <span class="cap">INNERMOST LAYER</span>
+        <div>\[\frac{dv}{dx}=\frac{d}{dx}(2x)=2\]</div>
+      </div>
+
+      <div class="controls">
+        <button class="btn">&larr; Previous</button>
+        <button class="btn primary">Next &rarr;</button>
+        <button class="btn">Final</button>
+        <span class="count">05 / 09</span>
+      </div>
+
+      <div style="margin-top:40px;">
+        <h2 style="font-size:1.3rem;">Concept cards</h2>
+        <div class="cardpair">
+          <div class="fcard">
+            <p class="t">The Net Change Theorem</p>
+            <div>\[F(b)=F(a)+\int_{a}^{b}F'(x)\,dx\]</div>
+          </div>
+          <div class="fcard back">
+            <p class="q">Water flows in at \(r(t)=6t\) L/hr from 40 L. After 4 hours?</p>
+            <div>\[V(4)=40+\int_{0}^{4}6t\,dt=88\ \text{liters}\]</div>
+          </div>
+        </div>
+        <button class="btn primary dl">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2.5v7.6m0 0 3.2-3.2M8 10.1 4.8 6.9M3 13h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download worksheet PDF
+        </button>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

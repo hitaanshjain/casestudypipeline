@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction A · The Worksheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }, chtml: { scale: 1.02 } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+<style>
+  :root {
+    --ink: #011e4f;        /* deck navy = the ink */
+    --paper: #faf8f4;      /* deck ivory = the paper */
+    --desk: #e9e4da;       /* the desk the sheet sits on */
+    --peri: #82a4f5;
+    --blue: #176cf8;
+    --rule: rgba(1, 30, 79, 0.16);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--desk);
+    color: var(--ink);
+    font-family: "Public Sans", sans-serif;
+    padding: 44px 16px 80px;
+  }
+  .sheet {
+    width: min(880px, 100%);
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 6px 10px 0 rgba(1, 30, 79, 0.10);
+  }
+  /* Paper tabs standing up from the sheet, like a manila folder */
+  .tabs { display: flex; gap: 6px; width: min(880px, 100%); margin: 0 auto; padding-left: 26px; }
+  .tab {
+    font: 700 0.82rem "Public Sans", sans-serif;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    background: #efe9df;
+    border: 1.5px solid var(--ink);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 9px 18px 12px;
+    transform: translateY(1.5px);
+    cursor: pointer;
+  }
+  .tab.active { background: var(--paper); position: relative; z-index: 1; }
+  .masthead { padding: 34px 44px 24px; border-bottom: 1.5px solid var(--ink); }
+  .course { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8rem; font-weight: 600; color: rgba(1,30,79,.62); }
+  h1 {
+    font-family: "Source Serif 4", serif;
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 700;
+    margin: 10px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .problem { font-family: "Source Serif 4", serif; font-style: italic; font-size: 1.02rem; margin: 0; color: rgba(1,30,79,.85); }
+  .section { padding: 30px 44px 36px; }
+  .section + .section { border-top: 1.5px dashed var(--rule); }
+  h2 { font-family: "Source Serif 4", serif; font-size: 1.25rem; margin: 0 0 16px; }
+  /* Flashcards rendered as physical cards on the sheet */
+  .cardrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .flashcard { border: 1.5px solid var(--ink); border-radius: 12px; overflow: hidden; }
+  .flashface { padding: 22px 20px; text-align: center; }
+  .flashface.front { background: var(--ink); color: var(--paper); }
+  .flashface.front .cardtitle { font-family: "Source Serif 4", serif; font-size: 1.2rem; font-weight: 700; margin: 0 0 2px; }
+  .flashface.front .cardsub { font-style: italic; font-size: 0.82rem; color: var(--peri); margin: 0 0 12px; }
+  .flashface.back { background: var(--paper); color: var(--ink); text-align: left; font-size: 0.9rem; }
+  .flashface.back .q { color: var(--blue); margin: 0 0 8px; }
+  .flipnote { text-align: center; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--peri); padding: 8px; border-top: 1.5px solid var(--rule); background: rgba(130,164,245,.07); }
+  /* Practice step as a numbered exercise line */
+  .exercise { display: grid; grid-template-columns: 46px 1fr; gap: 16px; }
+  .exnum {
+    font-family: "Source Serif 4", serif; font-weight: 700; font-size: 1.15rem;
+    width: 40px; height: 40px; border: 1.5px solid var(--ink); border-radius: 50%;
+    display: grid; place-items: center; background: var(--paper);
+  }
+  .exbody h3 { font-family: "Source Serif 4", serif; font-size: 1.35rem; margin: 2px 0 6px; }
+  .exbody .caption { margin: 0 0 14px; color: rgba(1,30,79,.75); font-size: 0.92rem; }
+  .mathbox { border: 1.5px solid var(--ink); background: #fff; padding: 10px 18px; margin-bottom: 12px; }
+  .mathbox .label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); }
+  .deck-controls { display: flex; gap: 10px; align-items: center; margin-top: 18px; }
+  .btn {
+    font: 700 0.9rem "Public Sans", sans-serif;
+    border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink);
+    padding: 10px 18px; border-radius: 999px; cursor: pointer;
+    transition: transform .1s ease, box-shadow .15s ease;
+    box-shadow: 2.5px 3px 0 rgba(1,30,79,.9);
+  }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 3.5px 4px 0 rgba(1,30,79,.9); }
+  .btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 2.5px 3px 0 rgba(1,30,79,.55); }
+  .stepdots { margin-left: auto; font-size: 0.8rem; font-weight: 600; color: rgba(1,30,79,.6); }
+  .download { display: inline-flex; align-items: center; gap: 8px; }
+  footer.note { width: min(880px,100%); margin: 14px auto 0; font-size: .78rem; color: rgba(1,30,79,.55); }
+</style>
+</head>
+<body>
+  <div class="tabs">
+    <button class="tab active">Case Study</button>
+    <button class="tab">Concept Cards</button>
+    <button class="tab">Practice Deck</button>
+  </div>
+  <div class="sheet">
+    <div class="masthead">
+      <div class="course"><span>Calculus 1 &middot; Net Change</span><span>Cold Hollow Orchards</span></div>
+      <h1>The Frost Night Water Decision</h1>
+      <p class="problem">Your problem: find how much water the well adds by 6 a.m. when \(W(t)=200t-25t^{2}\) gallons per hour.</p>
+    </div>
+
+    <div class="section">
+      <h2>Worksheet</h2>
+      <p style="margin:0 0 14px; font-size:.92rem; color:rgba(1,30,79,.75);">The compiled one-page PDF renders here at full width, on the paper itself.</p>
+      <button class="btn primary download">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2.5v7.6m0 0 3.2-3.2M8 10.1 4.8 6.9M3 13h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download worksheet PDF
+      </button>
+    </div>
+
+    <div class="section">
+      <h2>Concept cards</h2>
+      <div class="cardrow">
+        <div class="flashcard">
+          <div class="flashface front">
+            <p class="cardtitle">The Net Change Theorem</p>
+            <p class="cardsub">Accumulated Change</p>
+            <div>\[F(b)=F(a)+\int_{a}^{b}F'(x)\,dx\]</div>
+          </div>
+          <div class="flipnote">FLIP FOR A WORKED EXAMPLE</div>
+        </div>
+        <div class="flashcard">
+          <div class="flashface back">
+            <p class="q">Water flows into a tank at \(r(t)=6t\) liters per hour. The tank starts with 40 liters. How much water after 4 hours?</p>
+            <div>\[V(4)=V(0)+\int_{0}^{4}6t\,dt = 40+48\]</div>
+            <div>\[V(4)=88\ \text{liters}\]</div>
+          </div>
+          <div class="flipnote">RATE INTEGRATED OVER TIME GIVES CHANGE, NOT TOTAL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Practice deck</h2>
+      <div class="exercise">
+        <div class="exnum">5</div>
+        <div class="exbody">
+          <h3>Differentiate the inner layers</h3>
+          <p class="caption">The sine differentiates to cosine at the same input, and the linear expression contributes a constant factor.</p>
+          <div class="mathbox">
+            <span class="label">Middle layer</span>
+            <div>\[\frac{du}{dv}=\cos v=\cos(2x)\]</div>
+          </div>
+          <div class="mathbox">
+            <span class="label">Innermost layer</span>
+            <div>\[\frac{dv}{dx}=\frac{d}{dx}(2x)=2\]</div>
+          </div>
+          <div class="deck-controls">
+            <button class="btn">&larr; Previous</button>
+            <button class="btn primary">Next &rarr;</button>
+            <button class="btn">Final</button>
+            <span class="stepdots">Step 5 of 9</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="note">Direction A &middot; The app becomes the worksheet: the deck brand's navy-ink-on-ivory print world, paper tabs, physical flashcards, stamped buttons.</footer>
+</body>
+</html>
