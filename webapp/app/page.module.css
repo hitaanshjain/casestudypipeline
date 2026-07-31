@@ -57,7 +57,7 @@
   margin-top: 0;
 }
 
-/* A ruled answer box: white paper, ink border. */
+/* Plain answer box: white paper, ink border (ruled lines removed July 31 per Hitaansh). */
 .textarea {
   width: 100%;
   resize: vertical;
@@ -69,13 +69,6 @@
   font-family: var(--sans);
   font-size: 0.95rem;
   line-height: 1.6;
-  background-image: repeating-linear-gradient(
-    transparent,
-    transparent calc(1.6em - 1px),
-    var(--rule) calc(1.6em - 1px),
-    var(--rule) 1.6em
-  );
-  background-attachment: local;
 }
 
 .themeInput {
