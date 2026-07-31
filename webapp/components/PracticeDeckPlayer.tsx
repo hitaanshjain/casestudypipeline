@@ -106,8 +106,12 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
               className={`${styles.stepContent} ${i === stepIndex ? styles.stepActive : styles.stepHidden}`}
               aria-hidden={i !== stepIndex}
             >
-              <p className="eyebrow">Step {i + 1}</p>
-              <h3 className={styles.stepTitle}>{s.title}</h3>
+              <div className={styles.stepHead}>
+                <span className={styles.stepNum} aria-label={`Step ${i + 1}`}>
+                  {i + 1}
+                </span>
+                <h3 className={styles.stepTitle}>{s.title}</h3>
+              </div>
               {s.caption && (
                 <p className={styles.caption}>
                   <Prose text={s.caption} />
@@ -160,9 +164,8 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
       </section>
 
       <aside className={`panel ${styles.sidebar}`}>
-        <h2 className={styles.sidebarHeading}>Animation data</h2>
         <div className={styles.problemCard}>
-          <div className={styles.problemLabel}>Current problem</div>
+          <div className={styles.problemLabel}>Your problem</div>
           <div className={styles.problemMath}>
             <MathBlock latex={deck.problem.latex} />
           </div>

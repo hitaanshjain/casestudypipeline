@@ -1,14 +1,12 @@
-/* Practice deck slideshow. Recreates chain-rule-nested-power-animation.html's
-   stage/sidebar/reference layout using the classes already ported into
-   app/globals.css by Task 5 (.panel, .eyebrow, .equation-stack/.equation-row,
-   .cards/.math-card, .callout, .progress-track/.progress-fill, .timeline,
-   .btn/.btn-primary). Everything below is layout/typography NOT already
-   ported (topbar, stage, controls, sidebar internals, reference section). */
+/* Practice deck in the worksheet world: the deck is an exercise sheet, the
+   sidebar a printed meta box, the reference a formula table. Shared classes
+   (.panel, .btn, .equation-*, .cards, .callout, .timeline, .progress-*) come
+   from app/globals.css. */
 
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 18px;
+  gap: 20px;
   align-items: start;
 }
 
@@ -21,35 +19,46 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 22px;
-  border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+  border-bottom: 1.5px solid var(--ink);
 }
 
 .deckTitle {
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin: 0;
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
 }
 
 .deckSubtitle {
-  margin: 5px 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
+  margin: 4px 0 0;
+  color: var(--ink-dim);
+  font-size: 0.88rem;
 }
 
 .stepCount {
-  color: var(--muted);
+  color: var(--ink-dim);
   font-weight: 700;
   white-space: nowrap;
+  font-size: 0.85rem;
 }
 
-/* The stage takes exactly the ACTIVE step's height (no tallest-step
-   whitespace); hidden steps are absolutely positioned at the same width so
-   they stay laid out for MathJax without contributing height. The controls
-   sit above the stage, so nothing the student clicks ever moves. */
+/* Sits directly under the progress bar, above the step content, so its
+   position is independent of the current step's height. */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1.5px dashed var(--rule-strong);
+  background: var(--paper-shade);
+}
+
 .stage {
   min-height: 220px;
-  padding: clamp(20px, 3.5vw, 36px) clamp(24px, 5vw, 48px) clamp(24px, 5vw, 44px);
+  padding: clamp(20px, 3.5vw, 34px) clamp(22px, 4vw, 40px) clamp(24px, 5vw, 40px);
 }
 
 /* The positioned ancestor for hidden steps: absolute children resolve
@@ -90,31 +99,43 @@
   }
 }
 
+/* Numbered exercise: the circled number every worksheet gives a problem. */
+.stepHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 8px;
+}
+
+.stepNum {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
 .stepTitle {
+  font-family: var(--serif);
+  font-weight: 700;
   margin: 0;
-  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
-  line-height: 1.06;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
 }
 
 .caption {
-  color: var(--muted);
-  margin: 14px 0 20px;
-  font-size: clamp(0.98rem, 1.4vw, 1.1rem);
+  color: var(--ink-dim);
+  margin: 6px 0 20px;
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
   line-height: 1.55;
-  max-width: 760px;
-}
-
-/* Sits directly under the progress bar, above the step content, so its
-   position is independent of the current step's height. */
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(8, 18, 32, 0.45);
+  max-width: 70ch;
 }
 
 .sidebar {
@@ -124,35 +145,33 @@
   top: 18px;
 }
 
-.sidebarHeading {
-  margin: 0 0 6px;
-  font-size: 1.1rem;
-}
-
+/* Printed meta box: navy caption bar over white body. */
 .problemCard {
-  padding: 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
-  margin-bottom: 15px;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+  background: #ffffff;
+  margin-bottom: 16px;
+  overflow: hidden;
 }
 
 .problemLabel {
-  color: var(--muted);
-  font-size: 0.72rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 800;
+  padding: 6px 12px;
 }
 
 .problemMath {
-  margin-top: 9px;
-  font-size: 1.02rem;
+  padding: 10px 14px 12px;
+  font-size: 1rem;
 }
 
 .referenceShell {
   grid-column: 1 / -1;
-  padding: 20px;
+  padding: 22px 24px 26px;
 }
 
 .referenceHeader {
@@ -160,18 +179,22 @@
   align-items: end;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 12px;
 }
 
 .referenceHeader h2 {
+  font-family: var(--serif);
+  font-weight: 700;
   margin: 0;
-  font-size: clamp(1.18rem, 2vw, 1.45rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  letter-spacing: -0.01em;
 }
 
 .referenceHeader p {
   margin: 5px 0 0;
-  color: var(--muted);
+  color: var(--ink-dim);
   font-size: 0.88rem;
   line-height: 1.45;
 }
@@ -179,14 +202,14 @@
 .referenceList {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .referenceItem {
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid var(--border);
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1.5px solid var(--rule-strong);
 }
 
 .referenceItemTop {
@@ -198,12 +221,13 @@
 
 .referenceItemTop h3 {
   margin: 0;
-  font-size: 0.94rem;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .referenceItemTop p {
   margin: 6px 0 0;
-  color: var(--muted);
+  color: var(--ink-dim);
   font-size: 0.84rem;
   line-height: 1.45;
 }
@@ -215,19 +239,21 @@
 
 .referenceJump {
   flex: 0 0 auto;
-  min-height: 31px;
-  border-radius: 9px;
-  border: 1px solid rgba(124, 167, 255, 0.35);
-  background: rgba(124, 167, 255, 0.1);
-  color: var(--text);
-  padding: 0 9px;
+  min-height: 30px;
+  border-radius: 999px;
+  border: 1.5px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0 11px;
   cursor: pointer;
-  font-size: 0.73rem;
+  font-size: 0.72rem;
   font-weight: 800;
+  transition: border-color 0.12s ease, background 0.12s ease;
 }
 
 .referenceJump:hover {
-  background: rgba(124, 167, 255, 0.18);
+  border-color: var(--ink);
+  background: #ffffff;
 }
 
 @media (max-width: 900px) {
@@ -244,7 +270,7 @@
 
 @media (max-width: 620px) {
   .stage {
-    padding: 20px 18px 24px;
+    padding: 18px 16px 24px;
     min-height: 160px;
   }
   .topbar {

@@ -45,7 +45,10 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <div className={`panel ${styles.panel}`}>
-        <p className="eyebrow">MathGPT Pipeline</p>
+        <div className={styles.courseRow}>
+          <span>MathGPT &middot; Calculus 1</span>
+          <span>Case Study Pipeline</span>
+        </div>
         <h1 className={styles.title}>Generate a Case Study</h1>
         <p className={styles.intro}>
           Paste a textbook problem and the pipeline builds a verified case study, concept

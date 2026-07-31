@@ -84,7 +84,10 @@ export default function RunProgress({ id }: { id: string }) {
     return (
       <main className={styles.main}>
         <div className={`panel ${styles.panel}`}>
-          <p className="eyebrow">MathGPT Pipeline</p>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            <span>Case Study Pipeline</span>
+          </div>
           <h1>Run not found</h1>
           <p className={styles.muted}>No run exists with id &ldquo;{id}&rdquo;.</p>
           <Link href="/" className="btn btn-primary">
@@ -99,7 +102,10 @@ export default function RunProgress({ id }: { id: string }) {
     return (
       <main className={styles.main}>
         <div className={`panel ${styles.panel}`}>
-          <p className="eyebrow">MathGPT Pipeline</p>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            <span>Case Study Pipeline</span>
+          </div>
           <div className="callout warning">
             <div className="callout-icon">!</div>
             <div>
@@ -116,7 +122,10 @@ export default function RunProgress({ id }: { id: string }) {
     return (
       <main className={styles.main}>
         <div className={`panel ${styles.panel}`}>
-          <p className="eyebrow">MathGPT Pipeline</p>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            <span>Case Study Pipeline</span>
+          </div>
           <h1>Loading run...</h1>
         </div>
       </main>
@@ -134,7 +143,10 @@ export default function RunProgress({ id }: { id: string }) {
   return (
     <main className={styles.main}>
       <div className={`panel ${styles.panel}`}>
-        <p className="eyebrow">MathGPT Pipeline</p>
+        <div className={styles.courseRow}>
+          <span>MathGPT &middot; Calculus 1</span>
+          <span>Case Study Pipeline</span>
+        </div>
         <h1 className={styles.title}>Generating your case study</h1>
 
         <div className="progress-track">

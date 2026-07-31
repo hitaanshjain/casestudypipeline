@@ -10,18 +10,34 @@
   width: 100%;
   max-width: 760px;
   margin: 0 auto;
-  padding: 40px;
+  padding: 38px 44px 44px;
+}
+
+.courseRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-dim);
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 12px;
 }
 
 .title {
-  margin: 6px 0 10px;
-  font-size: 1.9rem;
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 18px 0 8px;
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
 }
 
 .intro {
-  color: var(--muted);
-  margin: 0 0 30px;
-  line-height: 1.5;
+  color: var(--ink-dim);
+  margin: 0 0 28px;
+  line-height: 1.55;
+  max-width: 58ch;
 }
 
 .form {
@@ -29,43 +45,57 @@
 }
 
 .fieldLabel {
-  font-size: .78rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: .02em;
-  color: var(--muted);
-  margin: 16px 0 8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin: 18px 0 8px;
 }
 
 .fieldLabel:first-of-type {
   margin-top: 0;
 }
 
+/* A ruled answer box: white paper, ink border. */
 .textarea {
   width: 100%;
   resize: vertical;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, .04);
-  color: var(--text);
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: #ffffff;
+  color: var(--ink);
   padding: 14px 16px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  font-size: .92rem;
-  line-height: 1.55;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent calc(1.6em - 1px),
+    var(--rule) calc(1.6em - 1px),
+    var(--rule) 1.6em
+  );
+  background-attachment: local;
 }
 
 .themeInput {
   width: 100%;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, .04);
-  color: var(--text);
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: #ffffff;
+  color: var(--ink);
   padding: 10px 14px;
-  font-size: .95rem;
+  font-size: 0.95rem;
+}
+
+.textarea::placeholder,
+.themeInput::placeholder {
+  color: var(--ink-dim);
 }
 
 .textarea:focus,
 .themeInput:focus {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--blue);
   outline-offset: 1px;
 }
 
@@ -79,29 +109,31 @@
 .chip {
   min-height: 30px;
   border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, .05);
-  color: var(--muted);
+  border: 1.5px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink-dim);
   padding: 0 13px;
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
 }
 
 .chip:hover {
-  background: rgba(255, 255, 255, .1);
-  color: var(--text);
+  border-color: var(--ink);
+  color: var(--ink);
+  background: #ffffff;
 }
 
 .submit {
-  margin-top: 24px;
+  margin-top: 26px;
   justify-self: start;
-  min-width: 170px;
+  min-width: 180px;
 }
 
 @media (max-width: 620px) {
   .panel {
-    padding: 26px;
+    padding: 26px 22px 30px;
   }
 
   .submit {

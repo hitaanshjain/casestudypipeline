@@ -1,15 +1,48 @@
+/*! IMPECCABLE DIRECTION CONTRACT (do not delete)
+THESIS: The app IS the worksheet: study artifacts presented as printed matter
+on a desk, refusing the dark glass dashboard this category defaults to.
+OWN-WORLD: Deck-brand print world: ivory paper #FAF8F4 sheets with navy
+#011E4F ink borders and offset print shadows on a warm desk #E9E4DA; navy ink
+text, periwinkle #82A4F5 and blue #176CF8 accents; Source Serif 4 mastheads
+over Public Sans; stamped pill buttons; manila paper tabs.
+STORY: A student pastes their problem, watches the print run, and receives a
+worksheet, flashcards, and a practice deck that read as one set of course
+materials they can trust.
+FIRST VIEWPORT: A single sheet centered on the desk: serif masthead "Generate
+a Case Study", ruled problem field, theme stamps, one blue Run Pipeline stamp.
+FORM: Chosen by Hitaansh from three served drafts (direction-approved.md),
+July 30, 2026.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the
+finish review, the verdict, and DESIGN.md
+*/
+
 :root {
-  --bg: #07111f;
-  --panel: #0f1d31;
-  --panel-2: #14243b;
-  --text: #f7f9fc;
-  --muted: #aebbd0;
-  --accent: #7ca7ff;
-  --accent-2: #aa91ff;
-  --success: #8be0b1;
-  --warning: #ffd38a;
-  --border: rgba(255, 255, 255, .12);
-  --shadow: 0 24px 60px rgba(0, 0, 0, .35);
+  /* The worksheet world's own names */
+  --paper: #faf8f4;
+  --ink: #011e4f;
+  --desk: #e9e4da;
+  --peri: #82a4f5;
+  --blue: #176cf8;
+  --rule: rgba(1, 30, 79, 0.16);
+  --rule-strong: rgba(1, 30, 79, 0.3);
+  --ink-dim: rgba(1, 30, 79, 0.64);
+  --paper-shade: #f3efe7;
+  --serif: var(--font-serif), "Source Serif 4", Georgia, serif;
+  --sans: var(--font-sans), "Public Sans", system-ui, sans-serif;
+
+  /* Compatibility aliases: every pre-redesign token resolves into the paper
+     world, so any rule not hand-restyled still lands on-world. */
+  --bg: var(--desk);
+  --panel: var(--paper);
+  --panel-2: #ffffff;
+  --text: var(--ink);
+  --muted: var(--ink-dim);
+  --accent: var(--blue);
+  --accent-2: var(--peri);
+  --success: #1d6f4c;
+  --warning: #a6600f;
+  --border: var(--rule);
+  --shadow: 6px 10px 0 rgba(1, 30, 79, 0.1);
 }
 
 * {
@@ -19,54 +52,37 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: var(--text);
-  background:
-    radial-gradient(circle at 20% 10%, rgba(124, 167, 255, .16), transparent 32%),
-    radial-gradient(circle at 90% 80%, rgba(170, 145, 255, .13), transparent 28%),
-    var(--bg);
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--desk);
 }
 
 button, select, textarea, input {
   font: inherit;
 }
 
-/* Ported from chain-rule-nested-power-animation.html .stage-shell, .sidebar */
+/* A sheet of paper on the desk. */
 .panel {
-  background: rgba(15, 29, 49, .92);
-  border: 1px solid var(--border);
-  border-radius: 24px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
-}
-
-.eyebrow {
-  color: var(--accent);
-  font-size: .76rem;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
 }
 
 .progress-track {
-  height: 5px;
-  background: rgba(255, 255, 255, .06);
+  height: 6px;
+  background: rgba(1, 30, 79, 0.12);
 }
 
 .progress-fill {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: var(--blue);
   transform: scaleX(0);
   transform-origin: 0 50%;
-  transition: transform .35s ease;
+  transition: transform 0.35s ease;
 }
 
-/* minmax(0, 1fr) everywhere a grid holds math: an implicit (auto) column
-   sizes to its content's min-content width, and pre-typeset raw LaTeX is one
-   long unbreakable string, so it would widen the track past the panel and
-   MathJax would then line-break against that too-wide measure. */
 .equation-stack {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -75,13 +91,13 @@ button, select, textarea, input {
 }
 
 .equation-row {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, .035);
-  border-radius: 17px;
-  padding: 14px 18px;
+  border: 1.5px solid var(--ink);
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 12px 18px 14px;
   opacity: 0;
   transform: translateY(8px);
-  animation: rowIn .4s ease forwards;
+  animation: rowIn 0.4s ease forwards;
 }
 
 @keyframes rowIn {
@@ -92,25 +108,26 @@ button, select, textarea, input {
 }
 
 .equation-label {
-  color: var(--muted);
+  color: var(--blue);
   text-transform: uppercase;
-  font-size: .7rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: .08em;
-  margin-bottom: 7px;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
 }
 
-/* No overflow-x scrollbox: MathJax is configured with displayOverflow
-   "linebreak" (MathJaxProvider), so wide math wraps instead of scrolling. */
+/* No overflow-x scrollbox: MathJax line-breaks (displayOverflow "linebreak")
+   and Math.tsx shrinks the rare unbreakable atom. */
 .equation {
-  font-size: clamp(1.15rem, 2.7vw, 1.8rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.65rem);
   padding: 3px 0;
 }
 
-.equation-row.rule { border-color: rgba(170, 145, 255, .4); background: rgba(170, 145, 255, .08); }
-.equation-row.primary { border-color: rgba(124, 167, 255, .45); background: rgba(124, 167, 255, .08); }
-.equation-row.final { border-color: rgba(139, 224, 177, .5); background: rgba(139, 224, 177, .09); }
-.equation-row.final .equation { font-size: clamp(1.35rem, 3.3vw, 2.15rem); }
+.equation-row.rule { background: #f0f3fe; }
+.equation-row.primary { background: #e9f0fe; }
+.equation-row.final { border-width: 2.5px; background: #ffffff; }
+.equation-row.final .equation { font-size: clamp(1.25rem, 3vw, 1.95rem); font-weight: 600; }
+.equation-row.final .equation-label { color: var(--ink); }
 
 .cards {
   display: grid;
@@ -120,34 +137,37 @@ button, select, textarea, input {
 }
 
 .math-card {
-  border-radius: 17px;
-  padding: 16px 18px;
-  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 18px;
+  border: 1.5px solid var(--ink);
+  background: #ffffff;
   opacity: 0;
   transform: translateY(8px);
-  animation: rowIn .42s ease forwards;
+  animation: rowIn 0.42s ease forwards;
 }
 
-.math-card.blue { background: rgba(124, 167, 255, .1); border-color: rgba(124, 167, 255, .42); }
-.math-card.violet { background: rgba(170, 145, 255, .1); border-color: rgba(170, 145, 255, .42); }
+.math-card.blue { background: #e9f0fe; }
+.math-card.violet { background: #f0f3fe; }
 
 .card-label {
-  font-size: .78rem;
-  color: var(--muted);
+  font-size: 0.72rem;
+  color: var(--blue);
   font-weight: 800;
-  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
 }
 
 .card-math {
-  font-size: clamp(1rem, 2.3vw, 1.45rem);
+  font-size: clamp(0.98rem, 2.2vw, 1.35rem);
 }
 
 .callout {
   margin-top: 18px;
-  padding: 15px 17px;
-  border-radius: 16px;
-  background: var(--panel-2);
-  border: 1px solid var(--border);
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1.5px solid var(--ink);
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 12px;
@@ -159,72 +179,109 @@ button, select, textarea, input {
   height: 30px;
   display: grid;
   place-items: center;
-  border-radius: 9px;
-  background: rgba(124, 167, 255, .12);
-  color: var(--accent);
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
   font-weight: 900;
 }
 
-.callout.success .callout-icon { color: var(--success); background: rgba(139, 224, 177, .12); }
-.callout.warning .callout-icon { color: var(--warning); background: rgba(255, 211, 138, .12); }
+.callout.success { background: #edf6f1; }
+.callout.success .callout-icon { background: var(--success); }
+.callout.warning { background: #fdf3e2; }
+.callout.warning .callout-icon { background: var(--warning); }
 
-.callout h3 { margin: 0 0 4px; font-size: .95rem; }
-.callout p { margin: 0; color: var(--muted); line-height: 1.45; font-size: .92rem; }
+.callout h3 { margin: 0 0 4px; font-size: 0.95rem; }
+.callout p { margin: 0; color: var(--ink-dim); line-height: 1.45; font-size: 0.92rem; }
 
-/* Ported from chain-rule-nested-power-animation.html .controls button / .controls button.primary */
+/* Stamped buttons: inked outline, paper face, pressed by hand. */
 .btn {
-  min-height: 42px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, .055);
-  color: var(--text);
-  padding: 0 14px;
+  min-height: 40px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0 18px;
   cursor: pointer;
-  font-weight: 750;
-  transition: background .15s ease, border-color .15s ease, transform .1s ease, box-shadow .15s ease;
+  font-weight: 700;
+  font-family: var(--sans);
+  box-shadow: 2.5px 3px 0 rgba(1, 30, 79, 0.85);
+  transition: transform 0.1s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
 
-.btn:hover:not(:disabled) { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .22); }
-.btn:active:not(:disabled) { transform: translateY(1px); }
-.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.btn:disabled { opacity: .35; cursor: default; }
-.btn-primary { background: var(--accent); color: #08111f; border-color: transparent; }
+.btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 3.5px 4px 0 rgba(1, 30, 79, 0.85);
+}
+
+.btn:active:not(:disabled) {
+  transform: translate(1px, 1.5px);
+  box-shadow: 1px 1px 0 rgba(1, 30, 79, 0.85);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+  box-shadow: 1.5px 2px 0 rgba(1, 30, 79, 0.4);
+}
+
+.btn-primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #ffffff;
+  box-shadow: 2.5px 3px 0 rgba(1, 30, 79, 0.55);
+}
+
 .btn-primary:hover:not(:disabled) {
-  background: #8fb3ff;
-  border-color: transparent;
-  box-shadow: 0 4px 14px rgba(124, 167, 255, .3);
+  background: #2f7dff;
+  box-shadow: 3.5px 4px 0 rgba(1, 30, 79, 0.55);
 }
 
-/* Ported from chain-rule-nested-power-animation.html .timeline family.
-   REQUIRED ADAPTATION: max-height and overflow removed, no internal scrollboxes. */
+/* Step list (deck sidebar): a table of contents on the sheet. */
 .timeline {
   display: grid;
-  gap: 7px;
-  padding-right: 4px;
+  gap: 6px;
   margin-bottom: 16px;
 }
 
 .timeline button {
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   background: transparent;
-  color: var(--muted);
+  color: var(--ink-dim);
   text-align: left;
-  border-radius: 11px;
-  padding: 9px 10px;
+  border-radius: 8px;
+  padding: 8px 10px;
   cursor: pointer;
   display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 8px;
+  grid-template-columns: 26px 1fr;
+  gap: 9px;
   align-items: center;
 }
 
-.timeline button:hover { background: rgba(255, 255, 255, .045); }
-.timeline button.active { background: rgba(124, 167, 255, .11); border-color: rgba(124, 167, 255, .3); color: var(--text); }
-.timeline-index { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: rgba(255, 255, 255, .06); font-size: .72rem; font-weight: 800; }
-.timeline-title { font-size: .83rem; font-weight: 700; }
+.timeline button:hover { background: rgba(1, 30, 79, 0.05); }
+.timeline button.active {
+  background: #ffffff;
+  border-color: var(--blue);
+  color: var(--ink);
+}
+.timeline-index {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--rule-strong);
+  background: var(--paper);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.timeline button.active .timeline-index { border-color: var(--blue); color: var(--blue); }
+.timeline-title { font-size: 0.83rem; font-weight: 600; }
 
-/* Adapted from the reference's two breakpoints; rules for elements not ported here are dropped. */
 @media (max-width: 620px) {
-  .panel { border-radius: 18px; }
   .cards { grid-template-columns: 1fr; }
 }

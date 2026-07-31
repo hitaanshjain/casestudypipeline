@@ -112,8 +112,11 @@ export default function Results({ id }: { id: string }) {
     return (
       <main className={styles.main}>
         <div className={`panel ${styles.centerPanel}`}>
-          <p className="eyebrow">MathGPT Pipeline</p>
-          <h1>Run not found</h1>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            <span>Case Study Pipeline</span>
+          </div>
+          <h1 className={styles.centerTitle}>Run not found</h1>
           <p className={styles.muted}>No run exists with id &ldquo;{id}&rdquo;.</p>
           <Link href="/" className="btn btn-primary" style={{ marginTop: 16, display: "inline-block" }}>
             Back home
@@ -127,8 +130,11 @@ export default function Results({ id }: { id: string }) {
     return (
       <main className={styles.main}>
         <div className={`panel ${styles.centerPanel}`}>
-          <p className="eyebrow">MathGPT Pipeline</p>
-          <h1>Loading results...</h1>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            <span>Case Study Pipeline</span>
+          </div>
+          <h1 className={styles.centerTitle}>Loading results...</h1>
         </div>
       </main>
     );
@@ -138,8 +144,11 @@ export default function Results({ id }: { id: string }) {
     return (
       <main className={styles.main}>
         <div className={`panel ${styles.centerPanel}`}>
-          <p className="eyebrow">MathGPT Pipeline</p>
-          <h1>This run has not finished yet</h1>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            <span>Case Study Pipeline</span>
+          </div>
+          <h1 className={styles.centerTitle}>This run has not finished yet</h1>
           <p className={styles.muted}>Results appear here once every stage has stopped running.</p>
           <Link href={`/runs/${id}`} className="btn btn-primary" style={{ marginTop: 16, display: "inline-block" }}>
             Run still in progress
@@ -153,7 +162,14 @@ export default function Results({ id }: { id: string }) {
     <main className={styles.main}>
       <div className={styles.pageInner}>
         <div className={`panel ${styles.headerPanel}`}>
-          <p className="eyebrow">Results</p>
+          <div className={styles.courseRow}>
+            <span>MathGPT &middot; Calculus 1</span>
+            {state.input.preferredContext ? (
+              <span className={styles.themeChip}>{state.input.preferredContext}</span>
+            ) : (
+              <span>Case Study Pipeline</span>
+            )}
+          </div>
           <h1 className={styles.title}>Your case study is ready</h1>
           <p ref={problemRef} className={`${styles.problemText} ${problemExpanded ? styles.expanded : ""}`}>
             {state.input.problem}
@@ -163,10 +179,9 @@ export default function Results({ id }: { id: string }) {
               {problemExpanded ? "Show less" : "Show more"}
             </button>
           )}
-          {state.input.preferredContext && <div className={styles.themeChip}>{state.input.preferredContext}</div>}
         </div>
 
-        <div className={`panel ${styles.tabPanel}`}>
+        <div>
           <div className={styles.tabBar} role="tablist">
             {TAB_ORDER.map((key) => {
               const status = state.stages[key].status;
@@ -177,7 +192,7 @@ export default function Results({ id }: { id: string }) {
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  className={`btn ${isActive ? "btn-primary" : ""} ${styles.tabBtn}`}
+                  className={`${styles.tab} ${isActive ? styles.tabActive : ""}`}
                   onClick={() => setActiveTab(key)}
                 >
                   {TAB_LABELS[key]}
@@ -187,7 +202,8 @@ export default function Results({ id }: { id: string }) {
             })}
           </div>
 
-          <div className={styles.tabBody}>
+          <div className={`panel ${styles.tabPanel}`}>
+            <div className={styles.tabBody}>
             {effectiveTab === "case_study" && (
               <CaseStudyTab id={id} stage={state.stages.case_study} failed={state.failed} />
             )}
@@ -207,6 +223,7 @@ export default function Results({ id }: { id: string }) {
                 failed={state.failed}
               />
             )}
+            </div>
           </div>
         </div>
       </div>
