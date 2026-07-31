@@ -144,11 +144,11 @@
   max-width: 70ch;
 }
 
+/* Not sticky: the meta box scrolls away with the deck instead of following
+   the reader down over the Key Equations section (Hitaansh, July 31). */
 .sidebar {
   padding: 18px;
   align-self: start;
-  position: sticky;
-  top: 18px;
 }
 
 /* Printed meta box: navy caption bar over white body. */
@@ -265,9 +265,6 @@
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
-  }
-  .sidebar {
-    position: static;
   }
   .referenceList {
     grid-template-columns: 1fr;
