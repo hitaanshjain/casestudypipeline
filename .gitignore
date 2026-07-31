@@ -20,3 +20,10 @@ webapp/next-env.d.ts
 /cases/
 /phase1example/
 /references/calculus-textbook.pdf
+
+CLAUDE.md
+DESIGN.md
+direction-approved.md
+PRODUCT.md
+plan/
+.claude/
