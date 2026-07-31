@@ -285,3 +285,19 @@ button, select, textarea, input {
 @media (max-width: 620px) {
   .cards { grid-template-columns: 1fr; }
 }
+
+/* Rows and cards mount at opacity 0 and rely on their entrance animation to
+   appear, so reduced motion must pin the end state explicitly, not just stop
+   the animation. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .equation-row,
+  .math-card {
+    opacity: 1;
+    transform: none;
+  }
+}

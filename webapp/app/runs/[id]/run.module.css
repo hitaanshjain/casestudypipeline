@@ -61,7 +61,7 @@
 }
 
 .label {
-  font-weight: 650;
+  font-weight: 700;
   font-size: .96rem;
 }
 
@@ -110,31 +110,19 @@
 .done,
 .cached {
   background: transparent;
-}
-
-.done::after,
-.cached::after {
-  content: "\2713";
-  position: absolute;
-  inset: -6px auto auto -2px;
-  font-size: .95rem;
-  font-weight: 900;
-  line-height: 1;
   color: var(--success);
 }
 
 .failed {
   background: transparent;
+  color: var(--warning);
 }
 
-.failed::after {
-  content: "!";
+.done svg,
+.cached svg,
+.failed svg {
   position: absolute;
-  inset: -6px auto auto 3px;
-  font-size: .95rem;
-  font-weight: 900;
-  line-height: 1;
-  color: var(--warning);
+  inset: -3px auto auto -2px;
 }
 
 @media (max-width: 620px) {

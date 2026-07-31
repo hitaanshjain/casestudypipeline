@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { RunState, StageKey } from "@/lib/runStore";
+import { BangIcon, CheckIcon } from "@/components/icons";
 import styles from "./run.module.css";
 
 const POLL_MS = 1500;
@@ -107,7 +108,9 @@ export default function RunProgress({ id }: { id: string }) {
             <span>Case Study Pipeline</span>
           </div>
           <div className="callout warning">
-            <div className="callout-icon">!</div>
+            <div className="callout-icon">
+              <BangIcon />
+            </div>
             <div>
               <h3>Lost connection</h3>
               <p>Could not reach the run status endpoint after several attempts. Still retrying.</p>
@@ -162,7 +165,10 @@ export default function RunProgress({ id }: { id: string }) {
             const display = state.failed && stage.status !== "done" && stage.status !== "failed" ? "skipped" : stage.status;
             return (
               <li key={key} className={styles.stageRow}>
-                <span className={`${styles.icon} ${styles[display]}`} aria-hidden="true" />
+                <span className={`${styles.icon} ${styles[display]}`} aria-hidden="true">
+                  {(display === "done" || display === "cached") && <CheckIcon size={16} />}
+                  {display === "failed" && <BangIcon size={16} />}
+                </span>
                 <div className={styles.stageBody}>
                   <span className={styles.label}>{STAGE_LABELS[key]}</span>
                   {stage.status === "failed" && stage.message && (
@@ -176,9 +182,11 @@ export default function RunProgress({ id }: { id: string }) {
 
         {state.failed && (
           <div className="callout warning">
-            <div className="callout-icon">!</div>
+            <div className="callout-icon">
+              <BangIcon />
+            </div>
             <div>
-              <h3>This run could not be completed honestly</h3>
+              <h3>We could not verify this problem&rsquo;s math</h3>
               {failedStages.length === 0 && <p>The run stopped before any stage reported a specific error.</p>}
               {failedStages.map((k) => (
                 <p key={k}>

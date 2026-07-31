@@ -2,16 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MathBlock, Prose } from "./Math";
+import { BangIcon, CheckIcon, DashIcon, RefreshIcon, SkipToEndIcon, SparkIcon, TargetIcon } from "./icons";
 import type { TPracticeDeck } from "@/lib/contracts";
 import styles from "./practiceDeck.module.css";
 
-const CALLOUT_ICONS: Record<string, string> = {
-  goal: "◎", // ◎
-  tip: "✦", // ✦
-  memory: "↺", // ↺
-  check: "✓", // ✓
-  warning: "!",
-  success: "✓", // ✓
+const CALLOUT_ICONS: Record<string, React.ReactNode> = {
+  goal: <TargetIcon />,
+  tip: <SparkIcon />,
+  memory: <RefreshIcon />,
+  check: <CheckIcon />,
+  warning: <BangIcon />,
+  success: <CheckIcon />,
 };
 
 export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
@@ -88,8 +89,13 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
           >
             Next &rarr;
           </button>
-          <button type="button" className="btn" onClick={goFinal} disabled={stepIndex === total - 1}>
-            Final Slide &#8677;
+          <button
+            type="button"
+            className={`btn ${styles.finalBtn}`}
+            onClick={goFinal}
+            disabled={stepIndex === total - 1}
+          >
+            Final Slide <SkipToEndIcon size={14} />
           </button>
         </div>
 
@@ -146,7 +152,7 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
 
               {s.callout && (
                 <div className={`callout ${s.callout.type}`}>
-                  <div className="callout-icon">{CALLOUT_ICONS[s.callout.type] ?? "•"}</div>
+                  <div className="callout-icon">{CALLOUT_ICONS[s.callout.type] ?? <DashIcon />}</div>
                   <div>
                     <h3>
                       <Prose text={s.callout.title} />

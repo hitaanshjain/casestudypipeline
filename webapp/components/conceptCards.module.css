@@ -1,8 +1,10 @@
 /* Concept flashcard flip-card grid. Colors here are the deck's own brand
-   palette (from the source .pptx decks / render_flashcards.py), NOT the
-   dark-theme tokens in app/globals.css, per the results-page brief: these four
-   hex values are deliberately kept local to this module rather than promoted
-   to :root vars. */
+   palette (from the source .pptx decks); the July 30 Worksheet redesign built
+   the whole app's world FROM these values, but the cards keep their own local
+   copy so the deck brand stays exact even if the app tokens drift.
+   auto-fit (not auto-fill): a small payload gets wide columns instead of
+   narrow ones beside phantom empty tracks; wider backs run shorter, which
+   directly shrinks the front face's centered void (finish-review M1). */
 .grid {
   --cc-front-bg: #011e4f;
   --cc-front-text: #faf8f4;
@@ -12,7 +14,8 @@
   --cc-back-accent: #176cf8;
 
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 480px));
+  justify-content: start;
   gap: 16px;
 }
 
@@ -75,6 +78,7 @@
     inset 0 0 0 6px var(--cc-back-bg),
     inset 0 0 0 7px var(--cc-back-text);
   transform: rotateY(180deg);
+  padding: 20px 22px;
 }
 
 /* --- Front face --- */
@@ -153,19 +157,23 @@
 }
 
 /* --- Back face --- */
+/* The card's height is max(front, back), so every px of back height is a px
+   of empty navy on the front (finish-review M1): the back runs a compact
+   type scale, which MathJax follows for the worked-example math. */
 .backBody {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-height: 0;
+  font-size: 0.88rem;
 }
 
 .backHeading {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   text-align: center;
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--cc-back-text);
@@ -183,14 +191,14 @@
   width: 100%;
   height: 1px;
   background: rgba(1, 30, 79, 0.18);
-  margin: 12px 0;
+  margin: 10px 0;
 }
 
 .steps {
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+  gap: 8px;
   align-content: start;
 }
 

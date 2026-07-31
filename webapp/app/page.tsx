@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { BangIcon } from "@/components/icons";
 import styles from "./page.module.css";
 
 const THEME_CHIPS = ["Soccer", "Architecture", "Music", "Cooking", "Space", "Fitness"] as const;
@@ -98,7 +99,9 @@ export default function Home() {
 
           {error && (
             <div className="callout warning">
-              <div className="callout-icon">!</div>
+              <div className="callout-icon">
+                <BangIcon />
+              </div>
               <div>
                 <h3>Could not start the run</h3>
                 <p>{error}</p>

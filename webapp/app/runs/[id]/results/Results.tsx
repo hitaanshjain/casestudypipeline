@@ -11,6 +11,7 @@ import {
 } from "@/lib/contracts";
 import ConceptCardGrid from "@/components/ConceptCardGrid";
 import PracticeDeckPlayer from "@/components/PracticeDeckPlayer";
+import { BangIcon, DashIcon, DownloadIcon } from "@/components/icons";
 import styles from "./results.module.css";
 
 type TabKey = Extract<StageKey, "case_study" | "concept_cards" | "practice_deck">;
@@ -242,7 +243,9 @@ export default function Results({ id }: { id: string }) {
 function StageNotRun() {
   return (
     <div className="callout">
-      <div className="callout-icon">-</div>
+      <div className="callout-icon">
+        <DashIcon />
+      </div>
       <div>
         <h3>This stage did not run</h3>
         <p>This stage did not run because the run failed earlier.</p>
@@ -254,20 +257,6 @@ function StageNotRun() {
 // ---------------------------------------------------------------------------
 // Case Study tab
 // ---------------------------------------------------------------------------
-function DownloadIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M8 2.5v7.6m0 0 3.2-3.2M8 10.1 4.8 6.9M3 13h10"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; failed: boolean }) {
   const [logExists, setLogExists] = useState(false);
 
@@ -293,7 +282,9 @@ function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; fa
     return (
       <div>
         <div className="callout warning">
-          <div className="callout-icon">!</div>
+          <div className="callout-icon">
+          <BangIcon />
+        </div>
           <div>
             <h3>The case study could not be generated</h3>
             <p>{stage.message ?? "The case study stage failed."}</p>
@@ -352,7 +343,9 @@ function ConceptCardsTab({
   if (stage.status === "failed") {
     return (
       <div className="callout warning">
-        <div className="callout-icon">!</div>
+        <div className="callout-icon">
+          <BangIcon />
+        </div>
         <div>
           <h3>Concept cards could not be generated</h3>
           <p>{stage.message ?? "The concept cards stage failed."}</p>
@@ -368,7 +361,9 @@ function ConceptCardsTab({
   if (attempted) {
     return (
       <div className="callout warning">
-        <div className="callout-icon">!</div>
+        <div className="callout-icon">
+          <BangIcon />
+        </div>
         <div>
           <h3>Concept cards could not be loaded</h3>
           <p>The stage reported success but the card data could not be read.</p>
@@ -401,7 +396,9 @@ function PracticeDeckTab({
   if (stage.status === "failed") {
     return (
       <div className="callout warning">
-        <div className="callout-icon">!</div>
+        <div className="callout-icon">
+          <BangIcon />
+        </div>
         <div>
           <h3>The practice deck could not be generated</h3>
           <p>{stage.message ?? "The practice deck stage failed."}</p>
@@ -417,7 +414,9 @@ function PracticeDeckTab({
   if (attempted) {
     return (
       <div className="callout warning">
-        <div className="callout-icon">!</div>
+        <div className="callout-icon">
+          <BangIcon />
+        </div>
         <div>
           <h3>Practice deck could not be loaded</h3>
           <p>The stage reported success but the deck data could not be read.</p>
