@@ -4,6 +4,7 @@
 // webapp/fixtures/mock/, which is how this pipeline is testable on a machine with no
 // Anthropic API key (this one).
 import Anthropic from "@anthropic-ai/sdk";
+import { AsyncLocalStorage } from "async_hooks";
 import { readFileSync } from "fs";
 import path from "path";
 import { PROMPTS_DIR } from "./paths";
@@ -53,6 +54,61 @@ function resolveFixtureName(stage: StageName): string {
   return stage;
 }
 
+// Per-call token accounting, so a run can show where the money went instead of
+// leaving it to the billing dashboard. Summed across every request a stage makes
+// (a tool loop makes many).
+export type StageUsage = {
+  stage: StageName;
+  requests: number;
+  input_tokens: number;
+  output_tokens: number;
+  cache_creation_input_tokens: number;
+  cache_read_input_tokens: number;
+};
+
+// Every stage in one pipeline run shares an accumulator without threading a
+// callback through each call site. AsyncLocalStorage follows awaits and the
+// fan-out's Promise.allSettled, so concurrent runs never mix their totals.
+export const usageStore = new AsyncLocalStorage<StageUsage[]>();
+
+// Reasoning depth per stage. claude-sonnet-5 defaults to effort "high" AND runs
+// adaptive thinking whenever `thinking` is unset, so leaving this unspecified is
+// the most expensive setting, not a neutral one. Stages that do original
+// mathematics keep "high" because a wrong number is worth far more than the
+// tokens saved; concept cards restate definitions already present in the
+// supplied textbook sections, which is the one genuinely lighter job here.
+const STAGE_EFFORT: Record<StageName, "low" | "medium" | "high"> = {
+  stage1: "high",
+  critic_solve: "high",
+  critic: "high",
+  case_study: "high",
+  case_study_retry: "high",
+  concept_cards: "medium",
+  practice_deck: "high",
+};
+
+// Moves the single rolling cache breakpoint to the end of the conversation so
+// each tool-loop turn reuses everything cached by the previous turn. Only one
+// message-side breakpoint is kept (the API allows 4 total, and the system block
+// holds one), which stays well inside the 20-block lookback window: a tool turn
+// appends 2 blocks, so the previous turn's entry is always within reach.
+function moveRollingCacheBreakpoint(messages: Anthropic.MessageParam[]): void {
+  for (const m of messages) {
+    if (!Array.isArray(m.content)) continue;
+    for (const block of m.content) {
+      if (block && typeof block === "object" && "cache_control" in block) {
+        delete (block as { cache_control?: unknown }).cache_control;
+      }
+    }
+  }
+  const last = messages[messages.length - 1];
+  if (!last || !Array.isArray(last.content) || last.content.length === 0) return;
+  const tail = last.content[last.content.length - 1];
+  if (tail && typeof tail === "object") {
+    (tail as { cache_control?: { type: "ephemeral" } }).cache_control = { type: "ephemeral" };
+  }
+}
+
 export async function runLlm(opts: {
   stage: StageName;
   system: string;
@@ -75,16 +131,39 @@ export async function runLlm(opts: {
     { role: "user", content: opts.user },
   ];
 
+  const tally: StageUsage = {
+    stage: opts.stage,
+    requests: 0,
+    input_tokens: 0,
+    output_tokens: 0,
+    cache_creation_input_tokens: 0,
+    cache_read_input_tokens: 0,
+  };
+  const report = () => usageStore.getStore()?.push(tally);
+
   for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
+    // Caching is a prefix match over tools -> system -> messages, so a breakpoint
+    // on the system block covers the tool definitions and the (large, unchanging)
+    // stage prompt together. Without it, every tool-loop turn re-bills the whole
+    // prompt plus every corpus file read so far, which grows quadratically and is
+    // the single largest cost in a run.
     const res = await client.messages.create({
       model: MODEL,
       max_tokens: 16000,
-      system: opts.system,
+      output_config: { effort: STAGE_EFFORT[opts.stage] },
+      system: [{ type: "text", text: opts.system, cache_control: { type: "ephemeral" } }],
       messages,
       tools: opts.tools === "corpus" ? corpusToolDefs : undefined,
     });
 
+    tally.requests += 1;
+    tally.input_tokens += res.usage.input_tokens ?? 0;
+    tally.output_tokens += res.usage.output_tokens ?? 0;
+    tally.cache_creation_input_tokens += res.usage.cache_creation_input_tokens ?? 0;
+    tally.cache_read_input_tokens += res.usage.cache_read_input_tokens ?? 0;
+
     if (res.stop_reason !== "tool_use") {
+      report();
       return res.content
         .filter((b): b is Anthropic.TextBlock => b.type === "text")
         .map((b) => b.text)
@@ -114,7 +193,9 @@ export async function runLlm(opts: {
       results.push({ type: "tool_result", tool_use_id: block.id, content: out.slice(0, 200_000), is_error: isError });
     }
     messages.push({ role: "user", content: results });
+    moveRollingCacheBreakpoint(messages);
   }
 
+  report();
   throw new Error(`stage ${opts.stage}: tool loop exceeded ${MAX_TOOL_TURNS} turns`);
 }

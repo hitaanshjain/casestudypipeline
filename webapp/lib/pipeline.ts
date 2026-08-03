@@ -11,7 +11,7 @@ import path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { newRunDir, writeState, readState, type RunState, type StageKey } from "./runStore";
-import { loadPrompt, runLlm } from "./llm";
+import { loadPrompt, runLlm, usageStore, type StageUsage } from "./llm";
 import {
   ConceptCard,
   ConceptCardsPayload,
@@ -79,7 +79,13 @@ export async function startRun(input: RunInput): Promise<string> {
     failed: false,
   };
   writeState(id, state);
-  void execute(id, dir, input).catch((e) => {
+  // Token usage for every stage of THIS run lands in `usage`, then gets written
+  // to runs/<id>/usage.json. Cache reads bill at ~a tenth of fresh input, so the
+  // read-vs-creation split is what tells you whether caching is actually working.
+  const usage: StageUsage[] = [];
+  void usageStore
+    .run(usage, () => execute(id, dir, input).finally(() => writeUsage(dir, usage)))
+    .catch((e) => {
     // execute()'s own rejection is already the unhappy path; readState/writeState
     // here can themselves throw (run dir vanished, disk full, etc.). That must
     // never become an unhandled rejection, since Node treats one as a crash of
@@ -104,6 +110,27 @@ export async function startRun(input: RunInput): Promise<string> {
     }
   });
   return id;
+}
+
+// Writes a per-stage token breakdown beside the run's artifacts. Best-effort:
+// a failure here must never take down a run that otherwise succeeded.
+function writeUsage(dir: string, usage: StageUsage[]): void {
+  if (usage.length === 0) return; // mock mode makes no API calls
+  try {
+    const total = usage.reduce(
+      (acc, u) => ({
+        requests: acc.requests + u.requests,
+        input_tokens: acc.input_tokens + u.input_tokens,
+        output_tokens: acc.output_tokens + u.output_tokens,
+        cache_creation_input_tokens: acc.cache_creation_input_tokens + u.cache_creation_input_tokens,
+        cache_read_input_tokens: acc.cache_read_input_tokens + u.cache_read_input_tokens,
+      }),
+      { requests: 0, input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }
+    );
+    writeFileSync(path.join(dir, "usage.json"), JSON.stringify({ total, stages: usage }, null, 2));
+  } catch (e) {
+    console.error("could not write usage.json:", e);
+  }
 }
 
 // ---------------------------------------------------------------------------
