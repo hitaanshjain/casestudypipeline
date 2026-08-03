@@ -682,10 +682,11 @@ QUESTIONS
 8. Flexible vertical space only as needed
 
 
-9. Bottom-anchored answer-key block containing:
-- one thin full-width horizontal rule;
+9. A page break (\newpage) after the last student-facing element, then the answer-key page containing:
 - centered heading: ANSWER KEY;
 - compact solutions for Questions 1–3.
+
+The answer key lives on page 2, by itself. Page 1 is the student sheet and carries no answer content, so it can be handed out or projected without revealing the solutions.
 
 
 No student answer space may appear except the NAME line.
@@ -751,10 +752,10 @@ Use approximately:
 Do not reduce any text below 8.5 pt.
 
 
-Use consistent commands or environments for the name line, centered title, section headings, question spacing, subparts, and bottom answer-key block.
+Use consistent commands or environments for the name line, centered title, section headings, question spacing, subparts, and the answer-key block.
 
 
-Place \vfill between the end of Question 3 and the horizontal rule above the answer key so the answer key remains anchored to the bottom.
+End the student sheet after Question 3 and begin the answer key with \newpage, so the answer key starts at the top of page 2. Do not use \vfill to push the answer key down; it belongs at the top of its own page.
 
 
 The answer-key layout may adapt to mathematical width:
@@ -797,7 +798,7 @@ All mathematical expressions must appear properly rendered in the PDF.
 
 
 <answer_key_requirements>
-The answer key must be concise, correct, readable, and anchored to the bottom of the same page.
+The answer key must be concise, correct, readable, and placed on its own page (page 2), beginning at the top of that page.
 
 
 It must:
@@ -883,7 +884,7 @@ Do not place horizontal divider lines between individual solutions.
 Do not box the entire answer key.
 
 
-Do not compress answer-key steps onto the same line merely to make the worksheet fit on one page.
+Do not compress answer-key steps onto the same line merely to save space. The answer key has its own page, so there is room for every step to stand alone.
 
 
 If the answer key becomes crowded:
@@ -894,7 +895,7 @@ If the answer key becomes crowded:
 5. tighten other worksheet wording.
 
 
-Never solve a page-fit problem by combining distinct answer-key steps onto the same line.
+Never solve a page-fit problem by combining distinct answer-key steps onto the same line. A page-fit problem is a page-1 problem: shrink the student sheet, never the key.
 
 
 For the final interpretation or conclusion, show on separate visual lines:
@@ -911,10 +912,13 @@ For an open collaborative judgment, show on separate visual lines:
 
 
 <page_fit_requirements>
-The final PDF must contain exactly one page.
+The final PDF must contain exactly two pages: page 1 the student sheet, page 2 the answer key.
 
 
-The page should use approximately 80–95% of the usable height and appear full, balanced, and intentional.
+The student sheet must fit on page 1 by itself. It should use approximately 80–95% of the usable height and appear full, balanced, and intentional.
+
+
+The answer key must fit on page 2 by itself. It may be shorter than a full page; that is expected and correct. Never let it spill onto a third page.
 
 
 If underfilled:
@@ -994,7 +998,7 @@ Complete these steps silently:
 26. Compile the final .tex file using an available TeX engine.
 27. Confirm successful compilation.
 28. Inspect the rendered PDF for:
-   - exactly one page;
+   - exactly two pages, with the student sheet on page 1 and the answer key on page 2;
    - clipped text;
    - overflow;
    - broken tables;
@@ -1067,12 +1071,12 @@ MATHEMATICS AND ANSWER KEY
 
 LAYOUT
 43. The final output is an actual PDF generated from the final LaTeX source.
-44. The PDF is exactly one page.
+44. The PDF is exactly two pages: student sheet on page 1, answer key on page 2.
 45. The worksheet uses only black and white.
 46. The house template is followed consistently.
 47. No student answer space appears except the NAME line.
-48. The answer key is anchored to the bottom.
-49. One thin horizontal rule appears immediately above ANSWER KEY.
+48. The answer key starts at the top of page 2, and page 1 contains no answer content.
+49. The ANSWER KEY heading is centered at the top of page 2.
 50. No divider lines appear between individual answer-key solutions.
 51. The answer key is readable and not smaller than 8.5 pt.
 52. The page is visually balanced and uses most of the available space.
