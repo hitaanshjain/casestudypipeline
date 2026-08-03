@@ -2,6 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { runLlm, loadPrompt, mockCalls } from "../lib/llm";
 import { ConceptCardsPayload, parseModelJson } from "../lib/contracts";
+import { parseCriticReply } from "../lib/replyParsing";
 
 describe("loadPrompt", () => {
   it("returns case_study_master_prompt containing preferred_context", () => {
@@ -30,9 +31,10 @@ describe("runLlm mock mode", () => {
     expect(out.trim()).toBe("MOCK STAGE1 COMPLETE");
   });
 
-  it("returns the exact one-line marker for critic", async () => {
+  it("returns a critic fixture shaped like the reply contract (a lo_mapping.json block)", async () => {
     const out = await runLlm({ stage: "critic", system: "sys", user: "user" });
-    expect(out.trim()).toBe("MOCK CRITIC PASS");
+    expect(out).toContain("FILE: lo_mapping.json");
+    expect(parseCriticReply(out).kind).toBe("lo_mapping");
   });
 
   it("case_study_retry returns the same tex as case_study", async () => {

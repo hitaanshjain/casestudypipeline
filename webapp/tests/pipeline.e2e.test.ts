@@ -100,6 +100,15 @@ describe("pipeline e2e (mock mode)", () => {
       expect(state.stages.critic.status).toBe("done");
       expect(state.stages.case_study.status).toBe("done");
 
+      // Proves the critic's returned lo_mapping.json actually replaced the generator's
+      // draft in the run dir: the Stage 1 fixture carries critique_score 0.75 and one
+      // missing_concepts entry; the critic fixture returns 0.8 plus a second entry
+      // marked CRITIC-VERIFIED, which the draft cannot produce.
+      const captured = JSON.parse(readFileSync(path.join(runDir(id), "lo_mapping.json"), "utf8"));
+      expect(captured.critique_score).toBe(0.8);
+      expect(captured.missing_concepts.some((c: string) => c.startsWith("CRITIC-VERIFIED"))).toBe(true);
+      expect(captured.sections[0].section_number).toBe("5.4");
+
       const dir = runDir(id);
       const pdfPath = path.join(dir, "case_study.pdf");
       expect(existsSync(pdfPath)).toBe(true);
@@ -207,6 +216,27 @@ describe("pipeline e2e (mock mode)", () => {
       expect(existsSync(path.join(dir, "case_study.pdf"))).toBe(false);
       expect(existsSync(path.join(dir, "concept_cards.json"))).toBe(false);
       expect(existsSync(path.join(dir, "practice_deck.json"))).toBe(false);
+    },
+    E2E_TIMEOUT
+  );
+
+  it(
+    "critic contract-violation path: an unusable reply is retried once, then fails the run without certifying the package",
+    async () => {
+      vi.stubEnv("MOCK_STAGE_OVERRIDES", "critic=critic_unusable");
+      mockCalls.length = 0;
+
+      const id = await startRun({ problem: "This critic will narrate instead of returning the contracted reply." });
+      const state = await pollUntilDone(id, E2E_TIMEOUT);
+
+      vi.stubEnv("MOCK_STAGE_OVERRIDES", "");
+
+      expect(state.failed).toBe(true);
+      expect(state.stages.critic.status).toBe("failed");
+      expect(state.stages.critic.message).toContain("reply contract");
+      // The retry actually happened: two critic calls, not one.
+      expect(mockCalls.filter((c) => c === "critic")).toHaveLength(2);
+      expect(existsSync(path.join(runDir(id), "case_study.tex"))).toBe(false);
     },
     E2E_TIMEOUT
   );

@@ -23,10 +23,9 @@ import {
 } from "./contracts";
 import * as db from "./db";
 import { TECTONIC } from "./paths";
+import { STAGE1_ALL_FILES, parseStage1Reply, parseCriticReply, stripFences } from "./replyParsing";
 
 const execFileP = promisify(execFile);
-
-const STAGE1_FILES = ["primary.md", "supporting_01.md", "supporting_02.md", "lo_mapping.json", "verified_answer.txt"] as const;
 
 // process.cwd() is webapp/ under vitest, `next dev`, and a bundled `next build`
 // server function alike (same convention as llm.ts's MOCK_FIXTURES_DIR).
@@ -108,34 +107,8 @@ function buildStage1User(problem: string): string {
   return `Source problem:\n${problem}\n\nReturn each output file in a fenced block preceded by a line 'FILE: <name>'.`;
 }
 
-// Parses replies shaped like:
-//   FILE: primary.md
-//   ```
-//   ...content...
-//   ```
-function parseFileBlocks(reply: string): Record<string, string> {
-  const files: Record<string, string> = {};
-  const re = /FILE:\s*(\S+)\s*\n```(?:[a-zA-Z0-9]*)?\n([\s\S]*?)\n```/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(reply))) {
-    files[m[1]] = m[2];
-  }
-  return files;
-}
-
-function stripFences(text: string): string {
-  const trimmed = text.trim();
-  const m = trimmed.match(/^```(?:[a-zA-Z0-9]*)?\n([\s\S]*?)\n```$/);
-  return m ? m[1] : trimmed;
-}
-
-function findErrorLine(reply: string): string | null {
-  const line = reply.split(/\r?\n/).find((l) => l.trim().startsWith("ERROR"));
-  return line ? line.trim() : null;
-}
-
 function readStage1Files(dir: string): string {
-  return STAGE1_FILES.filter((f) => existsSync(path.join(dir, f)))
+  return STAGE1_ALL_FILES.filter((f) => existsSync(path.join(dir, f)))
     .map((f) => `FILE: ${f}\n\`\`\`\n${readFileSync(path.join(dir, f), "utf8")}\n\`\`\``)
     .join("\n\n");
 }
@@ -183,7 +156,7 @@ async function runStage1(id: string, dir: string, input: RunInput): Promise<bool
   if (process.env.MOCK_LLM === "1") {
     // Mock behavior: the fixture text ("MOCK STAGE1 COMPLETE") is not parsed;
     // instead copy the real Stage 1 fixture package into the run dir.
-    for (const f of STAGE1_FILES) {
+    for (const f of STAGE1_ALL_FILES) {
       copyFileSync(path.join(STAGE1_FIXTURES_DIR, f), path.join(dir, f));
     }
     await updateState(id, (s) => {
@@ -192,25 +165,30 @@ async function runStage1(id: string, dir: string, input: RunInput): Promise<bool
     return true;
   }
 
-  const files = parseFileBlocks(reply);
-  if (files["phase1_error.txt"] !== undefined) {
-    const message = files["phase1_error.txt"].split(/\r?\n/)[0].trim();
+  const parsed = parseStage1Reply(reply);
+
+  if (parsed.kind === "error") {
     await updateState(id, (s) => {
-      s.stages.stage1 = { status: "failed", message };
+      s.stages.stage1 = { status: "failed", message: parsed.message };
     });
     return false;
   }
 
-  const missing = STAGE1_FILES.filter((f) => files[f] === undefined);
-  if (missing.length > 0) {
+  if (parsed.kind === "missing") {
     await updateState(id, (s) => {
-      s.stages.stage1 = { status: "failed", message: `stage1 missing output file(s): ${missing.join(", ")}` };
+      s.stages.stage1 = {
+        status: "failed",
+        message: `stage1 missing required output file(s): ${parsed.missing.join(", ")}`,
+      };
     });
     return false;
   }
 
-  for (const f of STAGE1_FILES) {
-    writeFileSync(path.join(dir, f), files[f]);
+  // Extracts are optional: prompts/phase1_generator_prompt_v1.md defines an honest
+  // no-coverage path on which primary.md and the supporting files legitimately do not
+  // exist. Write whatever arrived; downstream stages check their own preconditions.
+  for (const f of STAGE1_ALL_FILES) {
+    if (parsed.files[f] !== undefined) writeFileSync(path.join(dir, f), parsed.files[f]);
   }
   await updateState(id, (s) => {
     s.stages.stage1 = { status: "done" };
@@ -221,8 +199,18 @@ async function runStage1(id: string, dir: string, input: RunInput): Promise<bool
 // ---------------------------------------------------------------------------
 // Critic
 // ---------------------------------------------------------------------------
+// The critic prompt (prompts/phase1_critic_prompt_v1.md, a tested artifact this pipeline
+// does not edit) was written for an agentic session with read/search/write file tools: it
+// says to WRITE phase1_error.txt on a calibration failure and to UPDATE lo_mapping.json in
+// place otherwise. Here it runs as a single API call with read-only corpus tools and no
+// write tool, so this note maps both file operations onto the two reply shapes
+// parseCriticReply understands. Same adapter pattern buildStage1User uses for the generator.
+const CRITIC_ENVIRONMENT_NOTE = `Environment note: you are running inside an automated pipeline, not a file-system session. The draft package files appear above, each as a line "FILE: <name>" followed by that file's content in a fenced code block; the source problem at the top is problem.txt. You have two read-only corpus tools, list_books and read_corpus_file, which serve references_path. You have NO write tool. Wherever your instructions tell you to write a file, return it in your reply instead:
+- If you would write phase1_error.txt, reply with exactly its single ERROR line and nothing else.
+- If you would update lo_mapping.json, reply with the line "FILE: lo_mapping.json" followed by the COMPLETE updated file in a fenced code block, then your one-line report.`;
+
 function buildCriticUser(dir: string, problem: string): string {
-  return `Source problem:\n${problem}\n\n${readStage1Files(dir)}`;
+  return `Source problem:\n${problem}\n\n${readStage1Files(dir)}\n\n${CRITIC_ENVIRONMENT_NOTE}`;
 }
 
 async function runCritic(id: string, dir: string, input: RunInput): Promise<boolean> {
@@ -230,19 +218,45 @@ async function runCritic(id: string, dir: string, input: RunInput): Promise<bool
     s.stages.critic = { status: "running" };
   });
 
-  const reply = await runLlm({
-    stage: "critic",
-    system: loadPrompt("phase1_critic_prompt_v1"),
-    user: buildCriticUser(dir, input.problem),
-  });
+  const user = buildCriticUser(dir, input.problem);
+  const system = loadPrompt("phase1_critic_prompt_v1");
 
-  const errorLine = findErrorLine(reply);
-  if (errorLine) {
+  // Corpus tools are what make audit items A1 (independent search), A3 (extract-vs-source
+  // faithfulness), and A4 (byte-exact attribution) possible at all.
+  let reply = await runLlm({ stage: "critic", system, user, tools: "corpus" });
+  let parsed = parseCriticReply(reply);
+
+  if (parsed.kind === "unusable") {
+    // One retry, the same single-retry convention the case-study and JSON stages use.
+    const retryUser = `${user}\n\nYour previous reply did not match the required format. Reply with EITHER exactly one ERROR line (calibration failure or unreadable package) and nothing else, OR the line "FILE: lo_mapping.json" followed by the complete updated lo_mapping.json in a fenced code block, then your one-line report.`;
+    reply = await runLlm({ stage: "critic", system, user: retryUser, tools: "corpus" });
+    parsed = parseCriticReply(reply);
+  }
+
+  if (parsed.kind === "error") {
     await updateState(id, (s) => {
-      s.stages.critic = { status: "failed", message: errorLine };
+      s.stages.critic = { status: "failed", message: parsed.message };
     });
     return false;
   }
+
+  if (parsed.kind === "unusable") {
+    // Fail-safe: an unreadable critic reply means the calibration verdict is UNKNOWN, and
+    // treating unknown as a pass would let an uncertified package through the one gate
+    // built to stop it.
+    await updateState(id, (s) => {
+      s.stages.critic = {
+        status: "failed",
+        message: "critic reply did not match the reply contract after one retry; package not certified",
+      };
+    });
+    return false;
+  }
+
+  // Pass path: the critic's updated lo_mapping.json (nine critique fields, plus verified
+  // and extended missing_concepts) replaces the generator's draft, so every downstream
+  // stage reads the audited mapping rather than the unaudited one.
+  writeFileSync(path.join(dir, "lo_mapping.json"), parsed.content);
 
   await updateState(id, (s) => {
     s.stages.critic = { status: "done" };
@@ -274,6 +288,19 @@ async function runCaseStudy(id: string, dir: string, input: RunInput): Promise<b
   await updateState(id, (s) => {
     s.stages.case_study = { status: "running" };
   });
+
+  // A no-coverage Stage 1 package has no primary.md. The master prompt's file contract
+  // requires it, so fail here with a student-readable reason rather than sending a
+  // contract-violating user message and letting the model improvise.
+  if (!existsSync(path.join(dir, "primary.md"))) {
+    await updateState(id, (s) => {
+      s.stages.case_study = {
+        status: "failed",
+        message: "Stage 1 found no primary textbook section for this problem, so the case study cannot be grounded.",
+      };
+    });
+    return false;
+  }
 
   const user = buildCaseStudyUser(dir, input);
   let reply = await runLlm({ stage: "case_study", system: loadPrompt("case_study_master_prompt"), user });
@@ -324,6 +351,19 @@ async function runConceptCards(
   await updateState(id, (s) => {
     s.stages.concept_cards = { status: "running" };
   });
+
+  // Checked before the cache lookup: buildConceptCardsUser reads primary.md
+  // unconditionally, so a no-coverage package would otherwise crash with a raw ENOENT
+  // on a cache miss.
+  if (!existsSync(path.join(dir, "primary.md"))) {
+    await updateState(id, (s) => {
+      s.stages.concept_cards = {
+        status: "failed",
+        message: "Stage 1 found no primary textbook section for this problem, so concept cards cannot be grounded.",
+      };
+    });
+    return false;
+  }
 
   if (cacheAvailable && chapterId !== undefined) {
     try {

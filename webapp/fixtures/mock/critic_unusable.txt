@@ -1,0 +1,3 @@
+I have completed my independent re-derivation and the adversarial audit. I would
+now write the updated lo_mapping.json to output_path, but I have no write tool
+available in this environment, so I am reporting my findings here instead.
