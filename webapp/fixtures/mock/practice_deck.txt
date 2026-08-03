@@ -29,6 +29,21 @@
         "type": "goal",
         "title": "Goal",
         "text": "Differentiate the nested function with the chain rule, then substitute x equal to pi over twelve for an exact value."
+      },
+      "visual": {
+        "kind": "plot",
+        "curves": [
+          {
+            "expr": "sin(2*x)^3",
+            "label": "Function",
+            "emphasis": "primary"
+          }
+        ],
+        "domain": [
+          0,
+          1.5708
+        ],
+        "caption": "One arch of the composite function across the interval containing the evaluation point."
       }
     },
     {
@@ -214,6 +229,27 @@
         "type": "warning",
         "title": "Square the sine, not the angle",
         "text": "The exponent applies to the sine value, so one half is squared to give one quarter."
+      },
+      "visual": {
+        "kind": "plot",
+        "curves": [
+          {
+            "expr": "6*sin(2*x)^2*cos(2*x)",
+            "label": "Derivative",
+            "emphasis": "primary"
+          }
+        ],
+        "domain": [
+          0,
+          1.5708
+        ],
+        "marks": [
+          {
+            "x": 0.2618,
+            "label": "x = pi/12"
+          }
+        ],
+        "caption": "The derivative curve with the evaluation point marked; its height there is the value computed in this step."
       }
     },
     {

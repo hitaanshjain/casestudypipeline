@@ -1,0 +1,200 @@
+/* Step visuals in the worksheet world: a figure printed on white stock inside
+   the ivory sheet, navy ink, blue accent. Sized by its container, never
+   scrollable (scrollboxes are banned, Hitaansh, July 30). */
+
+.figure {
+  margin: 0 0 18px;
+  padding: 14px 16px 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Keeps a wide plot from becoming a letterbox strip on a narrow column. */
+  max-height: 340px;
+}
+
+.grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+
+.axisHead {
+  fill: var(--ink);
+}
+
+.tickText {
+  fill: var(--ink-dim);
+  font-family: var(--sans);
+  font-size: 11px;
+}
+
+.curvePrimary {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.curveSecondary {
+  fill: none;
+  stroke: var(--ink-dim);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.shade {
+  fill: rgba(130, 164, 245, 0.34);
+  stroke: none;
+}
+
+.mark {
+  fill: var(--ink);
+  stroke: #ffffff;
+  stroke-width: 1.6;
+}
+
+.markText {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.pointClosed {
+  fill: var(--ink);
+}
+
+.pointOpen {
+  fill: #ffffff;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+}
+
+.spanPositive {
+  stroke: var(--blue);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.spanNegative {
+  stroke: var(--warning);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.spanNeutral {
+  stroke: var(--ink-dim);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.spanText {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1.5px dashed var(--rule-strong);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.swatchPrimary,
+.swatchSecondary {
+  width: 16px;
+  height: 0;
+  flex: 0 0 auto;
+  border-top: 2.5px solid var(--blue);
+}
+
+.swatchSecondary {
+  border-top-style: dashed;
+  border-top-color: var(--ink-dim);
+}
+
+/* The plotted expression, printed so a divergence from the step's LaTeX is
+   visible rather than silent. */
+.expr {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  color: var(--ink);
+  background: var(--paper-shade);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1px 5px;
+  overflow-wrap: anywhere;
+}
+
+.caption {
+  margin-top: 8px;
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.tableWrap {
+  min-width: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+/* Deliberately NOT text-transform: uppercase, unlike other navy caption bars in
+   this design system. Column headers here are mathematical symbols, and case is
+   semantic in mathematics: uppercasing turns "x" into "X" and "f(x)" into
+   "F(X)", which can name different objects. */
+.table th {
+  text-align: left;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+  padding: 6px 10px;
+}
+
+.table td {
+  border: 1px solid var(--rule-strong);
+  padding: 7px 10px;
+  min-width: 0;
+}
+
+@media (max-width: 620px) {
+  .figure {
+    padding: 10px 10px 8px;
+  }
+  .table th,
+  .table td {
+    padding: 5px 7px;
+  }
+}

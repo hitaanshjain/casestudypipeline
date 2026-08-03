@@ -65,7 +65,8 @@ Match this schema exactly, field for field:
       "cards": [
         { "label": "string", "latex": "string LaTeX", "tone": "blue | violet" }
       ],
-      "callout": { "type": "goal | tip | memory | check | warning | success", "title": "string", "text": "string" }
+      "callout": { "type": "goal | tip | memory | check | warning | success", "title": "string", "text": "string" },
+      "visual": "one object as defined in <visuals>, or null, or the key omitted"
     }
   ],
   "reference": {
@@ -116,6 +117,74 @@ LaTeX rules, applied to every latex field (problem.latex, problem.answerLatex, e
 animationId and every step id are kebab-case, unique within the deck, and describe the specific problem or step, never a generic label like "step-1".
 </field_rules>
 
+<visuals>
+A step carries at most one visual. If two ideas each need a picture, they are two steps.
+
+Before drafting the steps, classify every step as exactly one of:
+- VISUAL_REQUIRED: the picture carries meaning the equations cannot. A shape being described, a region whose area is the quantity asked for, a sign pattern across intervals, a limit approached numerically.
+- VISUAL_RECOMMENDED: the equations alone are sufficient, but a picture materially shortens the reasoning.
+- NOT_NEEDED: the step states a definition or a general rule, or performs routine algebra.
+
+Every VISUAL_REQUIRED step gets its visual. A VISUAL_RECOMMENDED step gets one when it adds something beyond the algebra already on that step. Never emit the classification itself; it decides what you build and nothing more.
+
+Do not omit a concept-defining visual merely because the equations are available. Equally, do not add a visual that only restates an equation already shown on that step.
+
+Fidelity is absolute. A visual shows the same function, the same domain, the same marked points, and the same intervals as the step's own mathematics. Never draw a decorative, generic, illustrative, or approximate picture.
+
+Three kinds exist and there are no others.
+
+"plot", a function graph:
+{
+  "kind": "plot",
+  "curves": [ { "expr": "ASCII expression in x", "label": "string", "emphasis": "primary | secondary" } ],
+  "domain": [number, number],
+  "yRange": [number, number],
+  "marks": [ { "x": number, "label": "string" } ],
+  "shade": { "from": number, "to": number, "label": "string" },
+  "caption": "string, one sentence"
+}
+- 1 or 2 curves, exactly one with emphasis "primary". A second curve is how you draw a tangent line, a comparison function, or a derivative beside its function.
+- domain[0] < domain[1]. Choose a domain on which the function stays finite.
+- yRange is optional; omit it unless an automatic range would be dominated by a spike.
+- marks: 0 to 3 points ON THE PRIMARY CURVE. Give only x, never a height: the renderer computes the height from the expression. Every x lies inside the domain.
+- shade: optional region under the primary curve, for an accumulated quantity. from < to, and both lie inside the domain.
+- marks, shade and yRange may each be omitted entirely.
+
+"number_line", critical points and intervals. A sign chart is this kind with "+" and "-" interval labels:
+{
+  "kind": "number_line",
+  "range": [number, number],
+  "points": [ { "x": number, "label": "string", "closed": true | false } ],
+  "intervals": [ { "from": number, "to": number, "label": "string", "tone": "positive | negative | neutral" } ],
+  "caption": "string, one sentence"
+}
+- range[0] < range[1]. points and intervals are both required arrays and may be empty, at most 5 each.
+- closed true draws a filled dot (the endpoint is included), false draws a hollow one.
+- Every point lies inside the range; every interval lies inside the range with from < to.
+
+"table", a small table of values:
+{
+  "kind": "table",
+  "columns": ["string", "string"],
+  "rows": [ ["LaTeX cell", "LaTeX cell"] ],
+  "caption": "string, one sentence"
+}
+- 2 to 4 columns, 1 to 8 rows. Every row has exactly as many cells as there are columns.
+- Column headers are plain text because they are labels. Cells are LaTeX because they are values.
+
+THE EXPRESSION LANGUAGE, for every "expr" field. This is plain ASCII and NOT LaTeX.
+Allowed, and nothing else:
+- numbers, the variable x, and the constants pi and e
+- the operators + - * / ^ and parentheses
+- the functions sin cos tan sqrt abs exp ln log, where ln is the natural log and log is base 10
+
+- Write every multiplication explicitly: "2*x" is correct, "2x" is rejected.
+- ^ is right associative, and -x^2 means -(x^2), as usual.
+- The language cannot express piecewise definitions, integrals, summations, limits, or derivative notation. Never attempt them inside an expr. If a step's function cannot be written in this language, that step takes a different visual kind or no visual at all.
+- An expr that does not parse fails the entire deck, so check each one character by character before emitting.
+- The expr must be the same function the step's LaTeX shows. It is printed beneath the graph for the reader to compare against your equations.
+</visuals>
+
 <content_rules>
 - The practice problem is original. Never copy question.txt's wording, numbers, or scenario. A relabeled version of the same numbers is still a copy; change the scenario and the values, not just the variable names.
 - primary.md is the authority for notation, method, and difficulty. When primary.md has a specific convention (a notation choice, a preferred method among several valid ones), follow it exactly rather than a more familiar alternative.
@@ -132,9 +201,10 @@ animationId and every step id are kebab-case, unique within the deck, and descri
 2. Design a fresh, original problem exercising that skill at primary.md's rigor. Solve it completely.
 3. Independently verify the solution, by an alternate method or a substitution check, before drafting any JSON.
 4. Break the solution into 4 to 7 major reasoning moves. Draft each step's title, caption, and equations, adding cards and a callout only where they earn their place.
-5. List the 3 to 6 general formulas the solution actually invokes and write each as a reference.equations entry pointing at the step that uses it.
-6. Assemble problem, steps, and reference into the schema in <json_schema>.
-7. Before emitting, check: the JSON parses; schemaVersion is "1.1" and renderer.id is "math-animation-dark-sidebar"; there are 4 to 7 steps; the first step restates the given; every step carries exactly one style "primary" equation and no step has an empty equations array; every caption is one sentence of 25 words or fewer; exactly the last step contains a style "final" boxed equation; every reference.equations[].stepId matches an existing step id; no field outside <json_schema> appears anywhere; no latex field contains $; every ^ and _ is braced.
+5. Classify every step VISUAL_REQUIRED, VISUAL_RECOMMENDED, or NOT_NEEDED per <visuals>, then build the visual for each step that needs one. Keep the classification to yourself; only the visuals reach the JSON.
+6. List the 3 to 6 general formulas the solution actually invokes and write each as a reference.equations entry pointing at the step that uses it.
+7. Assemble problem, steps, and reference into the schema in <json_schema>.
+8. Before emitting, check: the JSON parses; schemaVersion is "1.1" and renderer.id is "math-animation-dark-sidebar"; there are 4 to 7 steps; the first step restates the given; every step carries exactly one style "primary" equation and no step has an empty equations array; every caption is one sentence of 25 words or fewer; exactly the last step contains a style "final" boxed equation; every reference.equations[].stepId matches an existing step id; no field outside <json_schema> appears anywhere; no latex field contains $; every ^ and _ is braced. Then check the visuals: no step has more than one; every visual uses one of the three kinds in <visuals> and only that kind's fields; every expr uses only the allowed vocabulary with explicit multiplication and no LaTeX; every mark lies inside its domain and every point and interval inside its range; every table row has exactly as many cells as there are columns.
 </process>
 
 <output_contract>

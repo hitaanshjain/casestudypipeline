@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MathBlock, Prose } from "./Math";
+import DeckVisual from "./DeckVisual";
 import { BangIcon, CheckIcon, DashIcon, GridIcon, RefreshIcon, SkipToEndIcon, SparkIcon, TargetIcon } from "./icons";
 import type { TPracticeDeck } from "@/lib/contracts";
 import styles from "./practiceDeck.module.css";
@@ -169,6 +170,8 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
                   ))}
                 </div>
               )}
+
+              {s.visual && <DeckVisual visual={s.visual} />}
 
               {s.cards.length > 0 && (
                 <div className="cards">

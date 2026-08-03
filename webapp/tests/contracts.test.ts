@@ -52,6 +52,86 @@ describe("practice deck contract", () => {
   });
 });
 
+describe("deck step visuals", () => {
+  const plot = {
+    kind: "plot",
+    curves: [{ expr: "sin(2*x)^3", label: "y", emphasis: "primary" }],
+    domain: [0, 1.5708],
+    marks: [{ x: 0.2618, label: "x = pi/12" }],
+    caption: "The function over one arch.",
+  };
+  const numberLine = {
+    kind: "number_line",
+    range: [-2, 2],
+    points: [{ x: 0, label: "0", closed: true }],
+    intervals: [{ from: 0, to: 2, label: "+", tone: "positive" }],
+    caption: "Sign of the derivative.",
+  };
+  const table = {
+    kind: "table",
+    columns: ["x", "f(x)"],
+    rows: [["0.9", "1.71"]],
+    caption: "Approaching the limit.",
+  };
+  const withVisual = (visual: unknown) => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[0].visual = visual;
+    return PracticeDeck.safeParse(deck);
+  };
+  const issues = (r: any) => JSON.stringify(r.success ? "" : r.error.issues);
+
+  it("accepts each visual kind", () => {
+    expect(withVisual(plot).success).toBe(true);
+    expect(withVisual(numberLine).success).toBe(true);
+    expect(withVisual(table).success).toBe(true);
+  });
+  // The point of the whole design: the model never states a coordinate, so the
+  // only way to draw a wrong curve is a wrong expression, and it must not parse
+  // silently. compileExpr runs inside zod for exactly this.
+  it("rejects an expression outside the closed vocabulary", () => {
+    const r = withVisual({ ...plot, curves: [{ expr: "wiggle(x)", label: "y", emphasis: "primary" }] });
+    expect(r.success).toBe(false);
+    expect(issues(r)).toContain("wiggle");
+  });
+  it("rejects implicit multiplication in an expression", () => {
+    const r = withVisual({ ...plot, curves: [{ expr: "2x+1", label: "y", emphasis: "primary" }] });
+    expect(r.success).toBe(false);
+  });
+  it("rejects an unknown visual kind", () => {
+    expect(withVisual({ kind: "hologram", caption: "no" }).success).toBe(false);
+  });
+  it("rejects a reversed domain", () => {
+    const r = withVisual({ ...plot, domain: [2, 0] });
+    expect(r.success).toBe(false);
+    expect(issues(r)).toContain("domain");
+  });
+  it("rejects a mark outside the domain", () => {
+    const r = withVisual({ ...plot, marks: [{ x: 99, label: "off the page" }] });
+    expect(r.success).toBe(false);
+    expect(issues(r)).toContain("outside the domain");
+  });
+  it("rejects a plot without exactly one primary curve", () => {
+    const two = [
+      { expr: "x", label: "a", emphasis: "primary" },
+      { expr: "x^2", label: "b", emphasis: "primary" },
+    ];
+    expect(withVisual({ ...plot, curves: two }).success).toBe(false);
+  });
+  it("rejects a table row whose width does not match the columns", () => {
+    const r = withVisual({ ...table, rows: [["0.9", "1.71", "extra"]] });
+    expect(r.success).toBe(false);
+    expect(issues(r)).toContain("columns");
+  });
+  it("rejects a number_line interval outside the range", () => {
+    const r = withVisual({ ...numberLine, intervals: [{ from: -9, to: 9, label: "+", tone: "positive" }] });
+    expect(r.success).toBe(false);
+  });
+  // visual is optional, so the pre-visual decks in the MySQL cache stay valid.
+  it("accepts a deck with no visual on any step", () => {
+    expect(PracticeDeck.safeParse(JSON.parse(read("practice_deck.json"))).success).toBe(true);
+  });
+});
+
 describe("parseModelJson", () => {
   it("strips code fences", () => {
     const r = parseModelJson(ConceptCardsPayload, "```json\n" + read("concept_cards.json") + "\n```");
