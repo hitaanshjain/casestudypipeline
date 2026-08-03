@@ -300,8 +300,11 @@
   font-size: 0.8rem;
   line-height: 1.45;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  /* Two lines, not three: this is a recap card, so the caption orients the
+     reader toward the step's equation rather than re-teaching the step. The
+     full caption is still on the step's own slide. */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

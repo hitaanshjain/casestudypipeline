@@ -15,6 +15,12 @@
 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 480px));
+  /* Every row is as tall as the tallest card in the whole grid, so cards read as
+     one uniform set instead of a ragged collage. Paired with height:100% down
+     through .cardButton and .inner, since `all: unset` drops the default
+     stretch alignment and would otherwise leave each card at its own content
+     height, floating in the middle of its row. */
+  grid-auto-rows: 1fr;
   justify-content: start;
   gap: 16px;
 }
@@ -24,6 +30,7 @@
   box-sizing: border-box;
   display: block;
   width: 100%;
+  height: 100%;
   cursor: pointer;
   perspective: 1400px;
 }
@@ -40,6 +47,7 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  height: 100%;
   min-height: 380px;
   transform-style: preserve-3d;
   transition: transform 0.5s;
