@@ -1,0 +1,23 @@
+FILE: lo_mapping.json
+```json
+{
+  "critique_score": 0.8,
+  "critique_findings": [
+    "A1 Independent search: no better PRIMARY exists among the books present.",
+    "A2 Non-finding: all anchors unique.",
+    "A3 Non-finding: extracts faithful to source.",
+    "A4 Non-finding: bookkeeping correct.",
+    "A5 Non-finding: full coverage.",
+    "A6 Non-finding: full per-part step density."
+  ],
+  "primary_assessment": "appropriate",
+  "supporting_assessment": "complete",
+  "recommended_changes": [],
+  "multipart_assessment": "complete",
+  "search_reasonable": true,
+  "critique_status": "completed",
+  "missing_concepts": []
+}
+```
+
+Wrote lo_mapping.json: critique completed, score 0.8, 6 findings

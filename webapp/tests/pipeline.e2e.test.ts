@@ -240,6 +240,54 @@ describe("pipeline e2e (mock mode)", () => {
     },
     E2E_TIMEOUT
   );
+
+  it(
+    "no-coverage package: Stage 1 succeeds without extracts, and all three fan-out stages fail honestly instead of crashing",
+    async () => {
+      // The honest no-coverage path the Stage 1 relaxation newly allows through: the
+      // generator found no PRIMARY section, so it emitted no extracts at all.
+      vi.stubEnv("MOCK_STAGE1_OMIT", "primary.md,supporting_01.md,supporting_02.md");
+      mockCalls.length = 0;
+
+      const id = await startRun({ problem: "A linear programming problem with no coverage in the calculus corpus." });
+      const state = await pollUntilDone(id, E2E_TIMEOUT);
+
+      vi.stubEnv("MOCK_STAGE1_OMIT", "");
+
+      // Stage 1 and the critic still pass: the two load-bearing files are present.
+      expect(state.stages.stage1.status).toBe("done");
+      expect(state.stages.critic.status).toBe("done");
+
+      // Every fan-out stage refuses with a readable reason rather than a raw ENOENT.
+      for (const stage of ["case_study", "concept_cards", "practice_deck"] as const) {
+        expect(state.stages[stage].status).toBe("failed");
+        expect(state.stages[stage].message).toContain("no primary textbook section");
+      }
+      expect(state.failed).toBe(true);
+    },
+    E2E_TIMEOUT
+  );
+
+  it(
+    "rejects a critic critique that abbreviated the mapping, leaving the generator's draft in place",
+    async () => {
+      vi.stubEnv("MOCK_STAGE_OVERRIDES", "critic=critic_abbreviated");
+      mockCalls.length = 0;
+
+      const id = await startRun({ problem: "This critic will return only the fields it edited." });
+      const state = await pollUntilDone(id, E2E_TIMEOUT);
+
+      vi.stubEnv("MOCK_STAGE_OVERRIDES", "");
+
+      expect(state.stages.critic.status).toBe("failed");
+      expect(state.stages.critic.message).toContain("critique rejected");
+      // The draft must survive: a rejected capture never overwrites Stage 1's output.
+      const mapping = JSON.parse(readFileSync(path.join(runDir(id), "lo_mapping.json"), "utf8"));
+      expect(mapping.sections[0].section_number).toBe("5.4");
+      expect(mapping.critique_score).toBe(0.75);
+    },
+    E2E_TIMEOUT
+  );
 });
 
 describe("artifact route allowlist", () => {

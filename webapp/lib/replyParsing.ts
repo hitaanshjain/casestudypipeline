@@ -2,44 +2,90 @@
 // Every "what did the model actually send back" decision lives here: pure string
 // functions, no fs and no run state, so each reply shape is unit-testable without
 // starting a pipeline run. Hardened for the first live-model bring-up: a real reply
-// may use CRLF, longer fences, decorated FILE: lines, or a blank line before the
-// fence, none of which the original LF-only parser tolerated.
+// may use CRLF, longer fences, decorated FILE: lines, prose wrapped around a code
+// block, or an emphasized ERROR line, none of which the original parser tolerated.
 
 export function normalizeNewlines(s: string): string {
   return s.replace(/\r\n?/g, "\n");
 }
 
-// A file block is a FILE: line (optionally decorated with markdown emphasis, heading
-// marks, or backticks around the name), optional blank lines, then a fence of 3+
-// backticks whose closing fence must match the opening backtick count. The
+// Leading markdown decoration a model may put in front of a line: heading marks,
+// blockquote marks, list bullets, numbering, emphasis. Written as one alternation
+// rather than two overlapping character classes, which backtracked quadratically on
+// long runs of leading whitespace.
+const LINE_DECORATION = "(?:[#>*_~-]+[ \\t]*|\\d+[.)][ \\t]*|[ \\t]+)*";
+
+// A file block is a FILE: line (optionally decorated, with the name optionally
+// wrapped in backticks or emphasis), optional blank lines, then a fence of 3+
+// backticks whose closing fence must match the opening backtick count. That
 // backreference is what lets a 4-backtick fence carry 3-backtick content intact.
 const FILE_BLOCK_SOURCE =
-  "^[ \\t]*[#>*\\-_ \\t]*FILE:?[ \\t]*[`*_]*([A-Za-z0-9._/-]+)[`*_]*[^\\n]*\\n(?:[ \\t]*\\n)*[ \\t]*(`{3,})[A-Za-z0-9]*[ \\t]*\\n([\\s\\S]*?)\\n?[ \\t]*\\2";
+  "^" +
+  LINE_DECORATION +
+  "FILE[`*_]*:?[`*_]*[ \\t]*[`*_]*([A-Za-z0-9._/-]+)[`*_]*[^\\n]*\\n" +
+  "(?:[ \\t]*\\n)*[ \\t]*(`{3,})[A-Za-z0-9._-]*[ \\t]*\\n([\\s\\S]*?)\\n?[ \\t]*\\2";
+
+// Models sometimes name a file by the path the prompt used (output_path/lo_mapping.json)
+// rather than by its bare name. A key nothing can look up is worse than useless, so the
+// basename is always what we key on.
+function basename(name: string): string {
+  return name.split("/").filter(Boolean).pop() ?? name;
+}
 
 export function parseFileBlocks(reply: string): Record<string, string> {
   const text = normalizeNewlines(reply);
   const files: Record<string, string> = {};
-  const re = new RegExp(FILE_BLOCK_SOURCE, "gm");
+  const re = new RegExp(FILE_BLOCK_SOURCE, "gmi");
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {
-    files[m[1]] = m[3];
+    files[basename(m[1])] = m[3];
   }
   return files;
 }
 
+const ANY_FENCE_RE = /(`{3,})[A-Za-z0-9._-]*[ \t]*\n([\s\S]*?)\n?[ \t]*\1/;
+
+// Returns the content of the first fenced block anywhere in the text, or the trimmed
+// text when there is no fence. Deliberately NOT anchored to the whole reply: the single
+// likeliest live-model drift is a wrapper sentence ("Here is the complete LaTeX source:")
+// around an otherwise correct block, and an anchored match silently passed that prose
+// through into case_study.tex, guaranteeing a compile failure.
 export function stripFences(text: string): string {
-  const trimmed = normalizeNewlines(text).trim();
-  const m = trimmed.match(/^(`{3,})[A-Za-z0-9]*[ \t]*\n([\s\S]*?)\n?[ \t]*\1$/);
-  return m ? m[2] : trimmed;
+  const normalized = normalizeNewlines(text).trim();
+  const m = normalized.match(ANY_FENCE_RE);
+  return m ? m[2] : normalized;
 }
 
-// Strips every fenced block first, so text a model quotes INSIDE a returned file
-// (e.g. a critique finding quoting the ERROR-line template) can never trip the
-// calibration gate. Only prose outside fences counts as a real error signal.
+// The contract line always begins "ERROR:", but a model may emphasize or bullet it.
+// Requiring the colon avoids matching ordinary prose like "ERRORS: none found".
+const ERROR_LINE_RE = new RegExp("^" + LINE_DECORATION + "[`*_]*ERROR[`*_]*:");
+
+function isErrorLine(line: string): boolean {
+  return ERROR_LINE_RE.test(line.trim());
+}
+
+function cleanErrorLine(line: string): string {
+  return line.trim().replace(/^(?:[#>*_~-]+[ \t]*|\d+[.)][ \t]*|[ \t]+)*/, "").replace(/[`*_]+$/, "").trim();
+}
+
+function stripAllFences(text: string): string {
+  return normalizeNewlines(text).replace(/(`{3,})[A-Za-z0-9._-]*[ \t]*\n[\s\S]*?\n?[ \t]*\1/g, "");
+}
+
+// Strips every fenced block first, so text a model quotes INSIDE a returned file can
+// never trip the calibration gate. Only prose outside fences counts as a real signal.
 export function findErrorLineOutsideFences(reply: string): string | null {
-  const withoutFences = normalizeNewlines(reply).replace(/(`{3,})[A-Za-z0-9]*[ \t]*\n[\s\S]*?\n?[ \t]*\1/g, "");
-  const line = withoutFences.split("\n").find((l) => l.trim().startsWith("ERROR"));
-  return line ? line.trim() : null;
+  const line = stripAllFences(reply).split("\n").find(isErrorLine);
+  return line ? cleanErrorLine(line) : null;
+}
+
+// Last-resort scan that DOES look inside fences. Only consulted after the success
+// signals have been ruled out: a model told to "reply with exactly the ERROR line" may
+// still fence it, and losing that message would report a format failure to the operator
+// when the real event was a calibration failure.
+export function findErrorLineAnywhere(reply: string): string | null {
+  const line = normalizeNewlines(reply).split("\n").find(isErrorLine);
+  return line ? cleanErrorLine(line) : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -47,9 +93,9 @@ export function findErrorLineOutsideFences(reply: string): string | null {
 // ---------------------------------------------------------------------------
 
 // The full Stage 1 package. Extracts are OPTIONAL: prompts/phase1_generator_prompt_v1.md
-// defines an honest no-coverage path (no_primary_available + fallback_sections) on which
-// primary.md and the supporting extracts legitimately do not exist. Only the mapping and
-// the verified answer are load-bearing for every downstream stage.
+// emits primary.md "if and only if a PRIMARY entry exists", so an honest no-coverage
+// package legitimately has no extracts. Only the mapping and the verified answer are
+// load-bearing for the stages downstream.
 export const STAGE1_ALL_FILES = [
   "primary.md",
   "supporting_01.md",
@@ -65,13 +111,14 @@ export type Stage1Reply =
   | { kind: "files"; files: Record<string, string> }
   | { kind: "missing"; missing: string[] };
 
+const EMPTY_ERROR_MESSAGE = "the model reported an error but gave no reason";
+
 function firstNonEmptyLine(text: string): string {
-  return (
-    normalizeNewlines(text)
-      .split("\n")
-      .map((l) => l.trim())
-      .find((l) => l.length > 0) ?? ""
-  );
+  const line = normalizeNewlines(text)
+    .split("\n")
+    .map((l) => l.trim())
+    .find((l) => l.length > 0);
+  return line ? cleanErrorLine(line) : EMPTY_ERROR_MESSAGE;
 }
 
 export function parseStage1Reply(reply: string): Stage1Reply {
@@ -79,9 +126,18 @@ export function parseStage1Reply(reply: string): Stage1Reply {
   if (files["phase1_error.txt"] !== undefined) {
     return { kind: "error", message: firstNonEmptyLine(files["phase1_error.txt"]) };
   }
+
   const missing = STAGE1_REQUIRED_FILES.filter((f) => files[f] === undefined);
-  if (missing.length > 0) return { kind: "missing", missing: [...missing] };
-  return { kind: "files", files };
+  if (missing.length === 0) return { kind: "files", files };
+
+  // The generator prompt tells the model to write phase1_error.txt on an honest failure
+  // (no corpus coverage, unsolvable problem). Without a write tool it will most likely
+  // just say the ERROR line, and reporting "missing output files" instead of that specific
+  // reason would throw away the only diagnosis the model gave.
+  const bare = findErrorLineAnywhere(reply);
+  if (bare) return { kind: "error", message: bare };
+
+  return { kind: "missing", missing: [...missing] };
 }
 
 export type CriticReply =
@@ -89,10 +145,10 @@ export type CriticReply =
   | { kind: "lo_mapping"; content: string }
   | { kind: "unusable" };
 
-// Precedence is fail-safe: every error signal is checked before any success signal, so a
-// reply carrying both never certifies a package. The critic prompt was written for a
-// session with write tools; pipeline.ts's environment note maps those file writes onto
-// these two reply shapes.
+// Precedence is fail-safe: an unambiguous error signal is checked before any success
+// signal, so a reply carrying both never certifies a package. The critic prompt was
+// written for a session with write tools; pipeline.ts's environment note maps those file
+// writes onto these two reply shapes.
 export function parseCriticReply(reply: string): CriticReply {
   const files = parseFileBlocks(reply);
 
@@ -110,8 +166,43 @@ export function parseCriticReply(reply: string): CriticReply {
         return { kind: "lo_mapping", content: normalizeNewlines(mapping) };
       }
     } catch {
-      // Unparseable mapping is not a certification: fall through to unusable.
+      // Unparseable mapping is not a certification: fall through.
     }
   }
+
+  // Only now, with no mapping to certify, is a fenced ERROR line worth reading.
+  const fenced = findErrorLineAnywhere(reply);
+  if (fenced) return { kind: "error", message: fenced };
+
   return { kind: "unusable" };
+}
+
+// The critic's own output checklist makes "completed" mandatory and defines "pending" as
+// the un-audited sentinel, so a reply that merely echoes the draft back is not an audit.
+// The key-inventory check catches the likelier live failure: a model abbreviating a 15KB
+// document down to the fields it edited, which would silently strip `sections` and break
+// topic resolution with no error anywhere.
+export function validateCapturedMapping(
+  captured: string,
+  draft: string
+): { ok: true } | { ok: false; reason: string } {
+  let capturedObj: Record<string, unknown>;
+  let draftObj: Record<string, unknown>;
+  try {
+    capturedObj = JSON.parse(captured);
+    draftObj = JSON.parse(draft);
+  } catch {
+    return { ok: false, reason: "returned lo_mapping.json is not valid JSON" };
+  }
+
+  if (capturedObj.critique_status !== "completed") {
+    return { ok: false, reason: `critique_status is ${JSON.stringify(capturedObj.critique_status)}, not "completed"` };
+  }
+
+  const droppedKeys = Object.keys(draftObj).filter((k) => !(k in capturedObj));
+  if (droppedKeys.length > 0) {
+    return { ok: false, reason: `returned lo_mapping.json dropped field(s): ${droppedKeys.join(", ")}` };
+  }
+
+  return { ok: true };
 }

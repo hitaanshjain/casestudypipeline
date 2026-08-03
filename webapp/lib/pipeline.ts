@@ -23,7 +23,13 @@ import {
 } from "./contracts";
 import * as db from "./db";
 import { TECTONIC } from "./paths";
-import { STAGE1_ALL_FILES, parseStage1Reply, parseCriticReply, stripFences } from "./replyParsing";
+import {
+  STAGE1_ALL_FILES,
+  parseStage1Reply,
+  parseCriticReply,
+  stripFences,
+  validateCapturedMapping,
+} from "./replyParsing";
 
 const execFileP = promisify(execFile);
 
@@ -104,7 +110,7 @@ export async function startRun(input: RunInput): Promise<string> {
 // Shared helpers
 // ---------------------------------------------------------------------------
 function buildStage1User(problem: string): string {
-  return `Source problem:\n${problem}\n\nReturn each output file in a fenced block preceded by a line 'FILE: <name>'.`;
+  return `Source problem:\n${problem}\n\nEnvironment note: you are running inside an automated pipeline and have NO write tool, only the read-only corpus tools list_books and read_corpus_file (they serve references_path). Return every output file in your reply instead of writing it: one line 'FILE: <name>' followed by that file's complete content in a fenced code block. On the honest failure path, where your instructions tell you to write phase1_error.txt, reply with exactly its single ERROR line and nothing else.`;
 }
 
 function readStage1Files(dir: string): string {
@@ -156,7 +162,12 @@ async function runStage1(id: string, dir: string, input: RunInput): Promise<bool
   if (process.env.MOCK_LLM === "1") {
     // Mock behavior: the fixture text ("MOCK STAGE1 COMPLETE") is not parsed;
     // instead copy the real Stage 1 fixture package into the run dir.
+    // Test hook: MOCK_STAGE1_OMIT="primary.md,supporting_01.md" skips those files, which
+    // is the only way to exercise the honest no-coverage package (no extracts) through
+    // the real pipeline, since the fixture package is always complete.
+    const omit = new Set((process.env.MOCK_STAGE1_OMIT ?? "").split(",").map((f) => f.trim()).filter(Boolean));
     for (const f of STAGE1_ALL_FILES) {
+      if (omit.has(f)) continue;
       copyFileSync(path.join(STAGE1_FIXTURES_DIR, f), path.join(dir, f));
     }
     await updateState(id, (s) => {
@@ -205,12 +216,32 @@ async function runStage1(id: string, dir: string, input: RunInput): Promise<bool
 // place otherwise. Here it runs as a single API call with read-only corpus tools and no
 // write tool, so this note maps both file operations onto the two reply shapes
 // parseCriticReply understands. Same adapter pattern buildStage1User uses for the generator.
-const CRITIC_ENVIRONMENT_NOTE = `Environment note: you are running inside an automated pipeline, not a file-system session. The draft package files appear above, each as a line "FILE: <name>" followed by that file's content in a fenced code block; the source problem at the top is problem.txt. You have two read-only corpus tools, list_books and read_corpus_file, which serve references_path. You have NO write tool. Wherever your instructions tell you to write a file, return it in your reply instead:
-- If you would write phase1_error.txt, reply with exactly its single ERROR line and nothing else.
-- If you would update lo_mapping.json, reply with the line "FILE: lo_mapping.json" followed by the COMPLETE updated file in a fenced code block, then your one-line report.`;
+// TURN 1. The critic prompt's first hard rule outranks everything else in it: re-solve
+// the problem completely BEFORE opening any draft file, because a solution written after
+// seeing verified_answer.txt is not independent, and independence is the only thing the
+// calibration gate measures. A single message carrying both the problem and the drafts
+// makes that rule impossible to obey, so the drafts are withheld until this turn is
+// answered: the model's own solution is a completed assistant turn before any draft
+// content enters the context.
+function buildCriticSolveUser(problem: string): string {
+  return `Environment note: you are running inside an automated pipeline, not a file-system session. This is the first of two messages. It contains ONLY problem.txt, which satisfies your first hard rule: solve it here, in full, before any draft file is shown to you. The draft package will arrive in the next message, after this solution is written; you cannot see it yet.
 
-function buildCriticUser(dir: string, problem: string): string {
-  return `Source problem:\n${problem}\n\n${readStage1Files(dir)}\n\n${CRITIC_ENVIRONMENT_NOTE}`;
+problem.txt:
+${problem}
+
+Now do step 2 of your first hard rule and nothing else: solve every part, showing every operator-bearing step, every intermediate result, and every final value, then run the substitution self-check. Do not audit, do not critique, and do not ask for the drafts; just write your complete independent solution.`;
+}
+
+// TURN 2. Only now do the drafts appear. The write-tool remapping lives here because
+// these are the instructions the model acts on after auditing.
+function buildCriticAuditUser(dir: string): string {
+  return `${readStage1Files(dir)}
+
+Environment note, continued: the draft package is above, each file as a line "FILE: <name>" followed by its content in a fenced code block. Your input paths bind as follows: problem_path is the problem in the previous message, output_path is that set of file blocks, and references_path is served by your two read-only corpus tools, list_books and read_corpus_file. Your independent solution in the previous message is the one the calibration gate compares against verified_answer.txt; it was written before you saw any of this, so the gate is valid.
+
+You have NO write tool. Wherever your instructions tell you to write a file, return it in your reply instead:
+- If you would write phase1_error.txt, reply with its single ERROR line and nothing else besides your one-line report.
+- If you would update lo_mapping.json, reply with the line "FILE: lo_mapping.json" followed by the COMPLETE updated file in a fenced code block, then your one-line report. Emit the whole document, every field, not just the fields you changed; an abbreviated mapping is rejected.`;
 }
 
 async function runCritic(id: string, dir: string, input: RunInput): Promise<boolean> {
@@ -218,18 +249,30 @@ async function runCritic(id: string, dir: string, input: RunInput): Promise<bool
     s.stages.critic = { status: "running" };
   });
 
-  const user = buildCriticUser(dir, input.problem);
   const system = loadPrompt("phase1_critic_prompt_v1");
 
-  // Corpus tools are what make audit items A1 (independent search), A3 (extract-vs-source
-  // faithfulness), and A4 (byte-exact attribution) possible at all.
-  let reply = await runLlm({ stage: "critic", system, user, tools: "corpus" });
+  // Turn 1: the independent re-solve, with no draft content in context.
+  const solveUser = buildCriticSolveUser(input.problem);
+  const solution = await runLlm({ stage: "critic_solve", system, user: solveUser });
+
+  // Turn 2: the drafts plus the audit instructions, replaying turn 1 so the model's own
+  // solution is what its calibration gate compares against. Corpus tools are what make
+  // audit items A1 (independent search), A3 (extract-vs-source faithfulness), and A4
+  // (byte-exact attribution) possible at all.
+  const auditUser = buildCriticAuditUser(dir);
+  const priorTurns = [
+    { role: "user" as const, content: solveUser },
+    { role: "assistant" as const, content: solution },
+  ];
+
+  let reply = await runLlm({ stage: "critic", system, user: auditUser, tools: "corpus", priorTurns });
   let parsed = parseCriticReply(reply);
 
   if (parsed.kind === "unusable") {
     // One retry, the same single-retry convention the case-study and JSON stages use.
-    const retryUser = `${user}\n\nYour previous reply did not match the required format. Reply with EITHER exactly one ERROR line (calibration failure or unreadable package) and nothing else, OR the line "FILE: lo_mapping.json" followed by the complete updated lo_mapping.json in a fenced code block, then your one-line report.`;
-    reply = await runLlm({ stage: "critic", system, user: retryUser, tools: "corpus" });
+    // The rejected reply is quoted back so the model can see what was wrong with it.
+    const retryUser = `${auditUser}\n\nYour previous reply did not match the required format and was rejected. It began:\n\n${reply.slice(0, 500)}\n\nReply now with EITHER its single ERROR line (calibration failure or unreadable package) and nothing else, OR the line "FILE: lo_mapping.json" followed by the COMPLETE updated lo_mapping.json in a fenced code block, then your one-line report.`;
+    reply = await runLlm({ stage: "critic", system, user: retryUser, tools: "corpus", priorTurns });
     parsed = parseCriticReply(reply);
   }
 
@@ -253,10 +296,24 @@ async function runCritic(id: string, dir: string, input: RunInput): Promise<bool
     return false;
   }
 
-  // Pass path: the critic's updated lo_mapping.json (nine critique fields, plus verified
-  // and extended missing_concepts) replaces the generator's draft, so every downstream
-  // stage reads the audited mapping rather than the unaudited one.
-  writeFileSync(path.join(dir, "lo_mapping.json"), parsed.content);
+  // The capture replaces a file every downstream stage reads, so it is validated before
+  // it is trusted: a "pending" critique_status means no audit happened, and a dropped
+  // top-level field means the model abbreviated the 15KB document instead of re-emitting
+  // it, which would silently break topic resolution with no error anywhere.
+  const mappingPath = path.join(dir, "lo_mapping.json");
+  const draft = readFileSync(mappingPath, "utf8");
+  const check = validateCapturedMapping(parsed.content, draft);
+  if (!check.ok) {
+    await updateState(id, (s) => {
+      s.stages.critic = { status: "failed", message: `critic critique rejected: ${check.reason}` };
+    });
+    return false;
+  }
+
+  // The generator's draft is kept beside the audited one: without it, a bad capture
+  // cannot be diffed against what Stage 1 actually produced when debugging a live run.
+  writeFileSync(path.join(dir, "lo_mapping.generator.json"), draft);
+  writeFileSync(mappingPath, parsed.content);
 
   await updateState(id, (s) => {
     s.stages.critic = { status: "done" };
@@ -269,7 +326,7 @@ async function runCritic(id: string, dir: string, input: RunInput): Promise<bool
 // ---------------------------------------------------------------------------
 function buildCaseStudyUser(dir: string, input: RunInput): string {
   const themeLine = input.preferredContext ? `\npreferred_context: ${input.preferredContext}` : "";
-  return `${readStage1Files(dir)}\n\nFILE question.txt:\n\`\`\`\n${input.problem}\n\`\`\`${themeLine}\n\nReturn ONLY the complete LaTeX source.`;
+  return `${readStage1Files(dir)}\n\nFILE: question.txt\n\`\`\`\n${input.problem}\n\`\`\`${themeLine}\n\nReturn ONLY the complete LaTeX source.`;
 }
 
 async function compileTex(dir: string): Promise<boolean> {
@@ -436,7 +493,7 @@ async function runConceptCards(
 function buildPracticeDeckUser(dir: string, input: RunInput, topic: string | undefined): string {
   const themeLine = input.preferredContext ? `\npreferred_context: ${input.preferredContext}` : "";
   const topicLine = topic ? `\ntopic: ${topic}` : "";
-  return `${readStage1Files(dir)}\n\nFILE question.txt:\n\`\`\`\n${input.problem}\n\`\`\`${themeLine}${topicLine}`;
+  return `${readStage1Files(dir)}\n\nFILE: question.txt\n\`\`\`\n${input.problem}\n\`\`\`${themeLine}${topicLine}`;
 }
 
 async function runPracticeDeck(
@@ -450,6 +507,19 @@ async function runPracticeDeck(
   await updateState(id, (s) => {
     s.stages.practice_deck = { status: "running" };
   });
+
+  // practice_deck_prompt.md lists primary.md as a REQUIRED input (it is the authority for
+  // notation, variable names, and rigor level), so a no-coverage package fails here for
+  // the same reason the other two stages do rather than improvising without it.
+  if (!existsSync(path.join(dir, "primary.md"))) {
+    await updateState(id, (s) => {
+      s.stages.practice_deck = {
+        status: "failed",
+        message: "Stage 1 found no primary textbook section for this problem, so the practice deck cannot be grounded.",
+      };
+    });
+    return false;
+  }
 
   if (cacheAvailable && chapterId !== undefined) {
     try {

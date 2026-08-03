@@ -10,6 +10,7 @@ import {
   findErrorLineOutsideFences,
   parseStage1Reply,
   parseCriticReply,
+  validateCapturedMapping,
   STAGE1_REQUIRED_FILES,
 } from "../lib/replyParsing";
 
@@ -79,6 +80,16 @@ describe("stripFences", () => {
 
   it("returns trimmed input when nothing wraps it", () => {
     expect(stripFences("  \\documentclass{article}  ")).toBe("\\documentclass{article}");
+  });
+
+  // Each of these shipped the wrapper prose into case_study.tex before the fix, which is
+  // a guaranteed tectonic failure that burns the stage's single retry.
+  it.each([
+    ["leading prose", "Here is the complete LaTeX source:\n\n```latex\nTEX\n```"],
+    ["trailing prose", "```latex\nTEX\n```\n\nThis compiles in one pass."],
+    ["prose on both sides", "Sure!\n\n```latex\nTEX\n```\n\nLet me know if you want changes."],
+  ])("extracts the fenced block despite %s", (_label, reply) => {
+    expect(stripFences(reply)).toBe("TEX");
   });
 });
 
@@ -184,5 +195,60 @@ describe("parseCriticReply", () => {
     expect(parseCriticReply("I have completed the audit and would update lo_mapping.json in place.")).toEqual({
       kind: "unusable",
     });
+  });
+
+  // The whole point of the fail-safe ordering: a model that emphasizes its failure line
+  // must not be read as a pass just because it also echoed the mapping back.
+  it.each([
+    ["bold", "**ERROR: calibration failed: total: critic 4480 vs generator 4520. Package not certified.**"],
+    ["blockquote", "> ERROR: calibration failed: total: critic 4480 vs generator 4520. Package not certified."],
+    ["bullet", "- ERROR: calibration failed: total: critic 4480 vs generator 4520. Package not certified."],
+    ["heading", "## ERROR: calibration failed: total: critic 4480 vs generator 4520. Package not certified."],
+  ])("treats a %s-decorated ERROR line as a failure even when a mapping block follows", (_label, errorLine) => {
+    const reply = `${errorLine}\n\nFILE: lo_mapping.json\n\`\`\`json\n{"critique_status": "completed"}\n\`\`\``;
+    const out = parseCriticReply(reply);
+    expect(out.kind).toBe("error");
+    if (out.kind === "error") expect(out.message.startsWith("ERROR:")).toBe(true);
+  });
+
+  it("recovers a FENCED ERROR line when there is no mapping to certify", () => {
+    const reply =
+      "```\nERROR: calibration failed: total: critic 4480 vs generator 4520. Package not certified; do not feed to phase 2.\n```";
+    const out = parseCriticReply(reply);
+    expect(out.kind).toBe("error");
+    if (out.kind === "error") expect(out.message).toContain("calibration failed");
+  });
+
+  it("does not read 'ERRORS: none found' prose as a calibration failure", () => {
+    const reply =
+      'ERRORS: none found in the extracts.\n\nFILE: lo_mapping.json\n```json\n{"critique_status": "completed"}\n```';
+    expect(parseCriticReply(reply).kind).toBe("lo_mapping");
+  });
+
+  it("keys a path-prefixed file name by its basename", () => {
+    const reply = 'FILE: output_path/lo_mapping.json\n```json\n{"critique_status": "completed"}\n```';
+    expect(parseCriticReply(reply).kind).toBe("lo_mapping");
+  });
+});
+
+describe("validateCapturedMapping", () => {
+  const draft = JSON.stringify({ sections: [{ role: "PRIMARY" }], confidence_score: 0.85, critique_status: "pending" });
+
+  it("accepts a completed audit that preserves every draft field", () => {
+    const captured = JSON.stringify({ sections: [{ role: "PRIMARY" }], confidence_score: 0.85, critique_status: "completed" });
+    expect(validateCapturedMapping(captured, draft)).toEqual({ ok: true });
+  });
+
+  it("rejects a mapping still carrying the pending sentinel (no audit happened)", () => {
+    const out = validateCapturedMapping(draft, draft);
+    expect(out.ok).toBe(false);
+    if (!out.ok) expect(out.reason).toContain("critique_status");
+  });
+
+  it("rejects an abbreviated mapping that dropped sections (the silent topic-resolution killer)", () => {
+    const captured = JSON.stringify({ confidence_score: 0.85, critique_status: "completed" });
+    const out = validateCapturedMapping(captured, draft);
+    expect(out.ok).toBe(false);
+    if (!out.ok) expect(out.reason).toContain("sections");
   });
 });

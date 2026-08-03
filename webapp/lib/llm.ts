@@ -9,7 +9,14 @@ import path from "path";
 import { PROMPTS_DIR } from "./paths";
 import { corpusToolDefs, runCorpusTool } from "./corpusTools";
 
-export type StageName = "stage1" | "critic" | "case_study" | "case_study_retry" | "concept_cards" | "practice_deck";
+export type StageName =
+  | "stage1"
+  | "critic_solve"
+  | "critic"
+  | "case_study"
+  | "case_study_retry"
+  | "concept_cards"
+  | "practice_deck";
 
 type PromptName =
   | "phase1_generator_prompt_v1"
@@ -51,6 +58,10 @@ export async function runLlm(opts: {
   system: string;
   user: string;
   tools?: "corpus";
+  // Completed turns to replay before `user`. The critic uses this to satisfy its
+  // prompt's first hard rule: it solves the problem in turn 1, and only turn 2 carries
+  // the draft package, so its own solution provably predates seeing verified_answer.txt.
+  priorTurns?: Array<{ role: "user" | "assistant"; content: string }>;
 }): Promise<string> {
   if (process.env.MOCK_LLM === "1") {
     mockCalls.push(opts.stage);
@@ -59,7 +70,10 @@ export async function runLlm(opts: {
   }
 
   const client = new Anthropic();
-  const messages: Anthropic.MessageParam[] = [{ role: "user", content: opts.user }];
+  const messages: Anthropic.MessageParam[] = [
+    ...(opts.priorTurns ?? []).map((t) => ({ role: t.role, content: t.content }) as Anthropic.MessageParam),
+    { role: "user", content: opts.user },
+  ];
 
   for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
     const res = await client.messages.create({

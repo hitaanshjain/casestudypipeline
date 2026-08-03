@@ -1,0 +1,23 @@
+Independent solution, written before any draft file was shown.
+
+Part (i). R(t) = 120t - 15t^2 on [0,8].
+R'(t) = 120 - 30t. Setting R'(t) = 0 gives t = 4.
+R''(t) = -30 < 0, so t = 4 is a maximum.
+Endpoints: R(0) = 0, R(8) = 960 - 960 = 0. Critical point: R(4) = 480 - 240 = 240.
+Maximum inflow rate is 240 gal/hr at t = 4 hr.
+
+Part (ii). Total = integral of R(t) from 0 to 8
+= [60t^2 - 5t^3] from 0 to 8
+= 60(64) - 5(512) = 3840 - 2560 = 1280.
+Cross-check by splitting at t = 4: [0,4] gives 960 - 320 = 640; [4,8] gives
+(3840 - 2560) - (960 - 320) = 1280 - 640 = 640. Sum 1280. Consistent.
+
+Part (iii). 1280 < 5000, so the overflow protocol does not engage.
+
+Part (iv). Peak-times-duration estimate: 240 * 8 = 1920.
+True total 1280, so the estimate overstates by 640 gal.
+Average rate = 1280 / 8 = 160 gal/hr, strictly below the peak 240 gal/hr, which is
+why treating a time-varying rate as if it held at its peak overcounts.
+
+Substitution self-check: R(4) = 120(4) - 15(16) = 480 - 240 = 240 confirms part (i);
+differentiating 60t^2 - 5t^3 returns 120t - 15t^2 = R(t), confirming part (ii).
