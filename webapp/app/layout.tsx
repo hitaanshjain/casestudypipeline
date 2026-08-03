@@ -27,7 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
-      <body>
+      {/* Browser extensions (Grammarly is the common one) inject attributes such as
+          data-gr-ext-installed onto <body> before React hydrates, which React reports
+          as a hydration mismatch even though nothing in this app rendered differently.
+          suppressHydrationWarning is React's sanctioned answer for exactly that, and it
+          is scoped to this element's own attributes, so real mismatches in the tree
+          below are still reported. */}
+      <body suppressHydrationWarning>
         <MathJaxProvider>{children}</MathJaxProvider>
       </body>
     </html>
