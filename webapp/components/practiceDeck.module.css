@@ -175,6 +175,196 @@
   font-size: 1rem;
 }
 
+/* ---- Overview slide: the whole worked solution as one contact sheet ---- */
+
+.overviewHead {
+  margin: 0 0 22px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.overviewEyebrow {
+  display: block;
+  color: var(--blue);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.overviewTitle {
+  font-family: var(--serif);
+  font-weight: 700;
+  margin: 5px 0 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.overviewLead {
+  margin: 7px 0 0;
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Track minimum is an explicit length, never `auto`: an auto track sizes to
+   min-content, and pre-typeset raw LaTeX is one unbreakable string, so the
+   track would widen past the panel and MathJax would then line-break against
+   a too-wide measure (the July 30 fix round). min(100%, 300px) keeps a single
+   column from overflowing a narrow stage. */
+.overviewGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 14px;
+}
+
+.overviewGrid li {
+  display: grid;
+  min-width: 0;
+}
+
+.overviewCard {
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 rgba(1, 30, 79, 0.09);
+  transition: box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.overviewCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 5px 0 rgba(1, 30, 79, 0.16);
+}
+
+.overviewCard:focus-visible {
+  outline: 2.5px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.overviewCardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 12px;
+}
+
+.overviewCardNum {
+  flex: 0 0 auto;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.overviewCardTitle {
+  font-weight: 700;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.overviewCardBody {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 12px 14px 14px;
+  min-width: 0;
+}
+
+/* Clamped rather than truncated: the prompt caps captions at 25 words, so this
+   only catches a model that ignores the cap or a deck cached before it. */
+.overviewCaption {
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* display:block gives Math.tsx's shrinkOversizeMath a positive clientWidth to
+   fit against; its walk up from mjx-container stops here, at the card's real
+   content width, so a wide headline shrinks to the CARD rather than the stage. */
+.overviewMath {
+  display: block;
+  min-width: 0;
+  font-size: 0.98rem;
+  padding: 2px 0;
+  border-top: 1.5px dashed var(--rule-strong);
+  padding-top: 10px;
+}
+
+.overviewFinal {
+  margin-top: 20px;
+}
+
+.overviewRules {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1.5px dashed var(--rule-strong);
+}
+
+.overviewRulesHead {
+  margin: 0 0 12px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.overviewRulesList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 10px 18px;
+}
+
+.overviewRulesList li {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  align-content: start;
+}
+
+.overviewRuleTitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-dim);
+}
+
+.overviewRuleMath {
+  display: block;
+  min-width: 0;
+  font-size: 0.92rem;
+}
+
 .referenceShell {
   grid-column: 1 / -1;
   padding: 22px 24px 26px;

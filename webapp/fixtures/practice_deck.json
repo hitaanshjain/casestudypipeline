@@ -73,7 +73,7 @@
         {
           "label": "Three layers",
           "latex": "\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dv}\\cdot\\frac{dv}{dx}",
-          "style": "rule"
+          "style": "primary"
         }
       ],
       "cards": [],
@@ -91,7 +91,7 @@
         {
           "label": "Power rule on the cube",
           "latex": "\\frac{dy}{du}=3u^{2}=3\\sin^{2}(2x)",
-          "style": "secondary"
+          "style": "primary"
         }
       ],
       "cards": [
@@ -116,7 +116,13 @@
       "id": "differentiate-inner",
       "title": "Differentiate the inner layers",
       "caption": "The sine differentiates to cosine at the same input, and the linear expression contributes a constant factor.",
-      "equations": [],
+      "equations": [
+        {
+          "label": "Inner layers combined",
+          "latex": "\\frac{du}{dx}=\\frac{du}{dv}\\cdot\\frac{dv}{dx}=\\cos(2x)\\cdot 2",
+          "style": "primary"
+        }
+      ],
       "cards": [
         {
           "label": "Middle layer",
@@ -161,7 +167,7 @@
         {
           "label": "General derivative",
           "latex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x)",
-          "style": "final"
+          "style": "primary"
         }
       ],
       "cards": [],
@@ -189,7 +195,7 @@
         {
           "label": "Exact value",
           "latex": "=6\\cdot\\frac{1}{4}\\cdot\\frac{\\sqrt{3}}{2}=\\frac{6\\sqrt{3}}{8}=\\frac{3\\sqrt{3}}{4}",
-          "style": "final"
+          "style": "secondary"
         }
       ],
       "cards": [

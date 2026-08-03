@@ -87,6 +87,19 @@ export function RefreshIcon({ size = 15 }: IconProps) {
   );
 }
 
+export function GridIcon({ size = 15 }: IconProps) {
+  return (
+    <svg {...frame(size)}>
+      <path
+        d="M2.7 2.7h4.1v4.1H2.7zM9.2 2.7h4.1v4.1H9.2zM2.7 9.2h4.1v4.1H2.7zM9.2 9.2h4.1v4.1H9.2z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function SkipToEndIcon({ size = 15 }: IconProps) {
   return (
     <svg {...frame(size)}>

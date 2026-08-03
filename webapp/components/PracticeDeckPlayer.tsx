@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MathBlock, Prose } from "./Math";
-import { BangIcon, CheckIcon, DashIcon, RefreshIcon, SkipToEndIcon, SparkIcon, TargetIcon } from "./icons";
+import { BangIcon, CheckIcon, DashIcon, GridIcon, RefreshIcon, SkipToEndIcon, SparkIcon, TargetIcon } from "./icons";
 import type { TPracticeDeck } from "@/lib/contracts";
 import styles from "./practiceDeck.module.css";
 
@@ -15,10 +15,32 @@ const CALLOUT_ICONS: Record<string, React.ReactNode> = {
   success: <CheckIcon />,
 };
 
+type DeckStep = TPracticeDeck["steps"][number];
+
+// The overview slide shows ONE equation per step. The prompt requires every step
+// to carry exactly one "primary" and the zod contract requires at least one, so
+// freshly generated decks always hit the second branch (or the first, on the last
+// step). The rest of the chain is for decks cached in MySQL before that rule
+// existed, which are served straight from cache without revalidation: they may
+// have steps with no primary, or with no equations at all, and an overview card
+// must never render an empty math slot.
+function headlineEquation(step: DeckStep): string | null {
+  const last = (style: string) => {
+    const matches = step.equations.filter((e) => e.style === style);
+    return matches.length > 0 ? matches[matches.length - 1].latex : null;
+  };
+  // "final" leads because on the last step the boxed answer is the conclusive line.
+  return last("final") ?? last("primary") ?? last("secondary") ?? last("rule") ?? step.cards[0]?.latex ?? null;
+}
+
 export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
   const [stepIndex, setStepIndex] = useState(0);
   const stageShellRef = useRef<HTMLElement>(null);
-  const total = deck.steps.length;
+  const stepCount = deck.steps.length;
+  // The overview is slide stepCount, so the deck has one more slide than steps.
+  const overviewIndex = stepCount;
+  const total = stepCount + 1;
+  const isOverview = stepIndex === overviewIndex;
 
   const goPrev = useCallback(() => setStepIndex((i) => Math.max(0, i - 1)), []);
   const goNext = useCallback(() => setStepIndex((i) => Math.min(total - 1, i + 1)), [total]);
@@ -55,6 +77,13 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
     stageShellRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // Prefer the last step's boxed equation over problem.answerLatex: answerLatex
+  // is allowed to pack several results with \qquad, which cannot line-break and
+  // renders shrunken.
+  const lastStep = deck.steps[stepCount - 1];
+  const finalAnswerLatex =
+    lastStep?.equations.find((e) => e.style === "final")?.latex ?? deck.problem.answerLatex;
+
   return (
     <div className={styles.layout}>
       <section className={`panel ${styles.stageShell}`} ref={stageShellRef} aria-label="Practice deck stage">
@@ -63,8 +92,10 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
             <h2 className={styles.deckTitle}>{deck.title}</h2>
             <p className={styles.deckSubtitle}>{deck.subtitle}</p>
           </div>
+          {/* Counts against the real step count, never the slide count: the
+              overview is a recap, not a tenth step to work through. */}
           <div className={styles.stepCount}>
-            Step {stepIndex + 1} of {total}
+            {isOverview ? "Complete solution" : `Step ${stepIndex + 1} of ${stepCount}`}
           </div>
         </header>
 
@@ -103,7 +134,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
             switching is instant. The ACTIVE step is in normal flow (the stage
             takes exactly its height); hidden steps are absolutely positioned
             at the same width, invisible but laid out, so line-break
-            measurement still sees the real column width. */}
+            measurement still sees the real column width. visibility:hidden
+            also drops the overview's step buttons out of the tab order while
+            it is not the active slide. */}
         <div className={styles.stage}>
           <div className={styles.stepsHost}>
             {deck.steps.map((s, i) => (
@@ -165,6 +198,75 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
               )}
             </article>
             ))}
+
+            {/* The overview: the whole worked solution on one slide, so a
+                student who skips to the end sees every step at once. Built
+                entirely from the steps above, never authored by the model, so
+                it cannot drift from the solution it summarises. */}
+            <article
+              className={`${styles.stepContent} ${isOverview ? styles.stepActive : styles.stepHidden}`}
+              aria-hidden={!isOverview}
+            >
+              <div className={styles.overviewHead}>
+                <span className={styles.overviewEyebrow}>Complete solution</span>
+                <h3 className={styles.overviewTitle}>{deck.title}</h3>
+                <p className={styles.overviewLead}>
+                  Every step of the worked solution in one view. Select any step to reopen it.
+                </p>
+              </div>
+
+              <ol className={styles.overviewGrid}>
+                {deck.steps.map((s, i) => {
+                  const latex = headlineEquation(s);
+                  return (
+                    <li key={s.id}>
+                      <button
+                        type="button"
+                        className={styles.overviewCard}
+                        onClick={() => jumpTo(i)}
+                        aria-label={`Go to step ${i + 1}, ${s.title}`}
+                      >
+                        <span className={styles.overviewCardHead}>
+                          <span className={styles.overviewCardNum}>{i + 1}</span>
+                          <span className={styles.overviewCardTitle}>{s.title}</span>
+                        </span>
+                        <span className={styles.overviewCardBody}>
+                          {s.caption && <span className={styles.overviewCaption}>{s.caption}</span>}
+                          {latex && (
+                            <span className={styles.overviewMath}>
+                              <MathBlock latex={latex} />
+                            </span>
+                          )}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <div className={`equation-row final ${styles.overviewFinal}`}>
+                <div className="equation-label">Final answer</div>
+                <div className="equation">
+                  <MathBlock latex={finalAnswerLatex} />
+                </div>
+              </div>
+
+              {deck.reference.equations.length > 0 && (
+                <section className={styles.overviewRules} aria-label="Rules used in this solution">
+                  <h4 className={styles.overviewRulesHead}>Rules used</h4>
+                  <ul className={styles.overviewRulesList}>
+                    {deck.reference.equations.map((r, i) => (
+                      <li key={i}>
+                        <span className={styles.overviewRuleTitle}>{r.title}</span>
+                        <span className={styles.overviewRuleMath}>
+                          <MathBlock latex={r.latex} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </article>
           </div>
         </div>
       </section>
@@ -188,6 +290,16 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
               <span className="timeline-title">{s.title}</span>
             </button>
           ))}
+          <button
+            type="button"
+            className={isOverview ? "active" : ""}
+            onClick={() => jumpTo(overviewIndex)}
+          >
+            <span className="timeline-index">
+              <GridIcon size={13} />
+            </span>
+            <span className="timeline-title">Complete solution</span>
+          </button>
         </div>
       </aside>
 

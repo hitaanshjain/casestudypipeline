@@ -35,6 +35,8 @@ steps is the worked solution, one entry per major reasoning move:
 - The last step states the complete final answer as a boxed equation, plus a short equation that independently checks it.
 
 Typically 4 to 7 steps. There are no other slide types: no separate rule-reference slide, no summary slide, no closing slide. General formulas the solution relies on belong in reference, not in their own step.
+
+After the last step, the renderer automatically appends an overview slide that it assembles from the steps you write: one small card per step carrying that step's number, title, caption, and headline equation, then the final answer, then the reference formulas. You never author that slide, and that is why the deck carries no summary step of its own: the summary exists, the renderer builds it from your steps. Write every step so its title, caption, and headline equation still read correctly shown alone in a small card, with none of the surrounding work visible.
 </deck_structure>
 
 <json_schema>
@@ -78,7 +80,9 @@ Match this schema exactly, field for field:
 <field_rules>
 Steps: 4 to 7 entries. Fewer than 4 means the moves are too coarse; more than 7 means a move has been split that should not have been.
 
-The first step's equations array carries a style "primary" entry that restates the given.
+Every step's equations array contains exactly one entry with style "primary": that step's headline result, the one line a student would write down if they recorded a single line from the step. It must be a complete statement that is correct read on its own, never a continuation fragment that opens with = and depends on the line above it. No step has an empty equations array. The first step's "primary" is the one that restates the given.
+
+caption is one sentence of 25 words or fewer, so that it fits the overview slide's card alongside the step title.
 
 Exactly the last step's equations array contains one entry with style "final" whose latex is the final answer wrapped in \boxed{...}. When the problem asks for several quantities, each earlier quantity gets its own separate equations entry (style "primary" or "secondary") in that same last step, and the \boxed final holds only the last asked-for quantity; never pack multiple results into one \boxed group (see the one-statement LaTeX rule below). That same last step also carries a style "secondary" equation that independently re-derives or re-checks the answer (an alternate method, a substitution back into the original relation, or a numerical sanity check), so the final step both answers and verifies.
 
@@ -130,7 +134,7 @@ animationId and every step id are kebab-case, unique within the deck, and descri
 4. Break the solution into 4 to 7 major reasoning moves. Draft each step's title, caption, and equations, adding cards and a callout only where they earn their place.
 5. List the 3 to 6 general formulas the solution actually invokes and write each as a reference.equations entry pointing at the step that uses it.
 6. Assemble problem, steps, and reference into the schema in <json_schema>.
-7. Before emitting, check: the JSON parses; schemaVersion is "1.1" and renderer.id is "math-animation-dark-sidebar"; there are 4 to 7 steps; the first step restates the given; exactly the last step contains a style "final" boxed equation; every reference.equations[].stepId matches an existing step id; no field outside <json_schema> appears anywhere; no latex field contains $; every ^ and _ is braced.
+7. Before emitting, check: the JSON parses; schemaVersion is "1.1" and renderer.id is "math-animation-dark-sidebar"; there are 4 to 7 steps; the first step restates the given; every step carries exactly one style "primary" equation and no step has an empty equations array; every caption is one sentence of 25 words or fewer; exactly the last step contains a style "final" boxed equation; every reference.equations[].stepId matches an existing step id; no field outside <json_schema> appears anywhere; no latex field contains $; every ^ and _ is braced.
 </process>
 
 <output_contract>

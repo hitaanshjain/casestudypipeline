@@ -16,6 +16,7 @@ import {
   ConceptCard,
   ConceptCardsPayload,
   PracticeDeck,
+  PracticeDeckGenerated,
   parseModelJson,
   type TConceptCardsPayload,
   type TPracticeDeck,
@@ -437,11 +438,14 @@ async function runPracticeDeck(
 
   const user = buildPracticeDeckUser(dir, input, topicLabel);
   let reply = await runLlm({ stage: "practice_deck", system: loadPrompt("practice_deck_prompt"), user });
-  let parsed = parseModelJson(PracticeDeck, reply);
+  // PracticeDeckGenerated, not PracticeDeck: fresh model output is held to the
+  // headline-equation rule, and the retry below is what makes that gate useful.
+  // Decks read from the cache above stay on the looser PracticeDeck.
+  let parsed = parseModelJson(PracticeDeckGenerated, reply);
   if (!parsed.ok) {
     const retryUser = `${user}\n\nYour previous reply failed validation: ${parsed.error}\n\nReturn corrected JSON only.`;
     reply = await runLlm({ stage: "practice_deck", system: loadPrompt("practice_deck_prompt"), user: retryUser });
-    parsed = parseModelJson(PracticeDeck, reply);
+    parsed = parseModelJson(PracticeDeckGenerated, reply);
   }
 
   if (!parsed.ok) {

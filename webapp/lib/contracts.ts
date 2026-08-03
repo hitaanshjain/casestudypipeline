@@ -74,35 +74,67 @@ export const DeckStep = z.object({
   callout: DeckCallout.nullable().optional(),
 });
 
-export const PracticeDeck = z
-  .object({
-    schemaVersion: z.literal("1.1"),
-    renderer: z.object({ id: z.literal("math-animation-dark-sidebar"), version: z.string() }),
-    animationId: z.string().min(1),
-    title: z.string().min(1),
-    subtitle: z.string().min(1),
-    problem: z.object({ prompt: z.string().min(1), latex: latexField, answerLatex: latexField }),
-    steps: z.array(DeckStep).min(3).max(10),
-    reference: z.object({
-      equations: z.array(z.object({ title: z.string().min(1), latex: latexField, text: z.string(), stepId: z.string() })),
-    }),
-  })
-  .superRefine((deck, ctx) => {
-    const last = deck.steps[deck.steps.length - 1];
-    // Guard: steps may already be invalid (e.g. length 0) when this runs, since
-    // superRefine still executes after a field-level check like min(3) fails.
-    // Without this guard an empty steps array throws a raw TypeError here
-    // instead of surfacing as a normal safeParse failure.
-    if (last && !last.equations.some((e) => e.style === "final")) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "last step must contain a style:'final' equation" });
+const PracticeDeckShape = z.object({
+  schemaVersion: z.literal("1.1"),
+  renderer: z.object({ id: z.literal("math-animation-dark-sidebar"), version: z.string() }),
+  animationId: z.string().min(1),
+  title: z.string().min(1),
+  subtitle: z.string().min(1),
+  problem: z.object({ prompt: z.string().min(1), latex: latexField, answerLatex: latexField }),
+  steps: z.array(DeckStep).min(3).max(10),
+  reference: z.object({
+    equations: z.array(z.object({ title: z.string().min(1), latex: latexField, text: z.string(), stepId: z.string() })),
+  }),
+});
+
+type PracticeDeckShapeOut = z.infer<typeof PracticeDeckShape>;
+
+// Structural rules every deck must satisfy, whatever its age: these hold for
+// decks cached in MySQL long before any later rule existed.
+function checkDeckStructure(deck: PracticeDeckShapeOut, ctx: z.RefinementCtx): void {
+  const last = deck.steps[deck.steps.length - 1];
+  // Guard: steps may already be invalid (e.g. length 0) when this runs, since
+  // superRefine still executes after a field-level check like min(3) fails.
+  // Without this guard an empty steps array throws a raw TypeError here
+  // instead of surfacing as a normal safeParse failure.
+  if (last && !last.equations.some((e) => e.style === "final")) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "last step must contain a style:'final' equation" });
+  }
+  const ids = new Set(deck.steps.map((s) => s.id));
+  for (const r of deck.reference.equations) {
+    if (!ids.has(r.stepId)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `reference stepId '${r.stepId}' matches no step` });
     }
-    const ids = new Set(deck.steps.map((s) => s.id));
-    for (const r of deck.reference.equations) {
-      if (!ids.has(r.stepId)) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `reference stepId '${r.stepId}' matches no step` });
-      }
+  }
+}
+
+// The reading contract: stored artifacts and decks served from the MySQL cache.
+// Deliberately does NOT enforce the headline-equation rule below. Decks cached
+// before that rule existed must still render, and the renderer carries a
+// fallback chain for exactly that case; failing them here would blank the whole
+// Practice Deck tab instead, since Results.tsx revalidates every artifact it
+// displays.
+export const PracticeDeck = PracticeDeckShape.superRefine(checkDeckStructure);
+
+// The generation gate: fresh model output only. The overview slide shows one
+// headline equation per step, so a step with no "primary" renders an empty card.
+// Enforced here rather than in PracticeDeck because this is the only point where
+// failing is useful: the pipeline feeds these messages straight back to the model
+// on its one retry, which is why the message names the offending step.
+// Deliberately looser than the prompt, which asks for EXACTLY one primary: a
+// strict count would fail the whole practice-deck stage over a harmless second
+// primary, and no prompt in this pipeline has been measured against a live model.
+export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) => {
+  checkDeckStructure(deck, ctx);
+  for (const s of deck.steps) {
+    if (!s.equations.some((e) => e.style === "primary")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `step '${s.id}' has no style:'primary' equation (every step needs one headline equation)`,
+      });
     }
-  });
+  }
+});
 
 export type TConceptCardsPayload = z.infer<typeof ConceptCardsPayload>;
 export type TConceptCard = z.infer<typeof ConceptCard>;
