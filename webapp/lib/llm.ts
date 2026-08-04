@@ -92,7 +92,13 @@ const STAGE_EFFORT: Record<StageName, "low" | "medium" | "high"> = {
   case_study: "high",
   case_study_retry: "high",
   concept_cards: "medium",
-  practice_deck: "high",
+  // Measured on run ec2f17ca: the deck spent 25,420 output tokens per attempt,
+  // more than double the full LaTeX worksheet, for six JSON steps. Its work is
+  // one clean textbook-style problem plus a structured write-up, not open-ended
+  // reasoning, so "medium" is the right tier. This is the one effort setting here
+  // with a real quality trade — the deck does invent and solve a fresh problem —
+  // so watch the first few decks' arithmetic before treating it as settled.
+  practice_deck: "medium",
 };
 
 // Moves the single rolling cache breakpoint to the end of the conversation so

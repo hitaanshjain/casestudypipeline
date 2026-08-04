@@ -123,6 +123,22 @@ function writeRawReply(dir: string, stage: string, reply: string): void {
   }
 }
 
+// A rejected reply costs a full extra generation (the deck's discarded first
+// attempt was 25,420 output tokens, ~16% of run ec2f17ca's total bill), so the
+// reason it was rejected is worth keeping. Without this the retry is invisible
+// except as a duplicated row in usage.json.
+function writeInvalidReply(dir: string, stage: string, error: string, reply: string): void {
+  console.error(`${stage}: reply failed validation, retrying. ${error}`);
+  try {
+    writeFileSync(
+      path.join(dir, `${stage}_invalid_reply.txt`),
+      `VALIDATION ERROR\n${error}\n\n--- RAW REPLY ---\n${reply}`
+    );
+  } catch (e) {
+    console.error(`could not write ${stage}_invalid_reply.txt:`, e);
+  }
+}
+
 // Writes a per-stage token breakdown beside the run's artifacts. Best-effort:
 // a failure here must never take down a run that otherwise succeeded.
 function writeUsage(dir: string, usage: StageUsage[]): void {
@@ -287,16 +303,42 @@ You have NO write tool. Wherever your instructions tell you to write a file, ret
 - If you would update lo_mapping.json, reply with the line "FILE: lo_mapping.json" followed by the COMPLETE updated file in a fenced code block, then your one-line report. Emit the whole document, every field, not just the fields you changed; an abbreviated mapping is rejected.`;
 }
 
-async function runCritic(id: string, dir: string, input: RunInput): Promise<boolean> {
+// Turn 1 of the critic, startable the moment a run begins. It needs only the
+// problem statement, so it does not have to wait for Stage 1 — and running it
+// concurrently makes the independence the calibration gate depends on structural
+// rather than merely instructed: the drafts it must not see do not yet exist.
+// Returns the model's own worked solution.
+//
+// The returned promise is pre-caught so that a Stage 1 failure (which leaves this
+// result unused) cannot surface as an unhandled rejection and crash the server.
+// Attaching a handler does not swallow the error for the real await below.
+function startCriticSolve(problem: string): { user: string; solution: Promise<string> } {
+  const user = buildCriticSolveUser(problem);
+  const solution = runLlm({
+    stage: "critic_solve",
+    system: loadPrompt("phase1_critic_prompt_v1"),
+    user,
+  });
+  solution.catch(() => {});
+  return { user, solution };
+}
+
+async function runCritic(
+  id: string,
+  dir: string,
+  input: RunInput,
+  solve: { user: string; solution: Promise<string> }
+): Promise<boolean> {
   await updateState(id, (s) => {
     s.stages.critic = { status: "running" };
   });
 
   const system = loadPrompt("phase1_critic_prompt_v1");
 
-  // Turn 1: the independent re-solve, with no draft content in context.
-  const solveUser = buildCriticSolveUser(input.problem);
-  const solution = await runLlm({ stage: "critic_solve", system, user: solveUser });
+  // Turn 1 already ran alongside Stage 1; collect it here. A rejection propagates
+  // and is caught by execute()'s caller, exactly as an inline await would be.
+  const solveUser = solve.user;
+  const solution = await solve.solution;
 
   // Turn 2: the drafts plus the audit instructions, replaying turn 1 so the model's own
   // solution is what its calibration gate compares against. Corpus tools are what make
@@ -500,9 +542,11 @@ async function runConceptCards(
   let reply = await runLlm({ stage: "concept_cards", system: loadPrompt("concept_flashcards_prompt"), user });
   let parsed = parseModelJson(ConceptCardsPayload, reply);
   if (!parsed.ok) {
+    writeInvalidReply(dir, "concept_cards", parsed.error, reply);
     const retryUser = `${user}\n\nYour previous reply failed validation: ${parsed.error}\n\nReturn corrected JSON only.`;
     reply = await runLlm({ stage: "concept_cards", system: loadPrompt("concept_flashcards_prompt"), user: retryUser });
     parsed = parseModelJson(ConceptCardsPayload, reply);
+    if (!parsed.ok) writeInvalidReply(dir, "concept_cards_retry", parsed.error, reply);
   }
 
   if (!parsed.ok) {
@@ -598,9 +642,11 @@ async function runPracticeDeck(
   // Decks read from the cache above stay on the looser PracticeDeck.
   let parsed = parseModelJson(PracticeDeckGenerated, reply);
   if (!parsed.ok) {
+    writeInvalidReply(dir, "practice_deck", parsed.error, reply);
     const retryUser = `${user}\n\nYour previous reply failed validation: ${parsed.error}\n\nReturn corrected JSON only.`;
     reply = await runLlm({ stage: "practice_deck", system: loadPrompt("practice_deck_prompt"), user: retryUser });
     parsed = parseModelJson(PracticeDeckGenerated, reply);
+    if (!parsed.ok) writeInvalidReply(dir, "practice_deck_retry", parsed.error, reply);
   }
 
   if (!parsed.ok) {
@@ -650,6 +696,11 @@ async function safeStage(id: string, key: StageKey, fn: () => Promise<boolean>):
 // ---------------------------------------------------------------------------
 async function execute(id: string, dir: string, input: RunInput): Promise<void> {
   try {
+    // Fire the critic's independent re-solve now, in parallel with Stage 1. It
+    // reads nothing Stage 1 produces, so this removes a whole serial model call
+    // from the critical path at no cost to the audit's independence.
+    const solve = startCriticSolve(input.problem);
+
     const stage1Ok = await runStage1(id, dir, input);
     if (!stage1Ok) {
       await updateState(id, (s) => {
@@ -659,7 +710,7 @@ async function execute(id: string, dir: string, input: RunInput): Promise<void> 
       return;
     }
 
-    const criticOk = await runCritic(id, dir, input);
+    const criticOk = await runCritic(id, dir, input, solve);
     if (!criticOk) {
       await updateState(id, (s) => {
         s.done = true;
