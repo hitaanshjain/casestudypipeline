@@ -32,6 +32,14 @@ export function loadPrompt(name: PromptName): string {
 
 const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5";
 const MAX_TOOL_TURNS = 25;
+// max_tokens caps thinking AND response text together, and claude-sonnet-5 thinks
+// by default. Stage 1 alone emits five files (~7K tokens of content), so the old
+// 16000 left too little headroom: run fd95ad94 spent its whole budget and was cut
+// off midway through lo_mapping.json, which surfaced as a bogus "missing output
+// file" error. Anything above ~16K must be streamed or the request risks an SDK
+// HTTP timeout, which is why runLlm streams unconditionally. Unused headroom is
+// free: billing counts tokens generated, not the ceiling.
+const MAX_OUTPUT_TOKENS = 32000;
 // webapp/fixtures/mock/<stage>.txt; process.cwd() is webapp/ (matches lib/paths.ts's
 // existing REPO_ROOT convention), not import.meta.url, so this resolves the same way
 // whether run under vitest, `next dev`, or a bundled `next build` server function.
@@ -147,14 +155,16 @@ export async function runLlm(opts: {
     // stage prompt together. Without it, every tool-loop turn re-bills the whole
     // prompt plus every corpus file read so far, which grows quadratically and is
     // the single largest cost in a run.
-    const res = await client.messages.create({
-      model: MODEL,
-      max_tokens: 16000,
-      output_config: { effort: STAGE_EFFORT[opts.stage] },
-      system: [{ type: "text", text: opts.system, cache_control: { type: "ephemeral" } }],
-      messages,
-      tools: opts.tools === "corpus" ? corpusToolDefs : undefined,
-    });
+    const res = await client.messages
+      .stream({
+        model: MODEL,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        output_config: { effort: STAGE_EFFORT[opts.stage] },
+        system: [{ type: "text", text: opts.system, cache_control: { type: "ephemeral" } }],
+        messages,
+        tools: opts.tools === "corpus" ? corpusToolDefs : undefined,
+      })
+      .finalMessage();
 
     tally.requests += 1;
     tally.input_tokens += res.usage.input_tokens ?? 0;
@@ -164,6 +174,15 @@ export async function runLlm(opts: {
 
     if (res.stop_reason !== "tool_use") {
       report();
+      // A truncated reply is not a malformed reply. Without this branch the cut-off
+      // final block simply fails to parse and the stage reports whichever file went
+      // missing, which points the next debugger at the parser instead of the cap.
+      if (res.stop_reason === "max_tokens") {
+        throw new Error(
+          `stage ${opts.stage}: the model's reply was cut off at the ${MAX_OUTPUT_TOKENS}-token output limit ` +
+            `(thinking plus text share this budget). Raise MAX_OUTPUT_TOKENS or lower this stage's effort.`
+        );
+      }
       return res.content
         .filter((b): b is Anthropic.TextBlock => b.type === "text")
         .map((b) => b.text)

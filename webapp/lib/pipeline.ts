@@ -112,6 +112,17 @@ export async function startRun(input: RunInput): Promise<string> {
   return id;
 }
 
+// Keeps the model's unparsed reply beside the run's artifacts so a parse failure
+// can be read rather than guessed at. Best-effort by design: a debugging aid must
+// never be able to fail the run it exists to explain.
+function writeRawReply(dir: string, stage: string, reply: string): void {
+  try {
+    writeFileSync(path.join(dir, `${stage}_raw_reply.txt`), reply);
+  } catch (e) {
+    console.error(`could not write ${stage}_raw_reply.txt:`, e);
+  }
+}
+
 // Writes a per-stage token breakdown beside the run's artifacts. Best-effort:
 // a failure here must never take down a run that otherwise succeeded.
 function writeUsage(dir: string, usage: StageUsage[]): void {
@@ -203,6 +214,11 @@ async function runStage1(id: string, dir: string, input: RunInput): Promise<bool
     return true;
   }
 
+  // The raw reply is the only artifact that explains a parse failure. Run
+  // fd95ad94's truncation was diagnosable only because usage.json happened to
+  // exist; without the reply itself there is nothing to read.
+  writeRawReply(dir, "stage1", reply);
+
   const parsed = parseStage1Reply(reply);
 
   if (parsed.kind === "error") {
@@ -293,6 +309,7 @@ async function runCritic(id: string, dir: string, input: RunInput): Promise<bool
   ];
 
   let reply = await runLlm({ stage: "critic", system, user: auditUser, tools: "corpus", priorTurns });
+  writeRawReply(dir, "critic", reply);
   let parsed = parseCriticReply(reply);
 
   if (parsed.kind === "unusable") {
@@ -300,6 +317,7 @@ async function runCritic(id: string, dir: string, input: RunInput): Promise<bool
     // The rejected reply is quoted back so the model can see what was wrong with it.
     const retryUser = `${auditUser}\n\nYour previous reply did not match the required format and was rejected. It began:\n\n${reply.slice(0, 500)}\n\nReply now with EITHER its single ERROR line (calibration failure or unreadable package) and nothing else, OR the line "FILE: lo_mapping.json" followed by the COMPLETE updated lo_mapping.json in a fenced code block, then your one-line report.`;
     reply = await runLlm({ stage: "critic", system, user: retryUser, tools: "corpus", priorTurns });
+    writeRawReply(dir, "critic_retry", reply);
     parsed = parseCriticReply(reply);
   }
 
