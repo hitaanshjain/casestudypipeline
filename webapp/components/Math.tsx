@@ -26,6 +26,27 @@ type Pending = { el: HTMLElement; reveal: () => void };
 let pending: Pending[] = [];
 let scheduled = false;
 
+// MathJax records internal offsets into the text nodes it typesets. Overwriting an
+// element's textContent while a pass is running invalidates those offsets, and the
+// pass dies with "IndexSizeError: The offset N is larger than the Text node's
+// length". React re-renders freely (a deck navigation, a state change), so the two
+// races below are both reachable and both have to be closed:
+//   1. content rewritten WHILE a pass is in flight -> defer the rewrite until the
+//      pass finishes, then apply it and re-typeset.
+//   2. content rewritten AFTER a pass -> clear MathJax's record of the old node
+//      first, so it never walks a stale tree.
+const inFlight = new WeakSet<HTMLElement>();
+const deferred = new WeakMap<HTMLElement, () => void>();
+
+function mathJaxTypesetClear(el: HTMLElement): void {
+  const mj = (window as unknown as { MathJax?: { typesetClear?: (els: Element[]) => void } }).MathJax;
+  try {
+    mj?.typesetClear?.([el]);
+  } catch {
+    // Clearing is a courtesy to MathJax's bookkeeping; failing it is not fatal.
+  }
+}
+
 function reveal(el: HTMLElement) {
   el.style.visibility = "";
 }
@@ -46,6 +67,7 @@ function isVisible(el: HTMLElement): boolean {
 
 async function typesetBatch(batch: Pending[]): Promise<void> {
   if (batch.length === 0) return;
+  for (const p of batch) inFlight.add(p.el);
   const mj = (window as unknown as { MathJax?: { typesetPromise?: (els: Element[]) => Promise<void> } }).MathJax;
   try {
     if (typeof mj?.typesetPromise !== "function") throw new Error("MathJax.typesetPromise unavailable");
@@ -66,14 +88,26 @@ async function typesetBatch(batch: Pending[]): Promise<void> {
       }
     }
   } finally {
-    // Reveal whatever state each host ended in — typeset math on success, raw
-    // source on failure. Never leave one invisible.
-    for (const p of batch) p.reveal();
+    for (const p of batch) {
+      inFlight.delete(p.el);
+      // Reveal whatever state each host ended in — typeset math on success, raw
+      // source on failure. Never leave one invisible.
+      p.reveal();
+      // A re-render that arrived mid-pass parked its rewrite here rather than
+      // mutating a node MathJax was walking. Apply it now.
+      const run = deferred.get(p.el);
+      if (run) {
+        deferred.delete(p.el);
+        run();
+      }
+    }
   }
 }
 
 function scheduleTypeset(el: HTMLElement, revealFn: () => void) {
-  pending.push({ el, reveal: revealFn });
+  // One entry per element per flush: queueing the same host twice makes MathJax
+  // walk a tree it has already rewritten.
+  if (!pending.some((p) => p.el === el)) pending.push({ el, reveal: revealFn });
   if (scheduled) return;
   scheduled = true;
   // A macrotask so every effect in the current commit enqueues first.
@@ -119,6 +153,27 @@ function shrinkOversizeMath(roots: Element[]) {
   }
 }
 
+// Writes the source into the host, hides it, and queues the typeset. Returns a
+// cleanup that cancels the reveal deadline. Split out of the hook so a rewrite
+// parked during an in-flight pass can replay exactly the same work afterwards.
+function applyAndSchedule(el: HTMLElement, source: string, ready: boolean): () => void {
+  // Drop MathJax's record of whatever was here before, so a later pass never
+  // walks the tree it built for the previous content.
+  mathJaxTypesetClear(el);
+  el.textContent = source;
+  el.style.visibility = "hidden";
+  const deadline = setTimeout(() => reveal(el), REVEAL_DEADLINE_MS);
+  // Without MathJax the deadline is the only thing that will ever reveal this;
+  // the effect re-runs when `ready` flips, which is the normal path.
+  if (ready) {
+    scheduleTypeset(el, () => {
+      clearTimeout(deadline);
+      reveal(el);
+    });
+  }
+  return () => clearTimeout(deadline);
+}
+
 // Shared by MathBlock and Prose: write the source, hide the host, hand it to the
 // batcher, and guarantee a reveal even if MathJax never answers.
 function useTypeset(source: string, deps: unknown[]) {
@@ -127,21 +182,13 @@ function useTypeset(source: string, deps: unknown[]) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    el.textContent = source;
-    if (!ready) {
-      // MathJax has not loaded yet. Keep the source hidden and let the deadline
-      // decide: this effect re-runs when `ready` flips, which is the normal path.
-      el.style.visibility = "hidden";
-      const late = setTimeout(() => reveal(el), REVEAL_DEADLINE_MS);
-      return () => clearTimeout(late);
+    // MathJax is walking this node right now. Park the rewrite; typesetBatch runs
+    // it once the pass completes. Mutating here is what raises IndexSizeError.
+    if (inFlight.has(el)) {
+      deferred.set(el, () => applyAndSchedule(el, source, ready));
+      return;
     }
-    el.style.visibility = "hidden";
-    const deadline = setTimeout(() => reveal(el), REVEAL_DEADLINE_MS);
-    scheduleTypeset(el, () => {
-      clearTimeout(deadline);
-      reveal(el);
-    });
-    return () => clearTimeout(deadline);
+    return applyAndSchedule(el, source, ready);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, ready]);
   return ref;

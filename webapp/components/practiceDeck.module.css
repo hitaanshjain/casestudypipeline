@@ -300,11 +300,12 @@
   font-size: 0.8rem;
   line-height: 1.45;
   display: -webkit-box;
-  /* Two lines, not three: this is a recap card, so the caption orients the
-     reader toward the step's equation rather than re-teaching the step. The
-     full caption is still on the step's own slide. */
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  /* Safety net only. The prompt caps captions at 12 words, which fits well
+     inside three lines here, so nothing should ever actually clip; this exists
+     so a model that overshoots degrades quietly instead of blowing out the
+     card's height. Truncated text is a prompt bug, not a layout preference. */
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
