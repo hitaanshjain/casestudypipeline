@@ -32,6 +32,28 @@ describe("practice deck contract", () => {
     expect(r.success).toBe(false);
     expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain(deck.steps[1].id);
   });
+  // Regression, run 6c0a4fb4: the last step's boxed answer IS its headline, and
+  // headlineEquation() resolves "final" ahead of "primary" for exactly that
+  // reason. Demanding a primary here was stricter than the renderer and failed a
+  // perfectly good deck on both attempts, so the whole stage produced nothing.
+  it("accepts a final step whose headline is its boxed final equation", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    const last = deck.steps[deck.steps.length - 1];
+    last.equations = last.equations.filter((e: any) => e.style === "final" || e.style === "secondary");
+    expect(last.equations.some((e: any) => e.style === "final")).toBe(true);
+    expect(last.equations.some((e: any) => e.style === "primary")).toBe(false);
+    expect(PracticeDeckGenerated.safeParse(deck).success).toBe(true);
+  });
+  // Regression, run 6c0a4fb4 first attempt: the model omitted `cards` on every
+  // step, which is the honest encoding of "this step has no side cards", and the
+  // deck was rejected wholesale. An absent array now means an empty one.
+  it("accepts steps that omit the cards array entirely", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    for (const s of deck.steps) delete s.cards;
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.steps[0].cards).toEqual([]);
+  });
   // The reading contract must stay looser than the generation gate. Decks cached
   // in MySQL predate the headline rule, and Results.tsx revalidates every
   // artifact before rendering it, so tightening PracticeDeck here would blank the

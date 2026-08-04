@@ -83,6 +83,10 @@ Steps: 4 to 7 entries. Fewer than 4 means the moves are too coarse; more than 7 
 
 Every step's equations array contains exactly one entry with style "primary": that step's headline result, the one line a student would write down if they recorded a single line from the step. It must be a complete statement that is correct read on its own, never a continuation fragment that opens with = and depends on the line above it. No step has an empty equations array. The first step's "primary" is the one that restates the given.
 
+The one exception is the last step, where the boxed "final" equation IS the headline. That step needs no separate "primary" restating the same result; give it the "final" plus its verification and stop.
+
+The `cards` array is optional. Omit it on steps that need no side cards rather than inventing filler.
+
 caption is one short sentence of 12 words or fewer: a very concise statement of what this step does, in plain language. It is read twice, under the step title on the step itself and inside a small recap card on the overview slide, and the card has room for about twelve words before the text is clipped. Write the shortest sentence that still says what is happening, not a compressed version of a longer one.
 
 Good captions (each reads naturally and fits): "Rewrite the area using the fencing constraint." / "Set the derivative to zero and solve." / "Check the endpoints against the critical point."

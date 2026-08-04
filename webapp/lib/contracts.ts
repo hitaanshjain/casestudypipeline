@@ -173,7 +173,10 @@ export const DeckStep = z.object({
   title: z.string().min(1),
   caption: z.string(),
   equations: z.array(DeckEquation),
-  cards: z.array(DeckSideCard),
+  // Defaulted, not required: a step with no side cards is normal, and models
+  // omit the key entirely rather than sending []. Requiring it rejected an
+  // otherwise-valid deck on every step at once (run 6c0a4fb4, first attempt).
+  cards: z.array(DeckSideCard).default([]),
   callout: DeckCallout.nullable().optional(),
   // At most one per step: if two ideas need pictures, they are two steps. Optional
   // and nullable, so decks cached before this feature validate unchanged, which is
@@ -234,10 +237,16 @@ export const PracticeDeck = PracticeDeckShape.superRefine(checkDeckStructure);
 export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) => {
   checkDeckStructure(deck, ctx);
   for (const s of deck.steps) {
-    if (!s.equations.some((e) => e.style === "primary")) {
+    // "primary" OR "final" — headlineEquation() in PracticeDeckPlayer resolves
+    // `final` FIRST, because on the last step the boxed answer is the conclusive
+    // line and a separate primary restating it would be redundant. Demanding a
+    // primary everywhere was stricter than the renderer it protects, and it
+    // failed run 6c0a4fb4's retry on exactly that step ('final-answer', which
+    // carried a boxed final plus its verification and nothing else).
+    if (!s.equations.some((e) => e.style === "primary" || e.style === "final")) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `step '${s.id}' has no style:'primary' equation (every step needs one headline equation)`,
+        message: `step '${s.id}' has no headline equation (needs a style:'primary', or a style:'final' on the last step)`,
       });
     }
   }
