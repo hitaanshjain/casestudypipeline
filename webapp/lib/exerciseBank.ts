@@ -5,6 +5,8 @@ import fs from "fs";
 import path from "path";
 import { z } from "zod";
 import { REFERENCES_DIR } from "./paths";
+import { parseRef } from "./refParser";
+import { buildCitation, OPENSTAX_ATTRIBUTION } from "./citation";
 
 export const EXERCISES_DIR = path.join(REFERENCES_DIR, "openstax_calculus_v1", "exercises");
 
@@ -115,4 +117,43 @@ export function validateBank(dir: string = EXERCISES_DIR): string[] {
     }
   }
   return out;
+}
+
+export type ResolveResult =
+  | { found: true; available: true; ref: { chapter: number; section: string; number: number }; text: string; kind: "symbolic" | "table"; citation: string; attribution: string; hinted_section?: string }
+  | { found: true; available: false; reason: "needs_figure"; ref: { chapter: number; section: string; number: number }; kind: "graph" | "figure"; citation: string; attribution: string; hinted_section?: string }
+  | { found: false; reason: "bad_ref" }
+  | { found: false; reason: "not_extracted"; chapters: number[] }
+  | { found: false; reason: "no_such_exercise"; chapter: number; max: number };
+
+/** Resolve a reference string against the bank. Never throws on user input. */
+export function resolveRef(input: string, dir: string = EXERCISES_DIR): ResolveResult {
+  const parsed = parseRef(input);
+  if (!parsed) return { found: false, reason: "bad_ref" };
+  const files = loadBank(dir);
+  const inChapter = files.filter((f) => chapterOf(f) === parsed.chapter);
+  if (inChapter.length === 0) {
+    const chapters = [...new Set(files.map(chapterOf))].sort((a, b) => a - b);
+    return { found: false, reason: "not_extracted", chapters };
+  }
+  const file = inChapter.find(
+    (f) => parsed.number >= f.exercises[0].number && parsed.number <= f.exercises[f.exercises.length - 1].number
+  );
+  if (!file) {
+    const last = inChapter[inChapter.length - 1];
+    return { found: false, reason: "no_such_exercise", chapter: parsed.chapter, max: last.exercises[last.exercises.length - 1].number };
+  }
+  const ex = file.exercises.find((e) => e.number === parsed.number);
+  if (!ex) {
+    const last = inChapter[inChapter.length - 1];
+    return { found: false, reason: "no_such_exercise", chapter: parsed.chapter, max: last.exercises[last.exercises.length - 1].number };
+  }
+  const ref = { chapter: parsed.chapter, section: file.section, number: ex.number };
+  const citation = buildCitation(file.section, ex.number);
+  const hinted = parsed.sectionHint !== undefined && parsed.sectionHint !== file.section ? { hinted_section: parsed.sectionHint } : {};
+  const kind = ex.kind;
+  if (kind === "graph" || kind === "figure") {
+    return { found: true, available: false, reason: "needs_figure", ref, kind, citation, attribution: OPENSTAX_ATTRIBUTION, ...hinted };
+  }
+  return { found: true, available: true, ref, text: ex.text, kind, citation, attribution: OPENSTAX_ATTRIBUTION, ...hinted };
 }
