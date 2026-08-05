@@ -16,7 +16,7 @@ export default function Home() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [mode, setMode] = useState<"paste" | "lookup">("paste");
+  const [mode, setMode] = useState<"paste" | "lookup">("lookup");
   const [refInput, setRefInput] = useState("");
   const [resolved, setResolved] = useState<ResolveResult | null>(null);
   const [resolving, setResolving] = useState(false);
@@ -117,20 +117,12 @@ export default function Home() {
         </div>
         <h1 className={styles.title}>Generate a Case Study</h1>
         <p className={styles.intro}>
-          Paste a textbook problem and the pipeline builds a verified case study, concept
-          flashcards, and a practice deck around it.
+          Look up a textbook problem by number, or paste one, and the pipeline builds a
+          verified case study, concept flashcards, and a practice deck around it.
         </p>
 
         <form onSubmit={onSubmit} className={styles.form}>
           <div className={styles.modeSwitch} role="group" aria-label="Problem input mode">
-            <button
-              type="button"
-              className={`${styles.modeBtn} ${mode === "paste" ? styles.modeBtnActive : ""}`}
-              aria-pressed={mode === "paste"}
-              onClick={() => switchMode("paste")}
-            >
-              Paste a problem
-            </button>
             <button
               type="button"
               className={`${styles.modeBtn} ${mode === "lookup" ? styles.modeBtnActive : ""}`}
@@ -138,6 +130,14 @@ export default function Home() {
               onClick={() => switchMode("lookup")}
             >
               Textbook lookup
+            </button>
+            <button
+              type="button"
+              className={`${styles.modeBtn} ${mode === "paste" ? styles.modeBtnActive : ""}`}
+              aria-pressed={mode === "paste"}
+              onClick={() => switchMode("paste")}
+            >
+              Paste a problem
             </button>
           </div>
 
