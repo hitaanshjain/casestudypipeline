@@ -65,10 +65,19 @@ export const ConceptCardsPayload = z.object({
 // shipped exactly that on a card back. Strip the correctly delimited spans
 // first, then look for LaTeX left over in what is supposed to be plain text.
 const DELIMITED_MATH = /\\\([\s\S]*?\\\)/g;
-const LATEX_MARKER = /\^\{|_\{|\\frac|\\dfrac|\\sqrt|\\left|\\int|\\sum/;
 
+// After stripping delimited spans, ANY backslash command or stray brace is
+// source soup (the old 8-pattern marker list missed \pi, \to, \boxed{...} and
+// friends: measured 11 of 15 realistic samples slipping through). A $...$ pair
+// carrying LaTeX syntax is a wrong-delimiter slip; a bare $ stays legal since
+// case-study prose is full of genuine prices. A bare caret ("h^(2/3)", "10^6")
+// is tolerated: it reads fine as plain text and is the sanctioned figure-label
+// convention.
 export function hasUndelimitedMath(s: string): boolean {
-  return LATEX_MARKER.test(s.replace(DELIMITED_MATH, ""));
+  const t = s.replace(DELIMITED_MATH, "");
+  if (/\\[a-zA-Z]/.test(t) || /[{}]/.test(t)) return true;
+  const dollarPairs = t.match(/\$[^$]*\$/g);
+  return !!dollarPairs && dollarPairs.some((d) => /[\\^_]/.test(d));
 }
 
 // The generation gate: fresh model output only. Deliberately NOT on
@@ -86,6 +95,14 @@ export const ConceptCardsPayloadGenerated = ConceptCardsPayload.superRefine((pay
         });
       }
     };
+    // Card titles are typographic plain text (the biggest type on the card);
+    // LaTeX there is banned outright rather than typeset.
+    if (/[\\{}]/.test(card.front.title)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `cards[${i}].front.title: titles are plain text and cannot carry LaTeX; name the concept in words: "${card.front.title}"`,
+      });
+    }
     check("front.subtitle", card.front.subtitle);
     check("front.description_main", card.front.description_main);
     check("front.description_support", card.front.description_support);
@@ -329,7 +346,14 @@ export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) =
   for (const s of deck.steps) {
     checkProse(`step '${s.id}' title`, s.title);
     checkProse(`step '${s.id}' caption`, s.caption);
-    if (s.callout) checkProse(`step '${s.id}' callout text`, s.callout.text);
+    // Equation and side-card labels render as uppercase plain text chips, so
+    // LaTeX there is banned like the figure labels (\frac would show as \FRAC).
+    s.equations.forEach((e, i) => checkLabel(`step '${s.id}' equation[${i}] label`, e.label));
+    s.cards.forEach((c, i) => checkLabel(`step '${s.id}' card[${i}] label`, c.label));
+    if (s.callout) {
+      checkProse(`step '${s.id}' callout title`, s.callout.title);
+      checkProse(`step '${s.id}' callout text`, s.callout.text);
+    }
     const v = s.visual;
     if (v) {
       checkProse(`step '${s.id}' visual caption`, v.caption);

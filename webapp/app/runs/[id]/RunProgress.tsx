@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { RunState, StageKey } from "@/lib/runStore";
 import { BangIcon, CheckIcon } from "@/components/icons";
+import { Prose } from "@/components/Math";
 import styles from "./run.module.css";
 
 const POLL_MS = 1500;
@@ -172,7 +173,9 @@ export default function RunProgress({ id }: { id: string }) {
                 <div className={styles.stageBody}>
                   <span className={styles.label}>{STAGE_LABELS[key]}</span>
                   {stage.status === "failed" && stage.message && (
-                    <p className={styles.failMessage}>{stage.message}</p>
+                    <p className={styles.failMessage}>
+                      <Prose text={stage.message} />
+                    </p>
                   )}
                 </div>
               </li>
@@ -190,7 +193,7 @@ export default function RunProgress({ id }: { id: string }) {
               {failedStages.length === 0 && <p>The run stopped before any stage reported a specific error.</p>}
               {failedStages.map((k) => (
                 <p key={k}>
-                  {STAGE_LABELS[k]}: {state.stages[k].message ?? "failed"}
+                  {STAGE_LABELS[k]}: <Prose text={state.stages[k].message ?? "failed"} />
                 </p>
               ))}
               <Link href="/" className="btn" style={{ marginTop: 8, display: "inline-block" }}>

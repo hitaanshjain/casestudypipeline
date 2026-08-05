@@ -244,7 +244,11 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
                           </span>
                         </span>
                         <span className={styles.overviewCardBody}>
-                          {s.caption && <span className={styles.overviewCaption}>{s.caption}</span>}
+                          {s.caption && (
+                            <span className={styles.overviewCaption}>
+                              <Prose text={s.caption} />
+                            </span>
+                          )}
                           {latex && (
                             <span className={styles.overviewMath}>
                               <MathBlock latex={latex} />

@@ -294,7 +294,9 @@ function CaseStudyTab({ id, stage, failed }: { id: string; stage: StageEntry; fa
         </div>
           <div>
             <h3>The case study could not be generated</h3>
-            <p>{stage.message ?? "The case study stage failed."}</p>
+            <p>
+              <Prose text={stage.message ?? "The case study stage failed."} />
+            </p>
           </div>
         </div>
         {logExists && (
@@ -355,7 +357,9 @@ function ConceptCardsTab({
         </div>
         <div>
           <h3>Concept cards could not be generated</h3>
-          <p>{stage.message ?? "The concept cards stage failed."}</p>
+          <p>
+            <Prose text={stage.message ?? "The concept cards stage failed."} />
+          </p>
         </div>
       </div>
     );
@@ -408,7 +412,9 @@ function PracticeDeckTab({
         </div>
         <div>
           <h3>The practice deck could not be generated</h3>
-          <p>{stage.message ?? "The practice deck stage failed."}</p>
+          <p>
+            <Prose text={stage.message ?? "The practice deck stage failed."} />
+          </p>
         </div>
       </div>
     );

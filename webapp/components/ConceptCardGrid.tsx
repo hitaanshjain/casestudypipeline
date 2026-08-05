@@ -38,8 +38,12 @@ function FlipCard({ card }: { card: TConceptCard }) {
       <div className={`${styles.inner} ${flipped ? styles.flipped : ""}`}>
         <div className={`${styles.face} ${styles.front}`}>
           <div className={styles.frontBody}>
-            <h3 className={styles.frontTitle}>{card.front.title}</h3>
-            <p className={styles.frontSubtitle}>{card.front.subtitle}</p>
+            <h3 className={styles.frontTitle}>
+              <Prose text={card.front.title} />
+            </h3>
+            <p className={styles.frontSubtitle}>
+              <Prose text={card.front.subtitle} />
+            </p>
             <div className={styles.frontDivider} />
             <div className={styles.frontCentral}>
               {card.front.central_latex !== null ? (

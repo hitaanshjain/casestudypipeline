@@ -128,8 +128,8 @@ Match this schema exactly, field for field:
     {
       "concept_name": "string",
       "front": {
-        "title": "string, max 60 chars",
-        "subtitle": "string, 2-4 words",
+        "title": "string, max 60 chars, PLAIN TEXT ONLY: no LaTeX, no backslashes or braces, no \\( \\); name the concept in words",
+        "subtitle": "string, 2-4 words; math inside it must be wrapped in \\( \\) delimiters",
         "central_latex": "string LaTeX or null",
         "central_prose": "string or null (exactly one of the two is non-null)",
         "variable_key": [ { "symbol": "LaTeX", "meaning": "string" } ],

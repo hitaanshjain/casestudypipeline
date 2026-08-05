@@ -5,10 +5,38 @@ import {
   ConceptCardsPayloadGenerated,
   PracticeDeck,
   PracticeDeckGenerated,
+  hasUndelimitedMath,
   parseModelJson,
 } from "../lib/contracts";
 
 const read = (p: string) => readFileSync(new URL(`../fixtures/${p}`, import.meta.url), "utf8");
+
+describe("hasUndelimitedMath detector", () => {
+  // The original 8-pattern marker list missed 11 of 15 realistic samples
+  // (\pi, \to, \boxed{...} and friends); the detector now flags any backslash
+  // command or stray brace outside delimited spans.
+  const flagged = [
+    "The value of \\pi is close to 3.14159.",
+    "As h \\to 0 the quotient settles.",
+    "The answer is \\boxed{42}.",
+    "Speed in \\text{m/s} units.",
+    "Evaluate 4^{3/2} minus 1.",
+    "The result $x^2$ is positive.",
+  ];
+  const clean = [
+    "The derivative of \\(x^2\\) at \\(x = 3\\).",
+    "As \\(h \\to 0\\) the quotient settles.",
+    "The price is $5 and later $10.",
+    "Write h^(2/3) plainly on the label.",
+    "A perfectly ordinary sentence.",
+  ];
+  for (const s of flagged) {
+    it(`flags ${JSON.stringify(s)}`, () => expect(hasUndelimitedMath(s)).toBe(true));
+  }
+  for (const s of clean) {
+    it(`passes ${JSON.stringify(s)}`, () => expect(hasUndelimitedMath(s)).toBe(false));
+  }
+});
 
 describe("concept cards contract", () => {
   it("accepts the valid fixture", () => {
@@ -165,6 +193,32 @@ describe("practice deck contract", () => {
     const deck = JSON.parse(read("practice_deck.json"));
     deck.steps[3].title = "Analyze the Sign of \\(h^{2/3}\\)";
     expect(PracticeDeckGenerated.safeParse(deck).success).toBe(true);
+  });
+  it("rejects a concept card title carrying LaTeX", () => {
+    const p = JSON.parse(read("concept_cards.json"));
+    p.cards[0].front.title = "Limit of \\(f\\) at a Point";
+    const r = ConceptCardsPayloadGenerated.safeParse(p);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("front.title");
+    expect(ConceptCardsPayload.safeParse(p).success).toBe(true);
+  });
+  it("rejects equation and side-card labels carrying LaTeX", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[0].equations[0].label = "\\frac{dy}{dx} SETUP";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("equation[0] label");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
+  });
+  it("rejects an undelimited callout title", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    const step = deck.steps.find((s: any) => s.callout);
+    expect(step).toBeTruthy();
+    step.callout.title = "Watch the h^{2/3} term";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("callout title");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
   });
   it("rejects figure-drawn labels that carry LaTeX", () => {
     const deck = JSON.parse(read("practice_deck.json"));
