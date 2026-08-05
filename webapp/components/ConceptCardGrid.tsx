@@ -53,7 +53,9 @@ function FlipCard({ card }: { card: TConceptCard }) {
                 {card.front.variable_key.map((entry, i) => (
                   <div key={i} className={styles.variableRow}>
                     <MathBlock latex={entry.symbol} inline />
-                    <span>{entry.meaning}</span>
+                    <span>
+                      <Prose text={entry.meaning} />
+                    </span>
                   </div>
                 ))}
               </div>

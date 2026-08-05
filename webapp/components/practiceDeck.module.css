@@ -175,6 +175,14 @@
   font-size: 1rem;
 }
 
+/* A long problem statement line-breaks inside MathJax; centered continuation
+   lines read as ragged fragments, so the panel's display math is left-aligned
+   like text instead. */
+.problemMath :global(mjx-container[display]) {
+  text-align: left;
+  margin: 0.2em 0;
+}
+
 /* ---- Overview slide: the whole worked solution as one contact sheet ---- */
 
 .overviewHead {
