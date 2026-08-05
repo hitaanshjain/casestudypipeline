@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
-import { ConceptCardsPayload, PracticeDeck, PracticeDeckGenerated, parseModelJson } from "../lib/contracts";
+import {
+  ConceptCardsPayload,
+  ConceptCardsPayloadGenerated,
+  PracticeDeck,
+  PracticeDeckGenerated,
+  parseModelJson,
+} from "../lib/contracts";
 
 const read = (p: string) => readFileSync(new URL(`../fixtures/${p}`, import.meta.url), "utf8");
 
@@ -12,6 +18,60 @@ describe("concept cards contract", () => {
     const r = ConceptCardsPayload.safeParse(JSON.parse(read("concept_cards_invalid.json")));
     expect(r.success).toBe(false);
     expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("final_answer_latex");
+  });
+});
+
+describe("concept card prose must delimit its math", () => {
+  // The exact string that shipped on run f811b5f4's card back, where "4^{3/2}"
+  // reached the student as literal braces and carets.
+  const RAW = "Evaluate at t=4 (using 4^{3/2}=8, 4^{5/2}=32) minus the value at t=1.";
+  const withStepProse = (prose: string) => {
+    const p = JSON.parse(read("concept_cards.json"));
+    p.cards[0].back.steps[0].prose = prose;
+    return p;
+  };
+
+  it("rejects undelimited math in freshly generated prose, quoting the offender", () => {
+    const r = ConceptCardsPayloadGenerated.safeParse(withStepProse(RAW));
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("back.steps[0].prose");
+  });
+  it("accepts the same expression once delimited", () => {
+    const fixed = "Evaluate at \\(t=4\\) (using \\(4^{3/2}=8\\), \\(4^{5/2}=32\\)) minus the value at \\(t=1\\).";
+    expect(ConceptCardsPayloadGenerated.safeParse(withStepProse(fixed)).success).toBe(true);
+  });
+  // The reading contract must stay looser: cards already stored with raw math
+  // have to keep rendering, or the whole tab goes blank instead of one line
+  // looking wrong.
+  it("still accepts stored cards that contain raw math", () => {
+    expect(ConceptCardsPayload.safeParse(withStepProse(RAW)).success).toBe(true);
+  });
+  it("does not flag prose whose math is fully delimited", () => {
+    expect(ConceptCardsPayloadGenerated.safeParse(JSON.parse(read("concept_cards.json"))).success).toBe(true);
+  });
+});
+
+describe("concept card nullable fields may be omitted", () => {
+  // Run f811b5f4 burned a retry because the model omitted the unused half of
+  // each exactly-one-of pair instead of writing an explicit null.
+  it("accepts a card that omits central_prose and a step's latex", () => {
+    const p = JSON.parse(read("concept_cards.json"));
+    const card = p.cards[0];
+    card.front.central_latex = "x^{2}";
+    delete card.front.central_prose;
+    card.back.steps[0].prose = "Some explanation.";
+    delete card.back.steps[0].latex;
+    const r = ConceptCardsPayload.safeParse(p);
+    expect(r.success).toBe(true);
+    // Omitted keys normalize to null so downstream renderers see one shape.
+    expect(r.success && r.data.cards[0].front.central_prose).toBe(null);
+    expect(r.success && r.data.cards[0].back.steps[0].latex).toBe(null);
+  });
+  it("still rejects a card that omits BOTH halves of the pair", () => {
+    const p = JSON.parse(read("concept_cards.json"));
+    delete p.cards[0].front.central_latex;
+    delete p.cards[0].front.central_prose;
+    expect(ConceptCardsPayload.safeParse(p).success).toBe(false);
   });
 });
 

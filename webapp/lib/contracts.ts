@@ -10,12 +10,21 @@ export const VariableKeyEntry = z.object({
   meaning: z.string().min(1),
 });
 
+// A field that is semantically "null or a value", where the model may simply
+// OMIT the key instead of writing an explicit null. Both halves of an
+// exactly-one-of pair look optional to a model filling in the one it wants, and
+// on run f811b5f4 that cost a full concept-cards retry (~6.4k output tokens) on
+// a reply whose content was otherwise fine. Normalizing undefined to null keeps
+// the refinements below written against a single absent value.
+const omittableLatex = latexField.nullish().transform((v) => v ?? null);
+const omittableProse = z.string().min(1).nullish().transform((v) => v ?? null);
+
 export const ConceptCardFront = z
   .object({
     title: z.string().min(1).max(60),
     subtitle: z.string().min(1),
-    central_latex: latexField.nullable(),
-    central_prose: z.string().min(1).nullable(),
+    central_latex: omittableLatex,
+    central_prose: omittableProse,
     variable_key: z.array(VariableKeyEntry).max(8),
     description_main: z.string().min(1),
     description_support: z.string().min(1),
@@ -25,7 +34,7 @@ export const ConceptCardFront = z
   });
 
 export const ConceptCardStep = z
-  .object({ latex: latexField.nullable(), prose: z.string().min(1).nullable() })
+  .object({ latex: omittableLatex, prose: omittableProse })
   .refine((s) => s.latex !== null || s.prose !== null, { message: "step needs latex or prose" });
 
 export const ConceptCardBack = z.object({
@@ -49,6 +58,43 @@ export const ConceptCard = z.object({
 export const ConceptCardsPayload = z.object({
   cards: z.array(ConceptCard),
   skipped_concepts: z.array(z.object({ name: z.string(), reason: z.string() })).optional(),
+});
+
+// MathJax only typesets math inside \( \) delimiters, so a bare "4^{3/2}" in a
+// prose field reaches the student as literal braces and carets. Run f811b5f4
+// shipped exactly that on a card back. Strip the correctly delimited spans
+// first, then look for LaTeX left over in what is supposed to be plain text.
+const DELIMITED_MATH = /\\\([\s\S]*?\\\)/g;
+const LATEX_MARKER = /\^\{|_\{|\\frac|\\dfrac|\\sqrt|\\left|\\int|\\sum/;
+
+export function hasUndelimitedMath(s: string): boolean {
+  return LATEX_MARKER.test(s.replace(DELIMITED_MATH, ""));
+}
+
+// The generation gate: fresh model output only. Deliberately NOT on
+// ConceptCardsPayload, which is also the reading contract for stored artifacts
+// and cached rows — tightening it there would blank the Concept Cards tab for
+// every card already generated with raw math, instead of degrading one line.
+// Same split, and the same reasoning, as PracticeDeck / PracticeDeckGenerated.
+export const ConceptCardsPayloadGenerated = ConceptCardsPayload.superRefine((payload, ctx) => {
+  payload.cards.forEach((card, i) => {
+    const check = (path: string, s: string | null | undefined) => {
+      if (typeof s === "string" && hasUndelimitedMath(s)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `cards[${i}].${path}: math must be wrapped in \\( \\) delimiters, found raw LaTeX in prose: "${s}"`,
+        });
+      }
+    };
+    check("front.subtitle", card.front.subtitle);
+    check("front.description_main", card.front.description_main);
+    check("front.description_support", card.front.description_support);
+    check("front.central_prose", card.front.central_prose);
+    card.front.variable_key.forEach((v, j) => check(`front.variable_key[${j}].meaning`, v.meaning));
+    check("back.question", card.back.question);
+    card.back.steps.forEach((s, j) => check(`back.steps[${j}].prose`, s.prose));
+    check("back.footer", card.back.footer);
+  });
 });
 
 export const DeckEquation = z.object({

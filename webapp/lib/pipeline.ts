@@ -15,6 +15,7 @@ import { loadPrompt, runLlm, usageStore, type StageUsage } from "./llm";
 import {
   ConceptCard,
   ConceptCardsPayload,
+  ConceptCardsPayloadGenerated,
   PracticeDeck,
   PracticeDeckGenerated,
   parseModelJson,
@@ -540,12 +541,15 @@ async function runConceptCards(
 
   const user = buildConceptCardsUser(dir, input.problem);
   let reply = await runLlm({ stage: "concept_cards", system: loadPrompt("concept_flashcards_prompt"), user });
-  let parsed = parseModelJson(ConceptCardsPayload, reply);
+  // ConceptCardsPayloadGenerated, not ConceptCardsPayload: fresh model output is
+  // additionally held to the delimited-math rule, and the retry below is what
+  // makes that gate useful. Cards read from the cache stay on the looser schema.
+  let parsed = parseModelJson(ConceptCardsPayloadGenerated, reply);
   if (!parsed.ok) {
     writeInvalidReply(dir, "concept_cards", parsed.error, reply);
     const retryUser = `${user}\n\nYour previous reply failed validation: ${parsed.error}\n\nReturn corrected JSON only.`;
     reply = await runLlm({ stage: "concept_cards", system: loadPrompt("concept_flashcards_prompt"), user: retryUser });
-    parsed = parseModelJson(ConceptCardsPayload, reply);
+    parsed = parseModelJson(ConceptCardsPayloadGenerated, reply);
     if (!parsed.ok) writeInvalidReply(dir, "concept_cards_retry", parsed.error, reply);
   }
 

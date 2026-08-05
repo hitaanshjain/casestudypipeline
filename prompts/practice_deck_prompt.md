@@ -50,8 +50,8 @@ Match this schema exactly, field for field:
   "title": "string, deck title",
   "subtitle": "string, one line",
   "problem": {
-    "prompt": "string, plain-text task framing, no method names",
-    "latex": "string LaTeX, the problem statement",
+    "prompt": "string, the COMPLETE problem statement in plain text, no method names",
+    "latex": "string LaTeX, the same problem stated formally",
     "answerLatex": "string LaTeX, the final answer(s)"
   },
   "steps": [
@@ -197,6 +197,8 @@ Allowed, and nothing else:
 - The practice problem is original. Never copy question.txt's wording, numbers, or scenario. A relabeled version of the same numbers is still a copy; change the scenario and the values, not just the variable names.
 - primary.md is the authority for notation, method, and difficulty. When primary.md has a specific convention (a notation choice, a preferred method among several valid ones), follow it exactly rather than a more familiar alternative.
 - Stay on the skill named by topic and tested in question.txt. Do not drift into an adjacent technique or a chapter-level review; the deck practices one skill.
+- problem.prompt is a COMPLETE, SELF-CONTAINED problem statement, the way it would be printed on a worksheet. A student must be able to solve the problem from problem.prompt alone. It names the quantity and its units, states every given value, states the interval or domain, states any threshold or capacity being compared against, and lists each thing to find as its own labelled clause (a), (b), (c). Never defer a given to problem.latex with a phrase like "at a known rate", "over a fixed time window", "at the given point", or "the given threshold": problem.latex renders in a separate panel beside the deck, so anything that appears only there reads as missing. Write "Gas flows into a balloon at g(t) = 6t - t^{2} liters per minute for 0 <= t <= 6 minutes. The balloon holds 30 liters. (a) Find when the flow rate is greatest and its value there. (b) Find the total volume collected over the six minutes. (c) Determine whether the balloon overflows.", never "A chemical process feeds gas into a balloon at a known rate over a fixed time window; find the peak, the total, and whether capacity is exceeded."
+- problem.latex restates that same problem formally for the side panel. It adds no given that problem.prompt omitted.
 - problem.prompt and problem.latex never name the method, formula, or shortcut the solution will use. A student reading the problem should not be able to guess the technique from the wording.
 - Every step's caption explains why the move is valid or what it accomplishes, never only the algebra already visible in the equations.
 - Before writing the JSON, independently verify the final answer: recompute it by an alternate method, or substitute it back into the original relation, and confirm it matches. Surface this check as the last step's secondary equation and, when it adds real judgment, a check or success callout.
@@ -212,7 +214,7 @@ Allowed, and nothing else:
 5. Classify every step VISUAL_REQUIRED, VISUAL_RECOMMENDED, or NOT_NEEDED per <visuals>, then build the visual for each step that needs one. Keep the classification to yourself; only the visuals reach the JSON.
 6. List the 3 to 6 general formulas the solution actually invokes and write each as a reference.equations entry pointing at the step that uses it.
 7. Assemble problem, steps, and reference into the schema in <json_schema>.
-8. Before emitting, check: the JSON parses; schemaVersion is "1.1" and renderer.id is "math-animation-dark-sidebar"; there are 4 to 7 steps; the first step restates the given; every step carries exactly one style "primary" equation and no step has an empty equations array; every caption is one sentence of 12 words or fewer; exactly the last step contains a style "final" boxed equation; every reference.equations[].stepId matches an existing step id; no field outside <json_schema> appears anywhere; no latex field contains $; every ^ and _ is braced. Then check the visuals: no step has more than one; every visual uses one of the three kinds in <visuals> and only that kind's fields; every expr uses only the allowed vocabulary with explicit multiplication and no LaTeX; every mark lies inside its domain and every point and interval inside its range; every table row has exactly as many cells as there are columns.
+8. Before emitting, check: the JSON parses; schemaVersion is "1.1" and renderer.id is "math-animation-dark-sidebar"; problem.prompt states every given, every unit, the interval, any threshold, and each task as its own labelled clause, and would be solvable with problem.latex deleted; there are 4 to 7 steps; the first step restates the given; every step carries exactly one style "primary" equation and no step has an empty equations array; every caption is one sentence of 12 words or fewer; exactly the last step contains a style "final" boxed equation; every reference.equations[].stepId matches an existing step id; no field outside <json_schema> appears anywhere; no latex field contains $; every ^ and _ is braced. Then check the visuals: no step has more than one; every visual uses one of the three kinds in <visuals> and only that kind's fields; every expr uses only the allowed vocabulary with explicit multiplication and no LaTeX; every mark lies inside its domain and every point and interval inside its range; every table row has exactly as many cells as there are columns.
 </process>
 
 <output_contract>

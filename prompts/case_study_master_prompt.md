@@ -225,13 +225,13 @@ Determine:
 - where collaboration will contribute most meaningfully to the learning objective.
 
 
-Use Question 3 as the default location for the collaborative component because students can use earlier mathematical results to compare interpretations, defend a conclusion, or make a decision.
+Use stage 3 as the default location for the collaborative component because students can use earlier mathematical results to compare interpretations, defend a conclusion, or make a decision.
 
 
-However, place the collaborative component in Question 1 or Question 2 when that is more pedagogically natural:
-- Question 1 when students should compare setups, representations, assumptions, or modeling choices;
-- Question 2 when students should evaluate competing reasoning, check a claim, diagnose an error, or compare methods;
-- Question 3 when students should interpret results, compare alternatives, test sensitivity, defend a recommendation, or make a decision.
+However, place the collaborative component in stage 1 or stage 2 when that is more pedagogically natural:
+- stage 1 when students should compare setups, representations, assumptions, or modeling choices;
+- stage 2 when students should evaluate competing reasoning, check a claim, diagnose an error, or compare methods;
+- stage 3 when students should interpret results, compare alternatives, test sensitivity, defend a recommendation, or make a decision.
 
 
 Choose the placement intentionally based on the learning objective rather than mechanically placing collaboration in the same question every time.
@@ -263,19 +263,19 @@ Use one coherent realistic scenario. All three questions must contribute to the 
 Do not create unrelated exercises connected only by a common story.
 
 
-INTERLOCKING QUESTIONS
+INTERLOCKING STAGES
 
 
 Later questions must use results, models, or reasoning developed earlier.
 
 
 Use the overall progression:
-- Question 1 — Build or Set Up
-- Question 2 — Analyze
-- Question 3 — Interpret and Decide
+- Stage 1 — Build or Set Up
+- Stage 2 — Analyze
+- Stage 3 — Interpret and Decide
 
 
-The progression describes the overall case arc, but the required collaborative component may appear in Question 1, 2, or 3 depending on where it most meaningfully supports the learning objective.
+The progression describes the overall case arc, but the required collaborative component may appear in stage 1, 2, or 3 depending on where it most meaningfully supports the learning objective.
 
 
 CONTEXT MUST CONSTRAIN
@@ -416,23 +416,38 @@ Accessibility must come from better design, not easier mathematics.
 </audience_requirements>
 
 
+<stage_presentation>
+The three parts are stages of one investigation, not items on a problem set. A student should read the sheet as the protagonist's work unfolding, where each stage exists because the previous one produced something that raised it.
+
+On the student sheet:
+- never print the word "Question", never print a "QUESTIONS" heading, and never number the stages;
+- each stage opens with a bold left-aligned heading that names the decision work in that stage, phrased as an action in the scenario's own language: "Finding the peak delivery moment", "Weighing two competing dose estimates", "Deciding whether the protocol holds". Never a topic label ("Optimization", "The Net Change Theorem") and never a generic one ("Part A", "Setting Up", "Analysis");
+- under the heading, one lead-in sentence connects the stage to what is now known and says why this is the next thing the protagonist needs, before any task is asked. The lead-in for the first stage may reference only the scenario;
+- subparts stay lettered (a), (b) where a stage genuinely asks for two things.
+
+The names "stage 1", "stage 2", and "stage 3" used elsewhere in this prompt refer to the first, second, and third stage in order. They are vocabulary for you, never text for the student: on the sheet each stage appears only under its own scenario-specific heading.
+
+Because the stages are one investigation rather than three exercises, they should not all exercise the same move: across the three, the student should have to do genuinely different kinds of work (for example locating an extremum, then accumulating a total, then comparing against a threshold and judging), all bearing on the single decision the case turns on.
+</stage_presentation>
+
+
 <question_structure>
-Include exactly 3 numbered questions. Each question must have a bold, task-oriented mini-title.
+Include exactly 3 stages. Each stage must have a bold, task-oriented heading per <stage_presentation>.
 
 
-QUESTION 1 — BUILD OR SET UP
+STAGE 1 — BUILD OR SET UP
 
 
 Students identify relevant information and construct the needed model, representation, relationship, equation, comparison, or structure.
 
 
-QUESTION 2 — ANALYZE
+STAGE 2 — ANALYZE
 
 
 Students perform the main mathematical or quantitative work. This should contain the central calculation, analysis, comparison, or claim evaluation.
 
 
-QUESTION 3 — INTERPRET AND DECIDE
+STAGE 3 — INTERPRET AND DECIDE
 
 
 Students use earlier results to reach a meaningful context-based outcome. This may involve interpretation, comparison, recommendation, a changed assumption, a threshold, sensitivity, feasibility, or another justified conclusion.
@@ -441,16 +456,16 @@ Students use earlier results to reach a meaningful context-based outcome. This m
 The final question must clearly return to the scenario and depend on earlier work.
 
 
-At least one of the 3 numbered questions must contain an explicit discussion and collaboration component.
+At least one of the 3 stages must contain an explicit discussion and collaboration component.
 
 
-Question 3 is the default location for collaboration, but it is not mandatory. Use Question 1 or Question 2 when collaboration there more naturally supports the learning objective.
+stage 3 is the default location for collaboration, but it is not mandatory. Use stage 1 or stage 2 when collaboration there more naturally supports the learning objective.
 
 
 Appropriate placements include:
-- Question 1: compare or defend setups, assumptions, models, or representations;
-- Question 2: evaluate competing reasoning, check a claim, diagnose an error, or compare methods;
-- Question 3: interpret results, compare alternatives, test sensitivity, defend a conclusion, or make a recommendation.
+- stage 1: compare or defend setups, assumptions, models, or representations;
+- stage 2: evaluate competing reasoning, check a claim, diagnose an error, or compare methods;
+- stage 3: interpret results, compare alternatives, test sensitivity, defend a conclusion, or make a recommendation.
 
 
 Select the placement based on pedagogical value, not a fixed pattern.
@@ -471,9 +486,9 @@ A strong student should not be able to complete the full worksheet in under appr
 
 
 Use the approximate time distribution:
-- Question 1: 4–5 minutes
-- Question 2: 5–6 minutes
-- Question 3: 5–7 minutes
+- stage 1: 4–5 minutes
+- stage 2: 5–6 minutes
+- stage 3: 5–7 minutes
 
 
 The worksheet must feel manageable but not obvious.
@@ -482,7 +497,7 @@ The worksheet must feel manageable but not obvious.
 Students must be required to understand the scenario, identify relevant information, determine how to begin, set up the mathematics, calculate, interpret, and use the result.
 
 
-Exactly 3 numbered questions are required.
+Exactly 3 stages are required.
 
 
 Each question may contain up to 2 short subparts, labeled (a) and (b), only when necessary.
@@ -492,14 +507,14 @@ Do not exceed 5 total student tasks.
 
 
 Task-counting rule:
-- a numbered question without subparts counts as 1 task;
-- a numbered question with subparts contributes 1 task per subpart and is not counted separately.
+- a stage without subparts counts as 1 task;
+- a stage with subparts contributes 1 task per subpart and is not counted separately.
 
 
-At least 2 of the 3 numbered questions must require 2 or more meaningful mathematical or reasoning steps.
+At least 2 of the 3 stages must require 2 or more meaningful mathematical or reasoning steps.
 
 
-At least one of the 3 numbered questions must include an explicit collaborative reasoning component.
+At least one of the 3 stages must include an explicit collaborative reasoning component.
 
 
 The collaborative component must be part of the mathematical task itself, not an optional instruction added after a complete task.
@@ -523,7 +538,7 @@ A meaningful step may include:
 - defending a conclusion.
 
 
-No numbered question may consist only of identifying values and substituting them into one formula.
+No stage may consist only of identifying values and substituting them into one formula.
 
 
 Do not create:
@@ -550,7 +565,7 @@ Do not increase difficulty by making the arithmetic messy.
 
 
 <collaboration_and_misconceptions>
-At least one numbered question must contain an explicit and meaningful discussion and collaboration component.
+At least one stage must contain an explicit and meaningful discussion and collaboration component.
 
 
 The collaboration requirement is mandatory.
@@ -588,16 +603,16 @@ Whenever possible, the collaboration should lead to a checkable or defensible co
 DEFAULT PLACEMENT
 
 
-Question 3 is the default location because students can use the results of Questions 1 and 2 to compare interpretations, defend a conclusion, or make a decision.
+stage 3 is the default location because students can use the results of stages 1 and 2 to compare interpretations, defend a conclusion, or make a decision.
 
 
 CONTEXT-BASED EXCEPTION
 
 
-Use Question 1 or Question 2 instead when doing so better supports the learning objective:
-- use Question 1 when the main conceptual challenge is selecting, comparing, or defending a model, setup, assumption, or representation;
-- use Question 2 when the main conceptual challenge is evaluating competing reasoning, checking a claim, diagnosing an error, or comparing methods;
-- use Question 3 when the strongest discussion concerns interpretation, sensitivity, feasibility, recommendation, comparison, or decision-making.
+Use stage 1 or stage 2 instead when doing so better supports the learning objective:
+- use stage 1 when the main conceptual challenge is selecting, comparing, or defending a model, setup, assumption, or representation;
+- use stage 2 when the main conceptual challenge is evaluating competing reasoning, checking a claim, diagnosing an error, or comparing methods;
+- use stage 3 when the strongest discussion concerns interpretation, sensitivity, feasibility, recommendation, comparison, or decision-making.
 
 
 Select the placement based on pedagogical value, not a fixed pattern.
@@ -672,11 +687,10 @@ NAME: ______________________________
 5. Optional compact table, chart, timeline, diagram, or reference block only when it directly improves understanding
 
 
-6. Centered heading:
-QUESTIONS
+6. No "QUESTIONS" heading. The scenario runs straight into the first stage.
 
 
-7. Exactly 3 numbered questions
+7. Exactly 3 stages, in order, each introduced by its own bold left-aligned stage heading (see <stage_presentation>). No stage carries a number, and the word "Question" never appears on the student sheet.
 
 
 8. Flexible vertical space only as needed
@@ -684,7 +698,7 @@ QUESTIONS
 
 9. A page break (\newpage) after the last student-facing element, then the answer-key page containing:
 - centered heading: ANSWER KEY;
-- compact solutions for Questions 1–3.
+- compact solutions for the three stages, each under its own stage heading repeated verbatim from page 1 so the instructor can match them at a glance.
 
 The answer key lives on page 2, by itself. Page 1 is the student sheet and carries no answer content, so it can be handed out or projected without revealing the solutions.
 
@@ -755,7 +769,7 @@ Do not reduce any text below 8.5 pt.
 Use consistent commands or environments for the name line, centered title, section headings, question spacing, subparts, and the answer-key block.
 
 
-End the student sheet after Question 3 and begin the answer key with \newpage, so the answer key starts at the top of page 2. Do not use \vfill to push the answer key down; it belongs at the top of its own page.
+End the student sheet after stage 3 and begin the answer key with \newpage, so the answer key starts at the top of page 2. Do not use \vfill to push the answer key down; it belongs at the top of its own page.
 
 
 The answer-key layout may adapt to mathematical width:
@@ -802,7 +816,7 @@ The answer key must be concise, correct, readable, and placed on its own page (p
 
 
 It must:
-- match all question numbering and subparts;
+- repeat each stage heading verbatim from page 1, in the same order, and match every (a)/(b) subpart label;
 - show enough setup to verify correctness;
 - include correct results;
 - include brief interpretation when required;
@@ -970,14 +984,14 @@ Complete these steps silently:
 8. Perform the Application, Interpretation, and Collaboration Check.
 9. Perform the optional Misconception Analysis only when relevant.
 10. Determine where the mandatory collaboration component most naturally supports the learning objective:
-   - default to Question 3;
-   - use Question 1 or Question 2 when conceptually stronger.
+   - default to stage 3;
+   - use stage 1 or stage 2 when conceptually stronger.
 11. Choose a realistic scenario based on the mathematical concept and learning objective.
 12. Apply the anti-anchoring requirement.
 13. Apply the strip test.
 14. Determine the intended conclusion before finalizing the data.
 15. Build the smallest faithful case structure using entirely new, clean, verified values.
-16. Design exactly 3 connected questions with no more than 5 total tasks, including the mandatory collaboration component within the task count.
+16. Design exactly 3 connected stages with no more than 5 total tasks, including the mandatory collaboration component within the task count, and give each stage a scenario-specific heading per <stage_presentation>.
 17. Confirm that the case requires approximately 15–20 minutes.
 18. Solve the entire fresh case independently.
 19. Verify every equation, value, unit, intermediate result, comparison, threshold or constraint, collaborative conclusion, and final conclusion.
@@ -1037,16 +1051,16 @@ CONTENT AND TRANSFER
 
 
 QUESTIONS, COLLABORATION, AND DIFFICULTY
-16. There are exactly 3 numbered questions.
+16. There are exactly 3 stages.
 17. There are no more than 5 total student tasks.
 18. At least 2 questions require multiple meaningful steps.
 19. No question is only one-step substitution.
 20. Later work builds on earlier work.
 21. The worksheet requires approximately 15–20 minutes.
 22. A strong student should need more than approximately 8 minutes.
-23. At least one numbered question contains an explicit discussion and collaboration component.
+23. At least one stage contains an explicit discussion and collaboration component.
 24. The collaboration component requires students to resolve, compare, evaluate, interpret, or defend something using mathematical evidence.
-25. The collaboration component is placed where it most naturally supports the learning objective; Question 3 is the default but not mandatory location.
+25. The collaboration component is placed where it most naturally supports the learning objective; stage 3 is the default but not mandatory location.
 26. The collaboration component is included within the 5-task maximum and is not an extra hidden task.
 27. The collaboration prompt is specific and mathematically grounded rather than vague or decorative.
 28. A misconception appears only when it meaningfully supports the learning objective.

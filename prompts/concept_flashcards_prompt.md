@@ -153,12 +153,16 @@ source.lo_ordinal is an integer when a single supplied learning objective covers
 
 LaTeX rules, applied inside every latex-bearing field (central_latex, variable_key entries, steps entries, final_answer_latex, and inline math in prose fields):
 - never use $ or $$ delimiters; a latex field's value is the LaTeX content itself, with no wrapping delimiter.
-- inline math inside question, prose, description_main, description_support, footer, or central_prose uses \( \).
+- inline math inside question, prose, description_main, description_support, footer, central_prose, or a variable_key meaning uses \( \). This applies to EVERY mathematical expression in those fields, however short: a bare 4^{3/2} or t^{1/2} written outside \( \) reaches the student as literal braces and carets, because only delimited math is typeset. Write "using \(4^{3/2}=8\)", never "using 4^{3/2}=8". A lone variable or a plain number needs no delimiters, but anything carrying ^, _, a fraction, or a root does.
 - never use \textcolor or \colorbox.
 - never use a LaTeX environment (\begin{...}...\end{...}); write the content as plain expressions or as separate step entries instead.
 - every ^ and _ is braced: write x^{2} and a_{n}, never x^2 or a_n.
 
 cards may be an empty array. skipped_concepts may be an empty array. Neither field may be omitted.
+
+For the two either/or pairs (central_latex vs central_prose, and a step's latex vs prose) you may either write the unused side as null or leave its key out entirely; both are accepted. What is never accepted is supplying both sides of the central pair, or neither side of a step.
+
+Before emitting, re-read every prose-bearing field (question, each step's prose, description_main, description_support, footer, central_prose, each variable_key meaning) and confirm that every expression containing ^, _, a fraction, or a root sits inside \( \).
 </output_contract>
 
 <final_instruction>
