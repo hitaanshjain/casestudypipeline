@@ -30,6 +30,8 @@ import {
   parseCriticReply,
   stripFences,
   validateCapturedMapping,
+  mergeCritique,
+  CRITIQUE_FIELDS,
 } from "./replyParsing";
 
 const execFileP = promisify(execFile);
@@ -301,7 +303,9 @@ Environment note, continued: the draft package is above, each file as a line "FI
 
 You have NO write tool. Wherever your instructions tell you to write a file, return it in your reply instead:
 - If you would write phase1_error.txt, reply with its single ERROR line and nothing else besides your one-line report.
-- If you would update lo_mapping.json, reply with the line "FILE: lo_mapping.json" followed by the COMPLETE updated file in a fenced code block, then your one-line report. Emit the whole document, every field, not just the fields you changed; an abbreviated mapping is rejected.`;
+- If you would update lo_mapping.json, do NOT re-emit the whole document. Reply with the line "FILE: critique.json" followed by a fenced code block containing a JSON object of ONLY the fields you are filling in, then your one-line report. The pipeline merges that object onto the generator's draft, so every field you leave out keeps its existing value.
+
+critique.json may contain only these keys, and no others: ${CRITIQUE_FIELDS.join(", ")}. critique_status must be "completed". Include missing_concepts only if you are extending or correcting it; omit it otherwise. Never include sections, learning_objective, rubric_scores, or any other field the generator produced: those are not yours to change, and a critique.json carrying one is rejected.`;
 }
 
 // Turn 1 of the critic, startable the moment a run begins. It needs only the
@@ -358,7 +362,7 @@ async function runCritic(
   if (parsed.kind === "unusable") {
     // One retry, the same single-retry convention the case-study and JSON stages use.
     // The rejected reply is quoted back so the model can see what was wrong with it.
-    const retryUser = `${auditUser}\n\nYour previous reply did not match the required format and was rejected. It began:\n\n${reply.slice(0, 500)}\n\nReply now with EITHER its single ERROR line (calibration failure or unreadable package) and nothing else, OR the line "FILE: lo_mapping.json" followed by the COMPLETE updated lo_mapping.json in a fenced code block, then your one-line report.`;
+    const retryUser = `${auditUser}\n\nYour previous reply did not match the required format and was rejected. It began:\n\n${reply.slice(0, 500)}\n\nReply now with EITHER its single ERROR line (calibration failure or unreadable package) and nothing else, OR the line "FILE: critique.json" followed by a fenced code block holding only the critique fields listed above, then your one-line report.`;
     reply = await runLlm({ stage: "critic", system, user: retryUser, tools: "corpus", priorTurns });
     writeRawReply(dir, "critic_retry", reply);
     parsed = parseCriticReply(reply);
@@ -390,18 +394,36 @@ async function runCritic(
   // it, which would silently break topic resolution with no error anywhere.
   const mappingPath = path.join(dir, "lo_mapping.json");
   const draft = readFileSync(mappingPath, "utf8");
-  const check = validateCapturedMapping(parsed.content, draft);
-  if (!check.ok) {
-    await updateState(id, (s) => {
-      s.stages.critic = { status: "failed", message: `critic critique rejected: ${check.reason}` };
-    });
-    return false;
+
+  // Two accepted shapes. A critique patch is merged onto the draft, so the
+  // critic cannot touch a field it does not own. A whole document is validated
+  // the old way, for a model that followed its own prompt's "update
+  // lo_mapping.json" wording instead of the pipeline's patch instruction.
+  let audited: string;
+  if (parsed.kind === "critique") {
+    const merge = mergeCritique(parsed.content, draft);
+    if (!merge.ok) {
+      await updateState(id, (s) => {
+        s.stages.critic = { status: "failed", message: `critic critique rejected: ${merge.reason}` };
+      });
+      return false;
+    }
+    audited = merge.merged;
+  } else {
+    const check = validateCapturedMapping(parsed.content, draft);
+    if (!check.ok) {
+      await updateState(id, (s) => {
+        s.stages.critic = { status: "failed", message: `critic critique rejected: ${check.reason}` };
+      });
+      return false;
+    }
+    audited = parsed.content;
   }
 
   // The generator's draft is kept beside the audited one: without it, a bad capture
   // cannot be diffed against what Stage 1 actually produced when debugging a live run.
   writeFileSync(path.join(dir, "lo_mapping.generator.json"), draft);
-  writeFileSync(mappingPath, parsed.content);
+  writeFileSync(mappingPath, audited);
 
   await updateState(id, (s) => {
     s.stages.critic = { status: "done" };

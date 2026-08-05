@@ -85,12 +85,30 @@ export const usageStore = new AsyncLocalStorage<StageUsage[]>();
 // mathematics keep "high" because a wrong number is worth far more than the
 // tokens saved; concept cards restate definitions already present in the
 // supplied textbook sections, which is the one genuinely lighter job here.
+// Measured on run f811b5f4 (usage.json vs bytes of kept text): roughly 74% of
+// all output tokens are thinking, not text anyone reads, so effort is the only
+// dial that touches the dominant cost. Per-stage thinking share there: critic
+// 82%, case_study 87%, stage1 70%, practice_deck 69%, concept_cards 35%.
 const STAGE_EFFORT: Record<StageName, "low" | "medium" | "high"> = {
+  // Stays high: everything downstream is built on its verified_answer, so a
+  // wrong number here poisons the worksheet, the deck, and the cards at once.
   stage1: "high",
+  // Stays high: this IS the calibration gate. Its independent re-solve is the
+  // one check standing between bad Stage 1 math and a shipped worksheet, and it
+  // is only 3% of output (1,769 tokens), so there is nothing to win by cutting it.
   critic_solve: "high",
-  critic: "high",
-  case_study: "high",
-  case_study_retry: "high",
+  // high -> medium (Aug 4). Was 30% of output at 82% thinking, the largest line
+  // in the run. Its main call audits and reports on work critic_solve already
+  // re-derived at high effort, rather than doing original mathematics itself.
+  critic: "medium",
+  // high -> medium (Aug 4). Was 21% of output at 87% thinking, the highest
+  // thinking share of any stage: ~10,800 thinking tokens to emit 5.8KB of LaTeX.
+  // WATCH THIS ONE: unlike the critic it does invent and solve fresh mathematics,
+  // so hand-check the arithmetic on the next few worksheets before trusting it.
+  case_study: "medium",
+  // The retry is fed a compile log and makes a targeted LaTeX fix, which is the
+  // most mechanical job here.
+  case_study_retry: "medium",
   concept_cards: "medium",
   // Measured on run ec2f17ca: the deck spent 25,420 output tokens per attempt,
   // more than double the full LaTeX worksheet, for six JSON steps. Its work is

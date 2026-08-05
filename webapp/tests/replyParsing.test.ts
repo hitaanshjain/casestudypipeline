@@ -11,6 +11,7 @@ import {
   parseStage1Reply,
   parseCriticReply,
   validateCapturedMapping,
+  mergeCritique,
   STAGE1_REQUIRED_FILES,
 } from "../lib/replyParsing";
 
@@ -250,5 +251,77 @@ describe("validateCapturedMapping", () => {
     const out = validateCapturedMapping(captured, draft);
     expect(out.ok).toBe(false);
     if (!out.ok) expect(out.reason).toContain("sections");
+  });
+});
+
+describe("mergeCritique", () => {
+  // Shaped like the real lo_mapping.json: generator-owned fields the critic must
+  // never touch, plus the critique sentinels it fills in.
+  const draft = JSON.stringify({
+    learning_objective: "the LO",
+    sections: [{ role: "PRIMARY", section_number: "5.4", corpus: "openstax_calc1" }],
+    rubric_scores: { a: 1 },
+    missing_concepts: ["one"],
+    critique_status: "pending",
+    critique_findings: [],
+  });
+
+  it("merges the critique onto the draft and preserves generator fields", () => {
+    const patch = JSON.stringify({
+      critique_status: "completed",
+      critique_findings: [{ id: "A1", finding: "checked" }],
+    });
+    const out = mergeCritique(patch, draft);
+    expect(out.ok).toBe(true);
+    const merged = JSON.parse(out.ok ? out.merged : "{}");
+    expect(merged.critique_status).toBe("completed");
+    expect(merged.critique_findings).toHaveLength(1);
+    // The whole point: Stage 1's work survives untouched.
+    expect(merged.sections[0].section_number).toBe("5.4");
+    expect(merged.learning_objective).toBe("the LO");
+    expect(merged.rubric_scores).toEqual({ a: 1 });
+  });
+
+  it("lets the critic extend missing_concepts", () => {
+    const patch = JSON.stringify({ critique_status: "completed", missing_concepts: ["one", "two"] });
+    const out = mergeCritique(patch, draft);
+    expect(out.ok && JSON.parse(out.merged).missing_concepts).toEqual(["one", "two"]);
+  });
+
+  // The structural guarantee this design exists for: a confused critic cannot
+  // overwrite a field it does not own, so `sections` can never be clobbered and
+  // topic resolution can never silently break.
+  it("rejects a patch carrying a field the critic does not own", () => {
+    const patch = JSON.stringify({ critique_status: "completed", sections: [] });
+    const out = mergeCritique(patch, draft);
+    expect(out.ok).toBe(false);
+    expect(out.ok ? "" : out.reason).toContain("sections");
+  });
+
+  it("rejects a patch whose critique_status is not completed", () => {
+    const out = mergeCritique(JSON.stringify({ critique_status: "pending" }), draft);
+    expect(out.ok).toBe(false);
+    expect(out.ok ? "" : out.reason).toContain("critique_status");
+  });
+
+  it("rejects unparseable JSON on either side", () => {
+    expect(mergeCritique("{not json", draft).ok).toBe(false);
+    expect(mergeCritique(JSON.stringify({ critique_status: "completed" }), "{nope").ok).toBe(false);
+  });
+});
+
+describe("parseCriticReply: critique patch shape", () => {
+  it("reads a FILE: critique.json block as a critique", () => {
+    const reply = 'FILE: critique.json\n```json\n{"critique_status":"completed"}\n```\nAudit complete.';
+    const out = parseCriticReply(reply);
+    expect(out.kind).toBe("critique");
+  });
+  it("still reads a whole lo_mapping.json, since the critic prompt asks for that", () => {
+    const reply = 'FILE: lo_mapping.json\n```json\n{"critique_status":"completed"}\n```\nDone.';
+    expect(parseCriticReply(reply).kind).toBe("lo_mapping");
+  });
+  it("prefers the ERROR line over a critique, so a failed gate never certifies", () => {
+    const reply = 'ERROR: calibration mismatch\nFILE: critique.json\n```json\n{"critique_status":"completed"}\n```';
+    expect(parseCriticReply(reply).kind).toBe("error");
   });
 });

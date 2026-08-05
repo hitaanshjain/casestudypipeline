@@ -143,7 +143,27 @@ export function parseStage1Reply(reply: string): Stage1Reply {
 export type CriticReply =
   | { kind: "error"; message: string }
   | { kind: "lo_mapping"; content: string }
+  | { kind: "critique"; content: string }
   | { kind: "unusable" };
+
+// The only top-level fields the critic owns. Measured against run f811b5f4 by
+// diffing lo_mapping.generator.json against the critic's output: exactly these
+// changed, while the other 18 fields were copied back byte-identical. Asking for
+// a patch over these instead of the whole document saves ~1,600 output tokens a
+// run, and — the real reason — makes it structurally impossible for the critic
+// to drop `sections`, which would silently kill topic resolution downstream.
+// `missing_concepts` is included because the critic may legitimately extend it.
+export const CRITIQUE_FIELDS = [
+  "critique_status",
+  "critique_score",
+  "critique_findings",
+  "primary_assessment",
+  "supporting_assessment",
+  "recommended_changes",
+  "search_reasonable",
+  "multipart_assessment",
+  "missing_concepts",
+] as const;
 
 // Precedence is fail-safe: an unambiguous error signal is checked before any success
 // signal, so a reply carrying both never certifies a package. The critic prompt was
@@ -158,6 +178,23 @@ export function parseCriticReply(reply: string): CriticReply {
   const bare = findErrorLineOutsideFences(reply);
   if (bare) return { kind: "error", message: bare };
 
+  // Preferred shape: a critique patch carrying only the fields the critic owns.
+  const critique = files["critique.json"];
+  if (critique !== undefined) {
+    try {
+      const parsed = JSON.parse(critique);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        return { kind: "critique", content: normalizeNewlines(critique) };
+      }
+    } catch {
+      // Unparseable critique is not a certification: fall through.
+    }
+  }
+
+  // Still accepted: the whole updated document. The critic prompt itself (a
+  // tested artifact this pipeline does not edit) says to update lo_mapping.json,
+  // so a model that follows it literally rather than the pipeline's patch
+  // instruction must not be treated as a failure.
   const mapping = files["lo_mapping.json"];
   if (mapping !== undefined) {
     try {
@@ -205,4 +242,52 @@ export function validateCapturedMapping(
   }
 
   return { ok: true };
+}
+
+// Merges a critique patch onto the generator's draft. Rejects any key outside
+// CRITIQUE_FIELDS rather than merging it: a confused model that put `sections`
+// or `learning_objective` in its patch would otherwise overwrite Stage 1's work
+// through a path built to be incapable of that.
+export function mergeCritique(
+  patch: string,
+  draft: string
+): { ok: true; merged: string } | { ok: false; reason: string } {
+  let patchObj: Record<string, unknown>;
+  let draftObj: Record<string, unknown>;
+  try {
+    patchObj = JSON.parse(patch);
+  } catch {
+    return { ok: false, reason: "returned critique.json is not valid JSON" };
+  }
+  try {
+    draftObj = JSON.parse(draft);
+  } catch {
+    return { ok: false, reason: "the generator's lo_mapping.json is not valid JSON" };
+  }
+
+  const allowed = new Set<string>(CRITIQUE_FIELDS);
+  const foreign = Object.keys(patchObj).filter((k) => !allowed.has(k));
+  if (foreign.length > 0) {
+    return {
+      ok: false,
+      reason: `critique.json carried field(s) the critic does not own: ${foreign.join(", ")}`,
+    };
+  }
+
+  if (patchObj.critique_status !== "completed") {
+    return {
+      ok: false,
+      reason: `critique_status is ${JSON.stringify(patchObj.critique_status)}, not "completed"`,
+    };
+  }
+
+  const merged = { ...draftObj, ...patchObj };
+  // The spread cannot drop a draft key, but assert it anyway: this file is what
+  // every downstream stage reads, and a silent loss here has no other alarm.
+  const dropped = Object.keys(draftObj).filter((k) => !(k in merged));
+  if (dropped.length > 0) {
+    return { ok: false, reason: `merge dropped field(s): ${dropped.join(", ")}` };
+  }
+
+  return { ok: true, merged: JSON.stringify(merged, null, 2) };
 }
