@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { BangIcon } from "@/components/icons";
+import { Prose } from "@/components/Math";
 import type { ResolveResult } from "@/lib/exerciseBank";
 import type { ProblemSource } from "@/lib/citation";
 import styles from "./page.module.css";
@@ -243,7 +244,9 @@ function renderResolved(r: ResolveResult) {
             }.`}
           </p>
         )}
-        <p className={styles.previewText}>{r.text}</p>
+        <p className={styles.previewText}>
+          <Prose text={r.text} />
+        </p>
         <p className={styles.attribution}>{r.attribution}</p>
       </div>
     );

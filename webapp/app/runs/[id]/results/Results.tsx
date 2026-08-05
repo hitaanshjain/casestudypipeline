@@ -12,6 +12,7 @@ import {
 import ConceptCardGrid from "@/components/ConceptCardGrid";
 import PracticeDeckPlayer from "@/components/PracticeDeckPlayer";
 import { BangIcon, DashIcon, DownloadIcon } from "@/components/icons";
+import { Prose } from "@/components/Math";
 import { buildCitation, OPENSTAX_ATTRIBUTION } from "@/lib/citation";
 import styles from "./results.module.css";
 
@@ -179,7 +180,7 @@ export default function Results({ id }: { id: string }) {
             </p>
           )}
           <p ref={problemRef} className={`${styles.problemText} ${problemExpanded ? styles.expanded : ""}`}>
-            {state.input.problem}
+            <Prose text={state.input.problem} />
           </p>
           {canExpand && (
             <button type="button" className={styles.expandBtn} onClick={() => setProblemExpanded((e) => !e)}>

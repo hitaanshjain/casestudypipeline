@@ -60,6 +60,30 @@ export function loadBank(dir: string = EXERCISES_DIR): ExerciseFile[] {
 
 const ASCII = /^[\x20-\x7E\n\t]*$/;
 
+/**
+ * Structural check on \( \) inline-math delimiters in exercise text: balanced,
+ * unnested, non-empty. Delimiters are optional (plain-prose exercises carry
+ * none), but a malformed pair would render as raw LaTeX in the UI.
+ */
+function scanDelims(t: string): string | null {
+  let depth = 0;
+  for (let i = 0; i < t.length - 1; i++) {
+    const pair = t.slice(i, i + 2);
+    if (pair === "\\(") {
+      depth++;
+      if (depth > 1) return "nested \\( math delimiters";
+      i++;
+    } else if (pair === "\\)") {
+      depth--;
+      if (depth < 0) return "\\) without matching \\(";
+      i++;
+    }
+  }
+  if (depth !== 0) return "unclosed \\( math delimiter";
+  if (t.includes("\\(\\)") || t.includes("\\( \\)")) return "empty math run";
+  return null;
+}
+
 /** Mechanical bank validation per the design's section 4. Returns human-readable violations; [] = pass. */
 export function validateBank(dir: string = EXERCISES_DIR): string[] {
   const out: string[] = [];
@@ -93,6 +117,8 @@ export function validateBank(dir: string = EXERCISES_DIR): string[] {
       if (prev !== null && ex.number !== prev + 1) out.push(`${tag}: not contiguous after ${prev}`);
       prev = ex.number;
       if (!ASCII.test(ex.text) || (ex.notes !== undefined && !ASCII.test(ex.notes))) out.push(`${tag}: non-ASCII text`);
+      const delimErr = scanDelims(ex.text);
+      if (delimErr) out.push(`${tag}: ${delimErr}`);
       const servable = ex.kind === "symbolic" || ex.kind === "table";
       if (ex.available !== servable) out.push(`${tag}: available=${ex.available} inconsistent with kind=${ex.kind}`);
       if (ex.book_page < lo || ex.book_page > hi) out.push(`${tag}: book_page ${ex.book_page} outside exercise_pages`);

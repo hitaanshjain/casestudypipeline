@@ -66,6 +66,18 @@ describe("validateBank", () => {
     expect(validateBank(bank([f])).join()).toMatch(/outside exercise_pages/);
   });
 
+  it("flags an unclosed math delimiter", () => {
+    const f = validFile();
+    (f.exercises as any)[0].text = "Find the slope of \\(f(x) = 4x + 7 between x = 1 and x = 2.";
+    expect(validateBank(bank([f])).join()).toMatch(/unclosed/);
+  });
+
+  it("flags nested math delimiters", () => {
+    const f = validFile();
+    (f.exercises as any)[0].text = "Compute \\(f(\\(x\\)) = 2\\) for the given input values.";
+    expect(validateBank(bank([f])).join()).toMatch(/nested/);
+  });
+
   it("rejects unknown keys via strict schema", () => {
     const f = validFile({ surprise: true });
     expect(validateBank(bank([f])).join()).toMatch(/schema/);
