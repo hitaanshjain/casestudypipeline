@@ -90,8 +90,12 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
       <section className={`panel ${styles.stageShell}`} ref={stageShellRef} aria-label="Practice deck stage">
         <header className={styles.topbar}>
           <div>
-            <h2 className={styles.deckTitle}>{deck.title}</h2>
-            <p className={styles.deckSubtitle}>{deck.subtitle}</p>
+            <h2 className={styles.deckTitle}>
+              <Prose text={deck.title} />
+            </h2>
+            <p className={styles.deckSubtitle}>
+              <Prose text={deck.subtitle} />
+            </p>
           </div>
           {/* Counts against the real step count, never the slide count: the
               overview is a recap, not a tenth step to work through. */}
@@ -150,7 +154,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
                 <span className={styles.stepNum} aria-label={`Step ${i + 1}`}>
                   {i + 1}
                 </span>
-                <h3 className={styles.stepTitle}>{s.title}</h3>
+                <h3 className={styles.stepTitle}>
+                  <Prose text={s.title} />
+                </h3>
               </div>
               {s.caption && (
                 <p className={styles.caption}>
@@ -212,7 +218,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
             >
               <div className={styles.overviewHead}>
                 <span className={styles.overviewEyebrow}>Complete solution</span>
-                <h3 className={styles.overviewTitle}>{deck.title}</h3>
+                <h3 className={styles.overviewTitle}>
+                  <Prose text={deck.title} />
+                </h3>
                 <p className={styles.overviewLead}>
                   Every step of the worked solution in one view. Select any step to reopen it.
                 </p>
@@ -231,7 +239,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
                       >
                         <span className={styles.overviewCardHead}>
                           <span className={styles.overviewCardNum}>{i + 1}</span>
-                          <span className={styles.overviewCardTitle}>{s.title}</span>
+                          <span className={styles.overviewCardTitle}>
+                            <Prose text={s.title} />
+                          </span>
                         </span>
                         <span className={styles.overviewCardBody}>
                           {s.caption && <span className={styles.overviewCaption}>{s.caption}</span>}
@@ -260,7 +270,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
                   <ul className={styles.overviewRulesList}>
                     {deck.reference.equations.map((r, i) => (
                       <li key={i}>
-                        <span className={styles.overviewRuleTitle}>{r.title}</span>
+                        <span className={styles.overviewRuleTitle}>
+                          <Prose text={r.title} />
+                        </span>
                         <span className={styles.overviewRuleMath}>
                           <MathBlock latex={r.latex} />
                         </span>
@@ -293,7 +305,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
               onClick={() => jumpTo(i)}
             >
               <span className="timeline-index">{i + 1}</span>
-              <span className="timeline-title">{s.title}</span>
+              <span className="timeline-title">
+                <Prose text={s.title} />
+              </span>
             </button>
           ))}
           <button
@@ -319,11 +333,17 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
             <article key={i} className={styles.referenceItem}>
               <div className={styles.referenceItemTop}>
                 <div>
-                  <h3>{r.title}</h3>
+                  <h3>
+                    <Prose text={r.title} />
+                  </h3>
                   <div className={styles.referenceMath}>
                     <MathBlock latex={r.latex} />
                   </div>
-                  {r.text && <p>{r.text}</p>}
+                  {r.text && (
+                    <p>
+                      <Prose text={r.text} />
+                    </p>
+                  )}
                 </div>
                 <button type="button" className={styles.referenceJump} onClick={() => jumpToStepId(r.stepId)}>
                   View step

@@ -151,6 +151,38 @@ describe("practice deck contract", () => {
     deck.problem.latex = "g(t) = 6t - t^{2}, \\quad 0 \\le t \\le 6, \\quad \\text{capacity } 30 \\text{ liters}";
     expect(PracticeDeckGenerated.safeParse(deck).success).toBe(true);
   });
+  // Titles and visual captions are typeset (delimited math belongs there);
+  // labels painted inside an SVG figure cannot render LaTeX at all.
+  it("rejects freshly generated output whose step title carries undelimited math", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[3].title = "Analyze the Sign of h^{2/3}";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("title");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
+  });
+  it("accepts delimited math in step titles", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[3].title = "Analyze the Sign of \\(h^{2/3}\\)";
+    expect(PracticeDeckGenerated.safeParse(deck).success).toBe(true);
+  });
+  it("rejects figure-drawn labels that carry LaTeX", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[0].visual = {
+      kind: "number_line",
+      range: [-2, 2],
+      points: [{ x: 0, label: "h = 0", closed: false }],
+      intervals: [
+        { from: -2, to: 0, label: "h^{2/3} > 0", tone: "positive" },
+        { from: 0, to: 2, label: "positive", tone: "positive" },
+      ],
+      caption: "Sign of \\(h^{2/3}\\) around zero.",
+    };
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("interval[0]");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
+  });
   it("rejects a deck whose last step lacks a final equation", () => {
     const deck = JSON.parse(read("practice_deck.json"));
     const last = deck.steps[deck.steps.length - 1];

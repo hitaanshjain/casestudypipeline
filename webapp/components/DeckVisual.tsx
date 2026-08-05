@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { MathBlock } from "./Math";
+import { MathBlock, Prose } from "./Math";
 import { compileExpr } from "@/lib/plotExpr";
 import type { TDeckVisual } from "@/lib/contracts";
 import styles from "./deckVisual.module.css";
@@ -197,13 +197,19 @@ function PlotVisual({ v }: { v: Extract<TDeckVisual, { kind: "plot" }> }) {
         {series.map((s, i) => (
           <span key={i} className={styles.legendItem}>
             <span className={s.emphasis === "primary" ? styles.swatchPrimary : styles.swatchSecondary} aria-hidden />
-            {s.label}
+            <Prose text={s.label} />
             <code className={styles.expr}>{s.ok ? s.expr : `could not plot: ${s.expr}`}</code>
           </span>
         ))}
-        {v.shade && <span className={styles.legendItem}>{v.shade.label}</span>}
+        {v.shade && (
+          <span className={styles.legendItem}>
+            <Prose text={v.shade.label} />
+          </span>
+        )}
       </div>
-      <figcaption className={styles.caption}>{v.caption}</figcaption>
+      <figcaption className={styles.caption}>
+        <Prose text={v.caption} />
+      </figcaption>
     </figure>
   );
 }
@@ -265,7 +271,9 @@ function NumberLineVisual({ v }: { v: Extract<TDeckVisual, { kind: "number_line"
           </g>
         ))}
       </svg>
-      <figcaption className={styles.caption}>{v.caption}</figcaption>
+      <figcaption className={styles.caption}>
+        <Prose text={v.caption} />
+      </figcaption>
     </figure>
   );
 }
@@ -298,7 +306,9 @@ function TableVisual({ v }: { v: Extract<TDeckVisual, { kind: "table" }> }) {
           </tbody>
         </table>
       </div>
-      <figcaption className={styles.caption}>{v.caption}</figcaption>
+      <figcaption className={styles.caption}>
+        <Prose text={v.caption} />
+      </figcaption>
     </figure>
   );
 }

@@ -299,7 +299,22 @@ export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) =
       });
     }
   };
+  // Labels drawn INSIDE an SVG figure cannot be typeset at all (MathJax outputs
+  // HTML), so they must be plain text: no backslashes, no braces, no \( \).
+  // Run 5f033a30-successor: interval labels like "h^{2/3} > 0" shipped as raw
+  // brace soup on the number line. A bare caret ("h^(2/3)") reads fine plain.
+  const PLAIN_LABEL = /[\\{}]/;
+  const checkLabel = (path: string, s: string) => {
+    if (PLAIN_LABEL.test(s)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${path}: figure labels are drawn as plain text and cannot render LaTeX; write it plainly (e.g. "h^(2/3) > 0" or a word like "positive"): "${s}"`,
+      });
+    }
+  };
   checkProse("problem.prompt", deck.problem.prompt);
+  checkProse("title", deck.title);
+  checkProse("subtitle", deck.subtitle);
   if (TASK_TEXT_IN_LATEX.test(deck.problem.latex)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -307,9 +322,28 @@ export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) =
         "problem.latex contains task language inside \\text{}; state only the mathematical givens there and keep the tasks in problem.prompt",
     });
   }
+  deck.reference.equations.forEach((r, i) => {
+    checkProse(`reference.equations[${i}].title`, r.title);
+    checkProse(`reference.equations[${i}].text`, r.text);
+  });
   for (const s of deck.steps) {
+    checkProse(`step '${s.id}' title`, s.title);
     checkProse(`step '${s.id}' caption`, s.caption);
     if (s.callout) checkProse(`step '${s.id}' callout text`, s.callout.text);
+    const v = s.visual;
+    if (v) {
+      checkProse(`step '${s.id}' visual caption`, v.caption);
+      if (v.kind === "plot") {
+        v.curves.forEach((c, i) => checkProse(`step '${s.id}' visual curve[${i}] label`, c.label));
+        if (v.shade) checkProse(`step '${s.id}' visual shade label`, v.shade.label);
+        (v.marks ?? []).forEach((m, i) => checkLabel(`step '${s.id}' visual mark[${i}] label`, m.label));
+      } else if (v.kind === "number_line") {
+        v.points.forEach((p, i) => checkLabel(`step '${s.id}' visual point[${i}] label`, p.label));
+        v.intervals.forEach((iv, i) => checkLabel(`step '${s.id}' visual interval[${i}] label`, iv.label));
+      } else {
+        v.columns.forEach((c, i) => checkLabel(`step '${s.id}' visual column[${i}] header`, c));
+      }
+    }
   }
   for (const s of deck.steps) {
     // "primary" OR "final" — headlineEquation() in PracticeDeckPlayer resolves
