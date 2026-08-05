@@ -329,9 +329,39 @@ export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) =
       });
     }
   };
+  // One-statement discipline, the mechanical half: an equation that drags its
+  // verbal conclusion or context along breaks onto lines mid-thought in narrow
+  // cards (run 4433c720: "= +\infty \Rightarrow f'(0) \text{does not exist}"
+  // wrapped "not exist" under the limit; "\text{at } h = 0.00001: ..." shed a
+  // floating colon onto the next line). Conclusions and context belong in the
+  // caption or the entry's plain-text label; \text for units or a bare verdict
+  // ("does not exist" ALONE) stays legal.
+  const IMPLIES_PROSE = /\\(Rightarrow|implies|Longrightarrow|therefore)\b[\s\S]*\\text\{/;
+  const PROSE_JUSTIFICATION = /\\text\{[^}]*\b(because|therefore|hence|thus|so the)\b/i;
+  const checkOneStatement = (path: string, latex: string) => {
+    if (IMPLIES_PROSE.test(latex)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${path}: never follow an implication arrow with \\text prose; state the math result alone and put the conclusion in the caption`,
+      });
+    }
+    if (PROSE_JUSTIFICATION.test(latex)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${path}: prose justification inside math; move the reasoning to the caption and keep the latex to the bare statement`,
+      });
+    }
+    if (latex.includes(":")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${path}: no colons in equation latex; put context like "at h = 0.001" in the caption or the entry's plain-text label`,
+      });
+    }
+  };
   checkProse("problem.prompt", deck.problem.prompt);
   checkProse("title", deck.title);
   checkProse("subtitle", deck.subtitle);
+  checkOneStatement("problem.answerLatex", deck.problem.answerLatex);
   if (TASK_TEXT_IN_LATEX.test(deck.problem.latex)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -348,8 +378,14 @@ export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) =
     checkProse(`step '${s.id}' caption`, s.caption);
     // Equation and side-card labels render as uppercase plain text chips, so
     // LaTeX there is banned like the figure labels (\frac would show as \FRAC).
-    s.equations.forEach((e, i) => checkLabel(`step '${s.id}' equation[${i}] label`, e.label));
-    s.cards.forEach((c, i) => checkLabel(`step '${s.id}' card[${i}] label`, c.label));
+    s.equations.forEach((e, i) => {
+      checkLabel(`step '${s.id}' equation[${i}] label`, e.label);
+      checkOneStatement(`step '${s.id}' equation[${i}] latex`, e.latex);
+    });
+    s.cards.forEach((c, i) => {
+      checkLabel(`step '${s.id}' card[${i}] label`, c.label);
+      checkOneStatement(`step '${s.id}' card[${i}] latex`, c.latex);
+    });
     if (s.callout) {
       checkProse(`step '${s.id}' callout title`, s.callout.title);
       checkProse(`step '${s.id}' callout text`, s.callout.text);

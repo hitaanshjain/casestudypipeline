@@ -220,6 +220,39 @@ describe("practice deck contract", () => {
     expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("callout title");
     expect(PracticeDeck.safeParse(deck).success).toBe(true);
   });
+  // Run 4433c720: over-packed equations break onto lines mid-thought in narrow
+  // cards. The math result and its verbal conclusion/context must be separate.
+  it("rejects an implication arrow followed by prose in equation latex", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[0].equations[0].latex = "\\lim_{h\\to0} \\dfrac{1}{h^{4/5}} = +\\infty \\quad\\Rightarrow\\quad f'(0) \\text{ does not exist}";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("implication arrow");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
+  });
+  it("rejects a colon-separated context preamble in equation latex", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.steps[0].equations[0].latex = "\\text{at } h = 0.00001: \\ \\dfrac{h^{1/5}}{h} = 10000";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("no colons");
+  });
+  it("rejects prose justification inside a boxed final", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    const last = deck.steps[deck.steps.length - 1];
+    const fin = last.equations.find((e: any) => e.style === "final");
+    fin.latex = "\\boxed{f'(0) \\text{ does not exist because } \\lim_{h\\to0}\\dfrac{1}{h} = +\\infty}";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("prose justification");
+  });
+  it("accepts a bare non-numeric verdict in a boxed final", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    const last = deck.steps[deck.steps.length - 1];
+    const fin = last.equations.find((e: any) => e.style === "final");
+    fin.latex = "\\boxed{f'(0) \\text{ does not exist}}";
+    expect(PracticeDeckGenerated.safeParse(deck).success).toBe(true);
+  });
   it("rejects figure-drawn labels that carry LaTeX", () => {
     const deck = JSON.parse(read("practice_deck.json"));
     deck.steps[0].visual = {
