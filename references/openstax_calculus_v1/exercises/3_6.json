@@ -1,0 +1,340 @@
+{
+  "book_key": "openstax_calculus_v1",
+  "section": "3.6",
+  "section_title": "The Chain Rule",
+  "exercise_pages": [257, 259],
+  "stem_note": "Shared stems (\"given y=f(u) and u=g(x), find dy/dx by using Leibniz's notation for the chain rule\", governing 214-219; \"decompose each function in the form y=f(u) and u=g(x), and find dy/dx as a function of x\", governing 220-227; \"find dy/dx for each function\", governing 228-237; the x=0,1,2,3 f/f'/g/g' value table, governing 245-252) are copied into each governed exercise as a self-contained instruction, with the table additionally inlined per exercise and disclosed in notes.",
+  "exercises": [
+    {
+      "number": 214,
+      "text": "Given y = 3u - 6 and u = 2x^2, find dy/dx by using Leibniz's notation for the chain rule: dy/dx = dy/du * du/dx.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 257
+    },
+    {
+      "number": 215,
+      "text": "Given y = 6u^3 and u = 7x - 4, find dy/dx by using Leibniz's notation for the chain rule: dy/dx = dy/du * du/dx.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 257
+    },
+    {
+      "number": 216,
+      "text": "Given y = sin u and u = 5x - 1, find dy/dx by using Leibniz's notation for the chain rule: dy/dx = dy/du * du/dx.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 257
+    },
+    {
+      "number": 217,
+      "text": "Given y = cos u and u = -x/8, find dy/dx by using Leibniz's notation for the chain rule: dy/dx = dy/du * du/dx.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 218,
+      "text": "Given y = tan u and u = 9x + 2, find dy/dx by using Leibniz's notation for the chain rule: dy/dx = dy/du * du/dx.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 219,
+      "text": "Given y = sqrt(4u + 3) and u = x^2 - 6x, find dy/dx by using Leibniz's notation for the chain rule: dy/dx = dy/du * du/dx.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 220,
+      "text": "For y = (3x - 2)^6, (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 221,
+      "text": "For y = (3x^2 + 1)^3, (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 222,
+      "text": "For y = sin^5(x), (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 223,
+      "text": "For y = (x/7 + 7/x)^7, (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 224,
+      "text": "For y = tan(sec x), (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 225,
+      "text": "For y = csc(pi x + 1), (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 226,
+      "text": "For y = cot^2 x, (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 227,
+      "text": "For y = -6(sin x)^{-3}, (a) decompose the function in the form y = f(u) and u = g(x), and (b) find dy/dx as a function of x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 228,
+      "text": "Find dy/dx for y = (3x^2 + 3x - 1)^4.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 229,
+      "text": "Find dy/dx for y = (5 - 2x)^{-2}.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 230,
+      "text": "Find dy/dx for y = cos^3(pi x).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 231,
+      "text": "Find dy/dx for y = (2x^3 - x^2 + 6x + 1)^3.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 232,
+      "text": "Find dy/dx for y = 1/sin^2(x).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 233,
+      "text": "Find dy/dx for y = (tan x + sin x)^{-3}.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 234,
+      "text": "Find dy/dx for y = x^2 cos^4 x.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 235,
+      "text": "Find dy/dx for y = sin(cos 7x).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 236,
+      "text": "Find dy/dx for y = sqrt(6 + sec(pi x^2)).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 237,
+      "text": "Find dy/dx for y = cot^3(4x + 1).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 238,
+      "text": "Let y = [f(x)]^2 and suppose that f'(1) = 4 and dy/dx = 10 for x = 1. Find f(1).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 239,
+      "text": "Let y = (f(x) + 5x^2)^4 and suppose that f(-1) = -4 and dy/dx = 3 when x = -1. Find f'(-1).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 240,
+      "text": "Let y = (f(u) + 3x)^2 and u = x^3 - 2x. If f(4) = 6 and dy/dx = 18 when x = 2, find f'(4).",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 241,
+      "text": "[T] Find an equation of the tangent line to y = -sin(x/2) at the origin. Use a calculator to graph the function and the tangent line together.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 242,
+      "text": "[T] Find an equation of the tangent line to y = (3x + 1/x)^2 at the point (1, 16). Use a calculator to graph the function and the tangent line together.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 243,
+      "text": "Find the x-coordinates at which the tangent line to y = (x - 6/x)^8 is horizontal.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 244,
+      "text": "[T] Find an equation of the line that is normal to g(theta) = sin^2(pi theta) at the point (1/4, 1/2). Use a calculator to graph the function and the normal line together.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 258
+    },
+    {
+      "number": 245,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(0) if h(x) = f(g(x)).",
+      "kind": "table",
+      "available": true,
+      "book_page": 258,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 246,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(0) if h(x) = g(f(x)).",
+      "kind": "table",
+      "available": true,
+      "book_page": 258,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 247,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(1) if h(x) = (x^4 + g(x))^{-2}.",
+      "kind": "table",
+      "available": true,
+      "book_page": 258,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 248,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(3) if h(x) = (f(x)/g(x))^2.",
+      "kind": "table",
+      "available": true,
+      "book_page": 259,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 249,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(1) if h(x) = f(x + f(x)).",
+      "kind": "table",
+      "available": true,
+      "book_page": 259,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 250,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(2) if h(x) = (1 + g(x))^3.",
+      "kind": "table",
+      "available": true,
+      "book_page": 259,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 251,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(1) if h(x) = g(2 + f(x^2)).",
+      "kind": "table",
+      "available": true,
+      "book_page": 259,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 252,
+      "text": "Use the following table of values for f(x), f'(x), g(x), and g'(x) to find h'(a) at the given value for a: x = 0, 1, 2, 3; f(x) = 2, 1, 4, 3; f'(x) = 5, -2, 4, -3; g(x) = 0, 3, 1, 2; g'(x) = 2, 0, -1, 3. Find h'(0) if h(x) = f(g(sin x)).",
+      "kind": "table",
+      "available": true,
+      "book_page": 259,
+      "notes": "Table inlined (columns x, f(x), f'(x), g(x), g'(x); rows x=0,1,2,3) per the shared stem governing exercises 245-252."
+    },
+    {
+      "number": 253,
+      "text": "[T] The position function of a freight train is given by s(t) = 100(t + 1)^{-2}, with s in meters and t in seconds. At time t = 6 s, find the train's (a) velocity and (b) acceleration. (c) Using (a) and (b), is the train speeding up or slowing down?",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259
+    },
+    {
+      "number": 254,
+      "text": "[T] A mass hanging from a vertical spring is in simple harmonic motion as given by the following position function, where t is measured in seconds and s is in inches: s(t) = -3cos(pi t + pi/4). (a) Determine the position of the spring at t = 1.5 s. (b) Find the velocity of the spring at t = 1.5 s.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259
+    },
+    {
+      "number": 255,
+      "text": "[T] The total cost to produce x boxes of Thin Mint Girl Scout cookies is C dollars, where C = 0.0001x^3 - 0.02x^2 + 3x + 300. In t weeks production is estimated to be x = 1600 + 100t boxes. (a) Find the marginal cost C'(x). (b) Use Leibniz's notation for the chain rule, dC/dt = dC/dx * dx/dt, to find the rate with respect to t that the cost is changing. (c) Use (b) to determine how fast costs are increasing when t = 2 weeks. Include units with the answer.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259
+    },
+    {
+      "number": 256,
+      "text": "[T] The formula for the area of a circle is A = pi r^2, where r is the radius of the circle. Suppose a circle is expanding, meaning that both the area A and the radius r (in inches) are expanding. (a) Suppose r = 2 - 100/(t + 7)^2 where t is time in seconds. Use the chain rule dA/dt = dA/dr * dr/dt to find the rate at which the area is expanding. (b) Use (a) to find the rate at which the area is expanding at t = 4 s.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259
+    },
+    {
+      "number": 257,
+      "text": "[T] The formula for the volume of a sphere is S = (4/3)pi r^3, where r (in feet) is the radius of the sphere. Suppose a spherical snowball is melting in the sun. (a) Suppose r = 1/(t + 1)^2 - 1/12 where t is time in minutes. Use the chain rule dS/dt = dS/dr * dr/dt to find the rate at which the snowball is melting. (b) Use (a) to find the rate at which the volume is changing at t = 1 min.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259,
+      "notes": "The book labels the volume of the sphere S (not the more common V) both in the formula and its Leibniz derivative dS/dt; reproduced verbatim as printed."
+    },
+    {
+      "number": 258,
+      "text": "[T] The daily temperature in degrees Fahrenheit of Phoenix in the summer can be modeled by the function T(x) = 94 - 10cos[(pi/12)(x - 2)], where x is hours after midnight. Find the rate at which the temperature is changing at 4 p.m.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259
+    },
+    {
+      "number": 259,
+      "text": "[T] The depth (in feet) of water at a dock changes with the rise and fall of tides. The depth is modeled by the function D(t) = 5sin((pi/6)t - 7pi/6) + 8, where t is the number of hours after midnight. Find the rate at which the depth is changing at 6 a.m.",
+      "kind": "symbolic",
+      "available": true,
+      "book_page": 259
+    }
+  ]
+}
