@@ -8,8 +8,8 @@
   "title": "Chain Rule on a Nested Power",
   "subtitle": "Differentiating sine cubed of a linear input",
   "problem": {
-    "prompt": "Differentiate the function using the chain rule, then evaluate the derivative at the given point. Give the exact value.",
-    "latex": "y=\\sin^{3}(2x),\\qquad \\text{find } \\frac{dy}{dx} \\text{ and } \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}",
+    "prompt": "Differentiate \\(y = \\sin^{3}(2x)\\) and evaluate the derivative at \\(x = \\pi/12\\). Give the exact value.",
+    "latex": "y=\\sin^{3}(2x),\\qquad x=\\pi/12",
     "answerLatex": "\\frac{dy}{dx}=6\\sin^{2}(2x)\\cos(2x),\\qquad \\left.\\frac{dy}{dx}\\right|_{x=\\pi/12}=\\frac{3\\sqrt{3}}{4}\\approx 1.299"
   },
   "steps": [

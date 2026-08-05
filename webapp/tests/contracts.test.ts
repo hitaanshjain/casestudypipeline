@@ -126,6 +126,31 @@ describe("practice deck contract", () => {
     expect(PracticeDeckGenerated.safeParse(deck).success).toBe(false);
     expect(PracticeDeck.safeParse(deck).success).toBe(true);
   });
+  // Run 5f033a30: the model wrote the problem statement's math undelimited in
+  // prompt and packed the task sentence into problem.latex via \text{}, so the
+  // side panel rendered as one line-broken equation of centered prose. Both are
+  // generation-gate rules only: the cached deck must keep rendering.
+  it("rejects freshly generated output whose problem.prompt carries undelimited math", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.problem.prompt = "A probe's distance is d(t) = (t - 4)^{1/3} meters; find d'(4).";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("problem.prompt");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
+  });
+  it("rejects freshly generated output whose problem.latex carries task language in text", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.problem.latex = "d(t) = (t-4)^{1/3}, \\qquad \\text{show } d'(4) \\text{ does not exist}";
+    const r = PracticeDeckGenerated.safeParse(deck);
+    expect(r.success).toBe(false);
+    expect(JSON.stringify(r.success ? "" : r.error.issues)).toContain("task language");
+    expect(PracticeDeck.safeParse(deck).success).toBe(true);
+  });
+  it("allows units and labels in problem.latex text blocks", () => {
+    const deck = JSON.parse(read("practice_deck.json"));
+    deck.problem.latex = "g(t) = 6t - t^{2}, \\quad 0 \\le t \\le 6, \\quad \\text{capacity } 30 \\text{ liters}";
+    expect(PracticeDeckGenerated.safeParse(deck).success).toBe(true);
+  });
   it("rejects a deck whose last step lacks a final equation", () => {
     const deck = JSON.parse(read("practice_deck.json"));
     const last = deck.steps[deck.steps.length - 1];

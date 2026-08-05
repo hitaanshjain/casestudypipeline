@@ -280,8 +280,37 @@ export const PracticeDeck = PracticeDeckShape.superRefine(checkDeckStructure);
 // Deliberately looser than the prompt, which asks for EXACTLY one primary: a
 // strict count would fail the whole practice-deck stage over a harmless second
 // primary, and no prompt in this pipeline has been measured against a live model.
+// problem.latex is the formal statement of the GIVENS; the task sentences live in
+// problem.prompt. \text{} carrying task verbs is how run 5f033a30's side panel
+// became one long line-broken equation of centered prose fragments.
+const TASK_TEXT_IN_LATEX = /\\text\{[^}]*\b(show|find|evaluate|determine|prove|explain|describe|compute|using)\b/i;
+
 export const PracticeDeckGenerated = PracticeDeckShape.superRefine((deck, ctx) => {
   checkDeckStructure(deck, ctx);
+  // The concept-cards delimiter gate applied to the deck's prose fields: the
+  // renderer typesets only \( \)-delimited math, so raw LaTeX in prose displays
+  // as source. Generation-only, like every rule a retry can fix but a cached
+  // deck cannot.
+  const checkProse = (path: string, s: string | null | undefined) => {
+    if (typeof s === "string" && hasUndelimitedMath(s)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${path}: math must be wrapped in \\( \\) delimiters, found raw LaTeX in prose: "${s}"`,
+      });
+    }
+  };
+  checkProse("problem.prompt", deck.problem.prompt);
+  if (TASK_TEXT_IN_LATEX.test(deck.problem.latex)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        "problem.latex contains task language inside \\text{}; state only the mathematical givens there and keep the tasks in problem.prompt",
+    });
+  }
+  for (const s of deck.steps) {
+    checkProse(`step '${s.id}' caption`, s.caption);
+    if (s.callout) checkProse(`step '${s.id}' callout text`, s.callout.text);
+  }
   for (const s of deck.steps) {
     // "primary" OR "final" — headlineEquation() in PracticeDeckPlayer resolves
     // `final` FIRST, because on the last step the boxed answer is the conclusive

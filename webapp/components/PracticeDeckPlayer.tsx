@@ -277,6 +277,9 @@ export default function PracticeDeckPlayer({ deck }: { deck: TPracticeDeck }) {
       <aside className={`panel ${styles.sidebar}`}>
         <div className={styles.problemCard}>
           <div className={styles.problemLabel}>Your problem</div>
+          <p className={styles.problemProse}>
+            <Prose text={deck.problem.prompt} />
+          </p>
           <div className={styles.problemMath}>
             <MathBlock latex={deck.problem.latex} />
           </div>
