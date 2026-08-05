@@ -167,7 +167,7 @@ export default function Home() {
                 id="ref"
                 type="text"
                 className={styles.refInput}
-                placeholder="e.g. 3.41 or Chapter 3, Problem 41 (OpenStax Calculus Vol 1, chapter 3 for now)"
+                placeholder="e.g. 3.41 or Chapter 3, Problem 41 (OpenStax Calculus Vol 1, chapter 3 only for now)"
                 value={refInput}
                 onChange={(e) => onRefChange(e.target.value)}
                 onKeyDown={onRefKeyDown}
