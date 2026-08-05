@@ -11,6 +11,7 @@ import path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { newRunDir, writeState, readState, type RunState, type StageKey } from "./runStore";
+import type { ProblemSource } from "./citation";
 import { loadPrompt, runLlm, usageStore, type StageUsage } from "./llm";
 import {
   ConceptCard,
@@ -40,7 +41,7 @@ const execFileP = promisify(execFile);
 // server function alike (same convention as llm.ts's MOCK_FIXTURES_DIR).
 const STAGE1_FIXTURES_DIR = path.join(process.cwd(), "fixtures", "stage1");
 
-export type RunInput = { problem: string; preferredContext?: string };
+export type RunInput = { problem: string; preferredContext?: string; source?: ProblemSource };
 
 // ---------------------------------------------------------------------------
 // Per-run state mutex: a promise chain keyed by run id. Every mutation reads

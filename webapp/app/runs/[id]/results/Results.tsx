@@ -12,6 +12,7 @@ import {
 import ConceptCardGrid from "@/components/ConceptCardGrid";
 import PracticeDeckPlayer from "@/components/PracticeDeckPlayer";
 import { BangIcon, DashIcon, DownloadIcon } from "@/components/icons";
+import { buildCitation, OPENSTAX_ATTRIBUTION } from "@/lib/citation";
 import styles from "./results.module.css";
 
 type TabKey = Extract<StageKey, "case_study" | "concept_cards" | "practice_deck">;
@@ -172,6 +173,11 @@ export default function Results({ id }: { id: string }) {
             )}
           </div>
           <h1 className={styles.title}>Your case study is ready</h1>
+          {state.input.source && (
+            <p className={styles.sourceLine}>
+              {buildCitation(state.input.source.section, state.input.source.number)} &middot; {OPENSTAX_ATTRIBUTION}
+            </p>
+          )}
           <p ref={problemRef} className={`${styles.problemText} ${problemExpanded ? styles.expanded : ""}`}>
             {state.input.problem}
           </p>

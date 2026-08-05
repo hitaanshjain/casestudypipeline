@@ -13,7 +13,7 @@ export type StageKey = "stage1" | "critic" | "case_study" | "concept_cards" | "p
 
 export type RunState = {
   id: string;
-  input: { problem: string; preferredContext?: string };
+  input: { problem: string; preferredContext?: string; source?: import("./citation").ProblemSource };
   createdAt: string;
   stages: Record<StageKey, { status: StageStatus; message?: string }>;
   topic?: { bookTag: string; section: string; chapterId?: number; title?: string };

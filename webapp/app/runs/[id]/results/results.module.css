@@ -48,6 +48,13 @@
   font-size: clamp(1.6rem, 3.6vw, 2.2rem);
 }
 
+.sourceLine {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-dim);
+}
+
 .problemText {
   font-family: var(--serif);
   font-style: italic;
