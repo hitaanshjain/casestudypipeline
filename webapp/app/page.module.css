@@ -124,6 +124,102 @@
   min-width: 180px;
 }
 
+/* Segmented control: two stamped tabs, active tab inked solid like the
+   primary button but in ink navy rather than accent blue. */
+.modeSwitch {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+
+.modeBtn {
+  flex: 1;
+  min-height: 38px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink-dim);
+  padding: 0 14px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 2px 2.5px 0 rgba(1, 30, 79, 0.55);
+  transition: transform 0.1s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.modeBtn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3.5px 0 rgba(1, 30, 79, 0.55);
+}
+
+.modeBtnActive,
+.modeBtnActive:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  transform: none;
+  box-shadow: 1.5px 2px 0 rgba(1, 30, 79, 0.85);
+}
+
+/* Single-line sibling of .textarea for the reference field. */
+.refInput {
+  width: 100%;
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: #ffffff;
+  color: var(--ink);
+  padding: 10px 14px;
+  font-size: 0.95rem;
+}
+
+.refInput::placeholder {
+  color: var(--ink-dim);
+}
+
+.refInput:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+/* A small paper card holding the resolved exercise, matching .panel's
+   ink-border-on-ivory language at a lighter scale. */
+.preview {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 4px 6px 0 rgba(1, 30, 79, 0.12);
+}
+
+.previewCitation {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.previewText {
+  margin: 0 0 10px;
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.attribution {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--ink-dim);
+}
+
+.refStatus {
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
 @media (max-width: 620px) {
   .panel {
     padding: 26px 22px 30px;
