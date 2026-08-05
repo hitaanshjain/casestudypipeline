@@ -2,124 +2,127 @@
   "book_key": "openstax_calculus_v1",
   "section": "3.8",
   "section_title": "Implicit Differentiation",
-  "exercise_pages": [274, 275],
+  "exercise_pages": [
+    274,
+    275
+  ],
   "stem_note": "Stem A ('use implicit differentiation to find dy/dx') governs 300-309; each item is a bare equation in the book, inlined per item as 'Use implicit differentiation to find dy/dx for <equation>.'. Stem B ('find an equation of the tangent line to the graph of the given equation at the indicated point; use a calculator or computer software to graph the function and the tangent line') governs 310-316; items 310-315 are marked [T] in the book with only an equation and point, inlined into each as a self-contained sentence carrying the stem's instruction plus the given equation and point, with the [T] tag kept at the front. Exercises 317 and 318 each state their own complete instruction directly in the book ('For the equation ...' and 'Find all points on the graph of ...'), independent of stem B, so no stem text is inlined for them; likewise 319 states its own complete instruction. Exercise 316's figure shows the folium curve 2x^3 + 2y^3 - 9xy = 0 that the exercise's own text already gives in closed form, together with the point (2, 1) at which the tangent and normal lines are requested; no value needs to be read from the picture to compute either line, so it is classified symbolic/available rather than graph/unavailable, matching the graph-from-own-formula precedent already used in 3_4.json, 3_5.json, and 3_7.json; the exercise's own instruction to graph the tangent line and folium is a visualization suggestion, not a data source, and is kept in the transcribed text as printed. Stem C ('consider a closed rectangular box with a square base with side x and height y') governs 326-327; each item is a bare instruction in the book, inlined per item as the stem sentence followed by the item's own instruction. Stem D ('use implicit differentiation to determine y'. Does the answer agree with the formulas we have previously determined?') governs 328-330; each item is a bare equation in the book, inlined per item as 'Use implicit differentiation to determine y' for <equation>. Does the answer agree with the formulas we have previously determined?'. No exercise in this section requires a figure: 316 is the only exercise with an accompanying graph, and it is fully solvable from its own printed text as explained above.",
   "exercises": [
     {
       "number": 300,
-      "text": "Use implicit differentiation to find dy/dx for x^2 - y^2 = 4.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(x^2 - y^2 = 4\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 301,
-      "text": "Use implicit differentiation to find dy/dx for 6x^2 + 3y^2 = 12.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(6x^2 + 3y^2 = 12\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 302,
-      "text": "Use implicit differentiation to find dy/dx for x^2y = y - 7.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(x^2y = y - 7\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 303,
-      "text": "Use implicit differentiation to find dy/dx for 3x^3 + 9xy^2 = 5x^3.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(3x^3 + 9xy^2 = 5x^3\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 304,
-      "text": "Use implicit differentiation to find dy/dx for xy - cos(xy) = 1.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(xy - cos(xy) = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 305,
-      "text": "Use implicit differentiation to find dy/dx for y*sqrt(x + 4) = xy + 8.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(y*sqrt(x + 4) = xy + 8\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 306,
-      "text": "Use implicit differentiation to find dy/dx for -xy - 2 = x/7.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(-xy - 2 = x/7\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 307,
-      "text": "Use implicit differentiation to find dy/dx for y*sin(xy) = y^2 - 2.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(y*sin(xy) = y^2 - 2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 308,
-      "text": "Use implicit differentiation to find dy/dx for (xy)^2 + 3x = y^2.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\((xy)^2 + 3x = y^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 309,
-      "text": "Use implicit differentiation to find dy/dx for x^3y + xy^3 = -8.",
+      "text": "Use implicit differentiation to find \\(dy/dx\\) for \\(x^3y + xy^3 = -8\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 310,
-      "text": "[T] Find an equation of the tangent line to the graph of x^4y - xy^3 = -2 at the point (-1, -1). Use a calculator or computer software to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(x^4y - xy^3 = -2\\) at the point \\((-1, -1)\\). Use a calculator or computer software to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 311,
-      "text": "[T] Find an equation of the tangent line to the graph of x^2y^2 + 5xy = 14 at the point (2, 1). Use a calculator or computer software to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(x^2y^2 + 5xy = 14\\) at the point \\((2, 1)\\). Use a calculator or computer software to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 312,
-      "text": "[T] Find an equation of the tangent line to the graph of tan(xy) = y at the point (pi/4, 1). Use a calculator or computer software to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(tan(xy) = y\\) at the point \\((pi/4, 1)\\). Use a calculator or computer software to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 313,
-      "text": "[T] Find an equation of the tangent line to the graph of xy^2 + sin(pi*y) - 2x^2 = 10 at the point (2, -3). Use a calculator or computer software to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(xy^2 + sin(pi*y) - 2x^2 = 10\\) at the point \\((2, -3)\\). Use a calculator or computer software to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 314,
-      "text": "[T] Find an equation of the tangent line to the graph of x/y + 5x - 7 = -3/4*y at the point (1, 2). Use a calculator or computer software to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(x/y + 5x - 7 = -3/4*y\\) at the point \\((1, 2)\\). Use a calculator or computer software to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 315,
-      "text": "[T] Find an equation of the tangent line to the graph of xy + sin(x) = 1 at the point (pi/2, 0). Use a calculator or computer software to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(xy + sin(x) = 1\\) at the point \\((pi/2, 0)\\). Use a calculator or computer software to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 316,
-      "text": "[T] The graph of a folium of Descartes with equation 2x^3 + 2y^3 - 9xy = 0 is given in the following graph. (a) Find an equation of the tangent line at the point (2, 1). Graph the tangent line along with the folium. (b) Find an equation of the normal line to the tangent line in part (a) at the point (2, 1).",
+      "text": "[T] The graph of a folium of Descartes with equation \\(2x^3 + 2y^3 - 9xy = 0\\) is given in the following graph. (a) Find an equation of the tangent line at the point \\((2, 1)\\). Graph the tangent line along with the folium. (b) Find an equation of the normal line to the tangent line in part (a) at the point \\((2, 1)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 274,
@@ -127,98 +130,98 @@
     },
     {
       "number": 317,
-      "text": "For the equation x^2 + 2xy - 3y^2 = 0, (a) find an equation of the normal to the tangent line at the point (1, 1). (b) At what other point does the normal line in part (a) intersect the graph of the equation?",
+      "text": "For the equation \\(x^2 + 2xy - 3y^2 = 0\\), (a) find an equation of the normal to the tangent line at the point \\((1, 1)\\). (b) At what other point does the normal line in part (a) intersect the graph of the equation?",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 318,
-      "text": "Find all points on the graph of y^3 - 27y = x^2 - 90 at which the tangent line is vertical.",
+      "text": "Find all points on the graph of \\(y^3 - 27y = x^2 - 90\\) at which the tangent line is vertical.",
       "kind": "symbolic",
       "available": true,
       "book_page": 274
     },
     {
       "number": 319,
-      "text": "For the equation x^2 + xy + y^2 = 7, (a) find the x-intercept(s). (b) Find the slope of the tangent line(s) at the x-intercept(s). (c) What does the value(s) in part (b) indicate about the tangent line(s)?",
+      "text": "For the equation \\(x^2 + xy + y^2 = 7\\), (a) find the \\(x\\)-intercept(s). (b) Find the slope of the tangent line(s) at the \\(x\\)-intercept(s). (c) What does the value(s) in part (b) indicate about the tangent line(s)?",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 320,
-      "text": "Find an equation of the tangent line to the graph of the equation sin^{-1}(x) + sin^{-1}(y) = pi/6 at the point (0, 1/2).",
+      "text": "Find an equation of the tangent line to the graph of the equation \\(sin^{-1}(x) + sin^{-1}(y) = pi/6\\) at the point \\((0, 1/2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 321,
-      "text": "Find an equation of the tangent line to the graph of the equation tan^{-1}(x + y) = x^2 + pi/4 at the point (0, 1).",
+      "text": "Find an equation of the tangent line to the graph of the equation \\(tan^{-1}(x + y) = x^2 + pi/4\\) at the point \\((0, 1)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 322,
-      "text": "Find y' and y'' for x^2 + 6xy - 2y^2 = 3.",
+      "text": "Find \\(y'\\) and \\(y''\\) for \\(x^2 + 6xy - 2y^2 = 3\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 323,
-      "text": "[T] The number of cell phones produced when x dollars is spent on labor and y dollars is spent on capital invested by a manufacturer can be modeled by the equation 60x^{3/4}y^{1/4} = 3240. (a) Find dy/dx and evaluate at the point (81, 16). (b) Interpret the result of part (a).",
+      "text": "[T] The number of cell phones produced when \\(x\\) dollars is spent on labor and \\(y\\) dollars is spent on capital invested by a manufacturer can be modeled by the equation \\(60x^{3/4}y^{1/4} = 3240\\). (a) Find \\(dy/dx\\) and evaluate at the point \\((81, 16)\\). (b) Interpret the result of part (a).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 324,
-      "text": "[T] The number of cars produced when x dollars is spent on labor and y dollars is spent on capital invested by a manufacturer can be modeled by the equation 30x^{1/3}y^{2/3} = 360. (Both x and y are measured in thousands of dollars.) (a) Find dy/dx and evaluate at the point (27, 8). (b) Interpret the result of part (a).",
+      "text": "[T] The number of cars produced when \\(x\\) dollars is spent on labor and \\(y\\) dollars is spent on capital invested by a manufacturer can be modeled by the equation \\(30x^{1/3}y^{2/3} = 360\\). (Both \\(x\\) and \\(y\\) are measured in thousands of dollars.) (a) Find \\(dy/dx\\) and evaluate at the point \\((27, 8)\\). (b) Interpret the result of part (a).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 325,
-      "text": "The volume of a right circular cone of radius x and height y is given by V = (1/3)*pi*x^2*y. Suppose that the volume of the cone is a constant. Find dy/dx when x = 4 and y = 16.",
+      "text": "The volume of a right circular cone of radius \\(x\\) and height \\(y\\) is given by \\(V = (1/3)*pi*x^2*y\\). Suppose that the volume of the cone is a constant. Find \\(dy/dx\\) when \\(x = 4\\) and \\(y = 16\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 326,
-      "text": "Consider a closed rectangular box with a square base with side x and height y. Find an equation for the surface area of the rectangular box, S(x, y).",
+      "text": "Consider a closed rectangular box with a square base with side \\(x\\) and height \\(y\\). Find an equation for the surface area of the rectangular box, \\(S(x, y)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 327,
-      "text": "Consider a closed rectangular box with a square base with side x and height y. If the surface area of the rectangular box is 78 square feet, find dy/dx when x = 3 feet and y = 5 feet.",
+      "text": "Consider a closed rectangular box with a square base with side \\(x\\) and height \\(y\\). If the surface area of the rectangular box is 78 square feet, find \\(dy/dx\\) when \\(x = 3\\) feet and \\(y = 5\\) feet.",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 328,
-      "text": "Use implicit differentiation to determine y' for x = sin y. Does the answer agree with the formulas we have previously determined?",
+      "text": "Use implicit differentiation to determine \\(y'\\) for \\(x = sin y\\). Does the answer agree with the formulas we have previously determined?",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 329,
-      "text": "Use implicit differentiation to determine y' for x = cos y. Does the answer agree with the formulas we have previously determined?",
+      "text": "Use implicit differentiation to determine \\(y'\\) for \\(x = cos y\\). Does the answer agree with the formulas we have previously determined?",
       "kind": "symbolic",
       "available": true,
       "book_page": 275
     },
     {
       "number": 330,
-      "text": "Use implicit differentiation to determine y' for x = tan y. Does the answer agree with the formulas we have previously determined?",
+      "text": "Use implicit differentiation to determine \\(y'\\) for \\(x = tan y\\). Does the answer agree with the formulas we have previously determined?",
       "kind": "symbolic",
       "available": true,
       "book_page": 275

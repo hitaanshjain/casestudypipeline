@@ -2,278 +2,281 @@
   "book_key": "openstax_calculus_v1",
   "section": "3.7",
   "section_title": "Derivatives of Inverse Functions",
-  "exercise_pages": [265, 267],
+  "exercise_pages": [
+    265,
+    267
+  ],
   "stem_note": "Shared stems are copied into each governed exercise as a self-contained instruction: stem A (\"use the graph of y=f(x) to (a) sketch the graph of y=f^{-1}(x), and (b) use part a. to estimate (f^{-1})'(1)\") governs 260-263; stem B (\"use the functions y=f(x) to find (a) df/dx at x=a and (b) x=f^{-1}(y); then use part b. to find (c) df^{-1}/dy at y=f(a)\") governs 264-267; stem C (\"find (f^{-1})'(a) for the given function\") governs 268-273; stem D (\"find (a) the slope of the tangent line to its inverse function f^{-1} at the indicated point P, and (b) an equation of the tangent line to the graph of f^{-1} at the indicated point\") governs 274-278; stem E (\"find dy/dx for the given function\") governs 279-288; stem F (\"use the given values to find (f^{-1})'(a)\") governs 289-294. Exercises 260-263 read a book-supplied graph of y=f(x) to sketch f^{-1} and estimate a derivative value; the plotted curve is data the text cannot carry, so they are classified graph/unavailable and the figure-page render is saved as figures/p265.png, matching the precedent already used for graph-reading exercises in 3_1.json and 3_2.json. Exercises 296 and 297 each reference an accompanying figure to establish which sides and vertex the stated angle theta belongs to, and neither states a closed-form relationship in its own text, so both are classified figure/unavailable with figure-page renders saved as figures/p266.png (296) and figures/p267.png (297). Exercises 298 and 299 also reference an accompanying figure, but each states the complete closed-form theta formula in its own text (theta = tan^{-1}(x/2000) for 298; theta = cot^{-1}(x/40) - cot^{-1}(x/10) for 299), so both are fully solvable from the printed text alone; classified symbolic/available, matching the graph-from-own-formula precedent already used in 3_4.json and 3_5.json, and disclosed individually in each exercise's notes.",
   "exercises": [
     {
       "number": 260,
-      "text": "Use the graph of y = f(x) to (a) sketch the graph of y = f^{-1}(x), and (b) use part a. to estimate (f^{-1})'(1).",
+      "text": "Use the graph of \\(y = f(x)\\) to (a) sketch the graph of \\(y = f^{-1}(x)\\), and (b) use part a. to estimate \\((f^{-1})'(1)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 265
     },
     {
       "number": 261,
-      "text": "Use the graph of y = f(x) to (a) sketch the graph of y = f^{-1}(x), and (b) use part a. to estimate (f^{-1})'(1).",
+      "text": "Use the graph of \\(y = f(x)\\) to (a) sketch the graph of \\(y = f^{-1}(x)\\), and (b) use part a. to estimate \\((f^{-1})'(1)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 265
     },
     {
       "number": 262,
-      "text": "Use the graph of y = f(x) to (a) sketch the graph of y = f^{-1}(x), and (b) use part a. to estimate (f^{-1})'(1).",
+      "text": "Use the graph of \\(y = f(x)\\) to (a) sketch the graph of \\(y = f^{-1}(x)\\), and (b) use part a. to estimate \\((f^{-1})'(1)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 265
     },
     {
       "number": 263,
-      "text": "Use the graph of y = f(x) to (a) sketch the graph of y = f^{-1}(x), and (b) use part a. to estimate (f^{-1})'(1).",
+      "text": "Use the graph of \\(y = f(x)\\) to (a) sketch the graph of \\(y = f^{-1}(x)\\), and (b) use part a. to estimate \\((f^{-1})'(1)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 265
     },
     {
       "number": 264,
-      "text": "For y = f(x) = 6x - 1, find (a) df/dx at x = -2 and (b) x = f^{-1}(y). Then use part b. to find (c) df^{-1}/dy at y = f(-2).",
+      "text": "For \\(y = f(x) = 6x - 1\\), find (a) \\(df/dx\\) at \\(x = -2\\) and (b) \\(x = f^{-1}(y)\\). Then use part b. to find (c) \\(df^{-1}/dy\\) at \\(y = f(-2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 265
     },
     {
       "number": 265,
-      "text": "For y = f(x) = 2x^3 - 3, find (a) df/dx at x = 1 and (b) x = f^{-1}(y). Then use part b. to find (c) df^{-1}/dy at y = f(1).",
+      "text": "For \\(y = f(x) = 2x^3 - 3\\), find (a) \\(df/dx\\) at \\(x = 1\\) and (b) \\(x = f^{-1}(y)\\). Then use part b. to find (c) \\(df^{-1}/dy\\) at \\(y = f(1)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 265
     },
     {
       "number": 266,
-      "text": "For y = f(x) = 9 - x^2, 0 <= x <= 3, find (a) df/dx at x = 2 and (b) x = f^{-1}(y). Then use part b. to find (c) df^{-1}/dy at y = f(2).",
+      "text": "For \\(y = f(x) = 9 - x^2\\), \\(0 <= x <= 3\\), find (a) \\(df/dx\\) at \\(x = 2\\) and (b) \\(x = f^{-1}(y)\\). Then use part b. to find (c) \\(df^{-1}/dy\\) at \\(y = f(2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 265
     },
     {
       "number": 267,
-      "text": "For y = f(x) = sin x, find (a) df/dx at x = 0 and (b) x = f^{-1}(y). Then use part b. to find (c) df^{-1}/dy at y = f(0).",
+      "text": "For \\(y = f(x) = sin x\\), find (a) \\(df/dx\\) at \\(x = 0\\) and (b) \\(x = f^{-1}(y)\\). Then use part b. to find (c) \\(df^{-1}/dy\\) at \\(y = f(0)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 268,
-      "text": "Find (f^{-1})'(a) for f(x) = x^2 + 3x + 2, x >= -3/2, a = 2.",
+      "text": "Find \\((f^{-1})'(a)\\) for \\(f(x) = x^2 + 3x + 2\\), \\(x >= -3/2\\), \\(a = 2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 269,
-      "text": "Find (f^{-1})'(a) for f(x) = x^3 + 2x + 3, a = 0.",
+      "text": "Find \\((f^{-1})'(a)\\) for \\(f(x) = x^3 + 2x + 3\\), \\(a = 0\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 270,
-      "text": "Find (f^{-1})'(a) for f(x) = x + sqrt(x), a = 2.",
+      "text": "Find \\((f^{-1})'(a)\\) for \\(f(x) = x + sqrt(x)\\), \\(a = 2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 271,
-      "text": "Find (f^{-1})'(a) for f(x) = x - 2/x, x < 0, a = 1.",
+      "text": "Find \\((f^{-1})'(a)\\) for \\(f(x) = x - 2/x\\), \\(x < 0\\), \\(a = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 272,
-      "text": "Find (f^{-1})'(a) for f(x) = x + sin x, a = 0.",
+      "text": "Find \\((f^{-1})'(a)\\) for \\(f(x) = x + sin x\\), \\(a = 0\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 273,
-      "text": "Find (f^{-1})'(a) for f(x) = tan x + 3x^2, a = 0; 0 < x < pi/2.",
+      "text": "Find \\((f^{-1})'(a)\\) for \\(f(x) = tan x + 3x^2\\), \\(a = 0\\); \\(0 < x < pi/2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 274,
-      "text": "For y = f(x) = 4/(1 + x^2), P(2, 1), find (a) the slope of the tangent line to its inverse function f^{-1} at the indicated point P, and (b) an equation of the tangent line to the graph of f^{-1} at the indicated point.",
+      "text": "For \\(y = f(x) = 4/(1 + x^2)\\), \\(P(2, 1)\\), find (a) the slope of the tangent line to its inverse function \\(f^{-1}\\) at the indicated point \\(P\\), and (b) an equation of the tangent line to the graph of \\(f^{-1}\\) at the indicated point.",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 275,
-      "text": "For y = f(x) = sqrt(x - 4), P(2, 8), find (a) the slope of the tangent line to its inverse function f^{-1} at the indicated point P, and (b) an equation of the tangent line to the graph of f^{-1} at the indicated point.",
+      "text": "For \\(y = f(x) = sqrt(x - 4)\\), \\(P(2, 8)\\), find (a) the slope of the tangent line to its inverse function \\(f^{-1}\\) at the indicated point \\(P\\), and (b) an equation of the tangent line to the graph of \\(f^{-1}\\) at the indicated point.",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 276,
-      "text": "For y = f(x) = (x^3 + 1)^4, P(16, 1), find (a) the slope of the tangent line to its inverse function f^{-1} at the indicated point P, and (b) an equation of the tangent line to the graph of f^{-1} at the indicated point.",
+      "text": "For \\(y = f(x) = (x^3 + 1)^4\\), \\(P(16, 1)\\), find (a) the slope of the tangent line to its inverse function \\(f^{-1}\\) at the indicated point \\(P\\), and (b) an equation of the tangent line to the graph of \\(f^{-1}\\) at the indicated point.",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 277,
-      "text": "For y = f(x) = -x^3 - x + 2, P(-8, 2), find (a) the slope of the tangent line to its inverse function f^{-1} at the indicated point P, and (b) an equation of the tangent line to the graph of f^{-1} at the indicated point.",
+      "text": "For \\(y = f(x) = -x^3 - x + 2\\), \\(P(-8, 2)\\), find (a) the slope of the tangent line to its inverse function \\(f^{-1}\\) at the indicated point \\(P\\), and (b) an equation of the tangent line to the graph of \\(f^{-1}\\) at the indicated point.",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 278,
-      "text": "For y = f(x) = x^5 + 3x^3 - 4x - 8, P(-8, 1), find (a) the slope of the tangent line to its inverse function f^{-1} at the indicated point P, and (b) an equation of the tangent line to the graph of f^{-1} at the indicated point.",
+      "text": "For \\(y = f(x) = x^5 + 3x^3 - 4x - 8\\), \\(P(-8, 1)\\), find (a) the slope of the tangent line to its inverse function \\(f^{-1}\\) at the indicated point \\(P\\), and (b) an equation of the tangent line to the graph of \\(f^{-1}\\) at the indicated point.",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 279,
-      "text": "Find dy/dx for y = sin^{-1}(x^2).",
+      "text": "Find \\(dy/dx\\) for \\(y = sin^{-1}(x^2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 280,
-      "text": "Find dy/dx for y = cos^{-1}(sqrt(x)).",
+      "text": "Find \\(dy/dx\\) for \\(y = cos^{-1}(sqrt(x))\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 281,
-      "text": "Find dy/dx for y = sec^{-1}(1/x).",
+      "text": "Find \\(dy/dx\\) for \\(y = sec^{-1}(1/x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 282,
-      "text": "Find dy/dx for y = sqrt(csc^{-1}(x)).",
+      "text": "Find \\(dy/dx\\) for \\(y = sqrt(csc^{-1}(x))\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 283,
-      "text": "Find dy/dx for y = (1 + tan^{-1}(x))^3.",
+      "text": "Find \\(dy/dx\\) for \\(y = (1 + tan^{-1}(x))^3\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 284,
-      "text": "Find dy/dx for y = cos^{-1}(2x) * sin^{-1}(2x).",
+      "text": "Find \\(dy/dx\\) for \\(y = cos^{-1}(2x) * sin^{-1}(2x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 285,
-      "text": "Find dy/dx for y = 1/tan^{-1}(x).",
+      "text": "Find \\(dy/dx\\) for \\(y = 1/tan^{-1}(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 286,
-      "text": "Find dy/dx for y = sec^{-1}(-x).",
+      "text": "Find \\(dy/dx\\) for \\(y = sec^{-1}(-x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 287,
-      "text": "Find dy/dx for y = cot^{-1}(sqrt(4 - x^2)).",
+      "text": "Find \\(dy/dx\\) for \\(y = cot^{-1}(sqrt(4 - x^2))\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 288,
-      "text": "Find dy/dx for y = x * csc^{-1}(x).",
+      "text": "Find \\(dy/dx\\) for \\(y = x * csc^{-1}(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 289,
-      "text": "Use f(pi) = 0, f'(pi) = -1 to find (f^{-1})'(a) at a = 0.",
+      "text": "Use \\(f(pi) = 0\\), \\(f'(pi) = -1\\) to find \\((f^{-1})'(a)\\) at \\(a = 0\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 290,
-      "text": "Use f(6) = 2, f'(6) = 1/3 to find (f^{-1})'(a) at a = 2.",
+      "text": "Use \\(f(6) = 2\\), \\(f'(6) = 1/3\\) to find \\((f^{-1})'(a)\\) at \\(a = 2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 291,
-      "text": "Use f(1/3) = -8, f'(1/3) = 2 to find (f^{-1})'(a) at a = -8.",
+      "text": "Use \\(f(1/3) = -8\\), \\(f'(1/3) = 2\\) to find \\((f^{-1})'(a)\\) at \\(a = -8\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 292,
-      "text": "Use f(sqrt(3)) = 1/2, f'(sqrt(3)) = 2/3 to find (f^{-1})'(a) at a = 1/2.",
+      "text": "Use \\(f(sqrt(3)) = 1/2\\), \\(f'(sqrt(3)) = 2/3\\) to find \\((f^{-1})'(a)\\) at \\(a = 1/2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 293,
-      "text": "Use f(1) = -3, f'(1) = 10 to find (f^{-1})'(a) at a = -3.",
+      "text": "Use \\(f(1) = -3\\), \\(f'(1) = 10\\) to find \\((f^{-1})'(a)\\) at \\(a = -3\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 294,
-      "text": "Use f(1) = 0, f'(1) = -2 to find (f^{-1})'(a) at a = 0.",
+      "text": "Use \\(f(1) = 0\\), \\(f'(1) = -2\\) to find \\((f^{-1})'(a)\\) at \\(a = 0\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 295,
-      "text": "[T] The position of a moving hockey puck after t seconds is s(t) = tan^{-1}(t), where s is in meters. (a) Find the velocity of the hockey puck at any time t. (b) Find the acceleration of the puck at any time t. (c) Evaluate a. and b. for t = 2, 4, and 6 seconds. (d) What conclusion can be drawn from the results in c.?",
+      "text": "[T] The position of a moving hockey puck after \\(t\\) seconds is \\(s(t) = tan^{-1}(t)\\), where \\(s\\) is in meters. (a) Find the velocity of the hockey puck at any time \\(t\\). (b) Find the acceleration of the puck at any time \\(t\\). (c) Evaluate a. and b. for \\(t = 2, 4, and 6\\) seconds. (d) What conclusion can be drawn from the results in c.?",
       "kind": "symbolic",
       "available": true,
       "book_page": 266
     },
     {
       "number": 296,
-      "text": "[T] A building that is 225 feet tall casts a shadow of various lengths x as the day goes by. An angle of elevation theta is formed by lines from the top and bottom of the building to the tip of the shadow, as seen in the following figure. Find the rate of change of the angle of elevation dtheta/dx when x = 272 feet.",
+      "text": "[T] A building that is 225 feet tall casts a shadow of various lengths \\(x\\) as the day goes by. An angle of elevation theta is formed by lines from the top and bottom of the building to the tip of the shadow, as seen in the following figure. Find the rate of change of the angle of elevation \\(dtheta/dx\\) when \\(x = 272\\) feet.",
       "kind": "figure",
       "available": false,
       "book_page": 266
     },
     {
       "number": 297,
-      "text": "[T] A pole stands 75 feet tall. An angle theta is formed when wires of various lengths of x feet are attached from the ground to the top of the pole, as shown in the following figure. Find the rate of change of the angle dtheta/dx when a wire of length 90 feet is attached.",
+      "text": "[T] A pole stands 75 feet tall. An angle theta is formed when wires of various lengths of \\(x\\) feet are attached from the ground to the top of the pole, as shown in the following figure. Find the rate of change of the angle \\(dtheta/dx\\) when a wire of length 90 feet is attached.",
       "kind": "figure",
       "available": false,
       "book_page": 267
     },
     {
       "number": 298,
-      "text": "[T] A television camera at ground level is 2000 feet away from the launching pad of a space rocket that is set to take off vertically, as seen in the following figure. The angle of elevation of the camera can be found by theta = tan^{-1}(x/2000), where x is the height of the rocket. Find the rate of change of the angle of elevation after launch when the camera and the rocket are 5000 feet apart.",
+      "text": "[T] A television camera at ground level is 2000 feet away from the launching pad of a space rocket that is set to take off vertically, as seen in the following figure. The angle of elevation of the camera can be found by \\(theta = tan^{-1}(x/2000)\\), where \\(x\\) is the height of the rocket. Find the rate of change of the angle of elevation after launch when the camera and the rocket are 5000 feet apart.",
       "kind": "symbolic",
       "available": true,
       "book_page": 267,
@@ -281,7 +284,7 @@
     },
     {
       "number": 299,
-      "text": "[T] A local movie theater with a 30-foot-high screen that is 10 feet above a person's eye level when seated has a viewing angle theta (in radians) given by theta = cot^{-1}(x/40) - cot^{-1}(x/10), where x is the distance in feet away from the movie screen that the person is sitting, as shown in the following figure. (a) Find dtheta/dx. (b) Evaluate dtheta/dx for x = 5, 10, 15, and 20. (c) Interpret the results in b. (d) Evaluate dtheta/dx for x = 25, 30, 35, and 40. (e) Interpret the results in d. At what distance x should the person sit to maximize his or her viewing angle?",
+      "text": "[T] A local movie theater with a 30-foot-high screen that is 10 feet above a person's eye level when seated has a viewing angle theta (in radians) given by \\(theta = cot^{-1}(x/40) - cot^{-1}(x/10)\\), where \\(x\\) is the distance in feet away from the movie screen that the person is sitting, as shown in the following figure. (a) Find \\(dtheta/dx\\). (b) Evaluate \\(dtheta/dx\\) for \\(x = 5, 10, 15, and 20\\). (c) Interpret the results in b. (d) Evaluate \\(dtheta/dx\\) for \\(x = 25, 30, 35, and 40\\). (e) Interpret the results in d. At what distance \\(x\\) should the person sit to maximize his or her viewing angle?",
       "kind": "symbolic",
       "available": true,
       "book_page": 267,

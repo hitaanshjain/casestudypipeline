@@ -10,119 +10,119 @@
   "exercises": [
     {
       "number": 150,
-      "text": "The following function represents the position of a particle traveling along a horizontal line; t >= 0. s(t) = 2t^3 - 3t^2 - 12t + 8. (a) Find the velocity and acceleration functions. (b) Determine the time intervals when the object is slowing down or speeding up.",
+      "text": "The following function represents the position of a particle traveling along a horizontal line; \\(t >= 0\\). \\(s(t) = 2t^3 - 3t^2 - 12t + 8\\). (a) Find the velocity and acceleration functions. (b) Determine the time intervals when the object is slowing down or speeding up.",
       "kind": "symbolic",
       "available": true,
       "book_page": 235
     },
     {
       "number": 151,
-      "text": "The following function represents the position of a particle traveling along a horizontal line; t >= 0. s(t) = 2t^3 - 15t^2 + 36t - 10. (a) Find the velocity and acceleration functions. (b) Determine the time intervals when the object is slowing down or speeding up.",
+      "text": "The following function represents the position of a particle traveling along a horizontal line; \\(t >= 0\\). \\(s(t) = 2t^3 - 15t^2 + 36t - 10\\). (a) Find the velocity and acceleration functions. (b) Determine the time intervals when the object is slowing down or speeding up.",
       "kind": "symbolic",
       "available": true,
       "book_page": 235
     },
     {
       "number": 152,
-      "text": "The following function represents the position of a particle traveling along a horizontal line; t >= 0. s(t) = t/(1 + t^2). (a) Find the velocity and acceleration functions. (b) Determine the time intervals when the object is slowing down or speeding up.",
+      "text": "The following function represents the position of a particle traveling along a horizontal line; \\(t >= 0\\). \\(s(t) = t/(1 + t^2)\\). (a) Find the velocity and acceleration functions. (b) Determine the time intervals when the object is slowing down or speeding up.",
       "kind": "symbolic",
       "available": true,
       "book_page": 235
     },
     {
       "number": 153,
-      "text": "A model rocket is fired vertically upward from the ground. The distance s in feet that the rocket travels from the ground after t seconds is given by s(t) = -16t^2 + 560t. (a) Find the velocity of the rocket 3 seconds after being fired. (b) Find the acceleration of the rocket 3 seconds after being fired.",
+      "text": "A model rocket is fired vertically upward from the ground. The distance \\(s\\) in feet that the rocket travels from the ground after \\(t\\) seconds is given by \\(s(t) = -16t^2 + 560t\\). (a) Find the velocity of the rocket 3 seconds after being fired. (b) Find the acceleration of the rocket 3 seconds after being fired.",
       "kind": "symbolic",
       "available": true,
       "book_page": 235
     },
     {
       "number": 154,
-      "text": "A ball is thrown downward with a speed of 8 ft/s from the top of a 64-foot-tall building. After t seconds, its height above the ground is given by s(t) = -16t^2 - 8t + 64. (a) Determine how long it takes for the ball to hit the ground. (b) Determine the velocity of the ball when it hits the ground.",
+      "text": "A ball is thrown downward with a speed of 8 ft/s from the top of a 64-foot-tall building. After \\(t\\) seconds, its height above the ground is given by \\(s(t) = -16t^2 - 8t + 64\\). (a) Determine how long it takes for the ball to hit the ground. (b) Determine the velocity of the ball when it hits the ground.",
       "kind": "symbolic",
       "available": true,
       "book_page": 235
     },
     {
       "number": 155,
-      "text": "The position function s(t) = t^2 - 3t - 4 represents the position of the back of a car backing out of a driveway and then driving in a straight line, where s is in feet and t is in seconds. In this case, s(t) = 0 represents the time at which the back of the car is at the garage door, so s(0) = -4 is the starting position of the car, 4 feet inside the garage. (a) Determine the velocity of the car when s(t) = 0. (b) Determine the velocity of the car when s(t) = 14.",
+      "text": "The position function \\(s(t) = t^2 - 3t - 4\\) represents the position of the back of a car backing out of a driveway and then driving in a straight line, where \\(s\\) is in feet and \\(t\\) is in seconds. In this case, \\(s(t) = 0\\) represents the time at which the back of the car is at the garage door, so \\(s(0) = -4\\) is the starting position of the car, 4 feet inside the garage. (a) Determine the velocity of the car when \\(s(t) = 0\\). (b) Determine the velocity of the car when \\(s(t) = 14\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 235
     },
     {
       "number": 156,
-      "text": "The position of a hummingbird flying along a straight line in t seconds is given by s(t) = 3t^3 - 7t meters. (a) Determine the velocity of the bird at t = 1 sec. (b) Determine the acceleration of the bird at t = 1 sec. (c) Determine the acceleration of the bird when the velocity equals 0.",
+      "text": "The position of a hummingbird flying along a straight line in \\(t\\) seconds is given by \\(s(t) = 3t^3 - 7t\\) meters. (a) Determine the velocity of the bird at \\(t = 1\\) sec. (b) Determine the acceleration of the bird at \\(t = 1\\) sec. (c) Determine the acceleration of the bird when the velocity equals 0.",
       "kind": "symbolic",
       "available": true,
       "book_page": 236
     },
     {
       "number": 157,
-      "text": "[T] A potato is launched vertically upward with an initial velocity of 100 ft/s from a potato gun at the top of an 85-foot-tall building. The position of the potato relative to the ground after t seconds is given by s(t) = -16t^2 + 100t + 85. (a) Find the velocity of the potato after 0.5 s and 5.75 s. (b) Find the speed of the potato at 0.5 s and 5.75 s. (c) Determine when the potato reaches its maximum height. (d) Find the acceleration of the potato at 0.5 s and 1.5 s. (e) Determine how long the potato is in the air. (f) Determine the velocity of the potato upon hitting the ground.",
+      "text": "[T] A potato is launched vertically upward with an initial velocity of 100 ft/s from a potato gun at the top of an 85-foot-tall building. The position of the potato relative to the ground after \\(t\\) seconds is given by \\(s(t) = -16t^2 + 100t + 85\\). (a) Find the velocity of the potato after 0.5 s and 5.75 s. (b) Find the speed of the potato at 0.5 s and 5.75 s. (c) Determine when the potato reaches its maximum height. (d) Find the acceleration of the potato at 0.5 s and 1.5 s. (e) Determine how long the potato is in the air. (f) Determine the velocity of the potato upon hitting the ground.",
       "kind": "symbolic",
       "available": true,
       "book_page": 236
     },
     {
       "number": 158,
-      "text": "The position function s(t) = t^3 - 8t gives the position in miles of a freight train where east is the positive direction and t is measured in hours. (a) Determine the direction the train is traveling when s(t) = 0. (b) Determine the direction the train is traveling when a(t) = 0. (c) Determine the time intervals when the train is slowing down or speeding up.",
+      "text": "The position function \\(s(t) = t^3 - 8t\\) gives the position in miles of a freight train where east is the positive direction and \\(t\\) is measured in hours. (a) Determine the direction the train is traveling when \\(s(t) = 0\\). (b) Determine the direction the train is traveling when \\(a(t) = 0\\). (c) Determine the time intervals when the train is slowing down or speeding up.",
       "kind": "symbolic",
       "available": true,
       "book_page": 236
     },
     {
       "number": 159,
-      "text": "The following graph shows the position y = s(t) of an object moving along a straight line. (a) Use the graph of the position function to determine the time intervals when the velocity is positive, negative, or zero. (b) Sketch the graph of the velocity function. (c) Use the graph of the velocity function to determine the time intervals when the acceleration is positive, negative, or zero. (d) Determine the time intervals when the object is speeding up or slowing down.",
+      "text": "The following graph shows the position \\(y = s(t)\\) of an object moving along a straight line. (a) Use the graph of the position function to determine the time intervals when the velocity is positive, negative, or zero. (b) Sketch the graph of the velocity function. (c) Use the graph of the velocity function to determine the time intervals when the acceleration is positive, negative, or zero. (d) Determine the time intervals when the object is speeding up or slowing down.",
       "kind": "graph",
       "available": false,
       "book_page": 236
     },
     {
       "number": 160,
-      "text": "The cost function, in dollars, of a company that manufactures food processors is given by C(x) = 200 + 7/x + x^2/7, where x is the number of food processors manufactured. (a) Find the marginal cost function. (b) Use the marginal cost function to estimate the cost of manufacturing the thirteenth food processor. (c) Find the actual cost of manufacturing the thirteenth food processor.",
+      "text": "The cost function, in dollars, of a company that manufactures food processors is given by \\(C(x) = 200 + 7/x + x^2/7\\), where \\(x\\) is the number of food processors manufactured. (a) Find the marginal cost function. (b) Use the marginal cost function to estimate the cost of manufacturing the thirteenth food processor. (c) Find the actual cost of manufacturing the thirteenth food processor.",
       "kind": "symbolic",
       "available": true,
       "book_page": 236
     },
     {
       "number": 161,
-      "text": "The price p (in dollars) and the demand x for a certain digital clock radio is given by the price-demand function p = 10 - 0.001x. (a) Find the revenue function R(x). (b) Find the marginal revenue function. (c) Find the marginal revenue at x = 2000 and 5000.",
+      "text": "The price \\(p\\) (in dollars) and the demand \\(x\\) for a certain digital clock radio is given by the price-demand function \\(p = 10 - 0.001x\\). (a) Find the revenue function \\(R(x)\\). (b) Find the marginal revenue function. (c) Find the marginal revenue at \\(x = 2000 and 5000\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 236
     },
     {
       "number": 162,
-      "text": "[T] A profit is earned when revenue exceeds cost. Suppose the profit function for a skateboard manufacturer is given by P(x) = 30x - 0.3x^2 - 250, where x is the number of skateboards sold. (a) Find the exact profit from the sale of the thirtieth skateboard. (b) Find the marginal profit function and use it to estimate the profit from the sale of the thirtieth skateboard.",
+      "text": "[T] A profit is earned when revenue exceeds cost. Suppose the profit function for a skateboard manufacturer is given by \\(P(x) = 30x - 0.3x^2 - 250\\), where \\(x\\) is the number of skateboards sold. (a) Find the exact profit from the sale of the thirtieth skateboard. (b) Find the marginal profit function and use it to estimate the profit from the sale of the thirtieth skateboard.",
       "kind": "symbolic",
       "available": true,
       "book_page": 237
     },
     {
       "number": 163,
-      "text": "[T] In general, the profit function is the difference between the revenue and cost functions: P(x) = R(x) - C(x). Suppose the price-demand and cost functions for the production of cordless drills are given respectively by p = 143 - 0.03x and C(x) = 75000 + 65x, where x is the number of cordless drills that are sold at a price of p dollars per drill and C(x) is the cost of producing x cordless drills. (a) Find the marginal cost function. (b) Find the revenue and marginal revenue functions. (c) Find R'(1000) and R'(4000). Interpret the results. (d) Find the profit and marginal profit functions. (e) Find P'(1000) and P'(4000). Interpret the results.",
+      "text": "[T] In general, the profit function is the difference between the revenue and cost functions: \\(P(x) = R(x) - C(x)\\). Suppose the price-demand and cost functions for the production of cordless drills are given respectively by \\(p = 143 - 0.03x\\) and \\(C(x) = 75000 + 65x\\), where \\(x\\) is the number of cordless drills that are sold at a price of \\(p\\) dollars per drill and \\(C(x)\\) is the cost of producing \\(x\\) cordless drills. (a) Find the marginal cost function. (b) Find the revenue and marginal revenue functions. (c) Find \\(R'(1000)\\) and \\(R'(4000)\\). Interpret the results. (d) Find the profit and marginal profit functions. (e) Find \\(P'(1000)\\) and \\(P'(4000)\\). Interpret the results.",
       "kind": "symbolic",
       "available": true,
       "book_page": 237
     },
     {
       "number": 164,
-      "text": "A small town in Ohio commissioned an actuarial firm to conduct a study that modeled the rate of change of the town's population. The study found that the town's population (measured in thousands of people) can be modeled by the function P(t) = -(1/3)t^3 + 64t + 3000, where t is measured in years. (a) Find the rate of change function P'(t) of the population function. (b) Find P'(1), P'(2), P'(3), and P'(4). Interpret what the results mean for the town. (c) Find P''(1), P''(2), P''(3), and P''(4). Interpret what the results mean for the town's population.",
+      "text": "A small town in Ohio commissioned an actuarial firm to conduct a study that modeled the rate of change of the town's population. The study found that the town's population (measured in thousands of people) can be modeled by the function \\(P(t) = -(1/3)t^3 + 64t + 3000\\), where \\(t\\) is measured in years. (a) Find the rate of change function \\(P'(t)\\) of the population function. (b) Find \\(P'(1)\\), \\(P'(2)\\), \\(P'(3)\\), and \\(P'(4)\\). Interpret what the results mean for the town. (c) Find \\(P''(1)\\), \\(P''(2)\\), \\(P''(3)\\), and \\(P''(4)\\). Interpret what the results mean for the town's population.",
       "kind": "symbolic",
       "available": true,
       "book_page": 237
     },
     {
       "number": 165,
-      "text": "[T] A culture of bacteria grows in number according to the function N(t) = 3000(1 + 4t/(t^2 + 100)), where t is measured in hours. (a) Find the rate of change of the number of bacteria. (b) Find N'(0), N'(10), N'(20), and N'(30). (c) Interpret the results in (b). (d) Find N''(0), N''(10), N''(20), and N''(30). Interpret what the answers imply about the bacteria population growth.",
+      "text": "[T] A culture of bacteria grows in number according to the function \\(N(t) = 3000(1 + 4t/(t^2 + 100))\\), where \\(t\\) is measured in hours. (a) Find the rate of change of the number of bacteria. (b) Find \\(N'(0)\\), \\(N'(10)\\), \\(N'(20)\\), and \\(N'(30)\\). (c) Interpret the results in (b). (d) Find \\(N''(0)\\), \\(N''(10)\\), \\(N''(20)\\), and \\(N''(30)\\). Interpret what the answers imply about the bacteria population growth.",
       "kind": "symbolic",
       "available": true,
       "book_page": 237
     },
     {
       "number": 166,
-      "text": "The centripetal force of an object of mass m is given by F(r) = m v^2 / r, where v is the speed of rotation and r is the distance from the center of rotation. (a) Find the rate of change of centripetal force with respect to the distance from the center of rotation. (b) Find the rate of change of centripetal force of an object with mass 1000 kilograms, velocity of 13.89 m/s, and a distance from the center of rotation of 200 meters.",
+      "text": "The centripetal force of an object of mass \\(m\\) is given by \\(F(r) = m v^2 / r\\), where \\(v\\) is the speed of rotation and \\(r\\) is the distance from the center of rotation. (a) Find the rate of change of centripetal force with respect to the distance from the center of rotation. (b) Find the rate of change of centripetal force of an object with mass 1000 kilograms, velocity of 13.89 m/s, and a distance from the center of rotation of 200 meters.",
       "kind": "symbolic",
       "available": true,
       "book_page": 237
@@ -161,28 +161,28 @@
     },
     {
       "number": 171,
-      "text": "[T] The Holling type I equation is described by f(x) = ax, where x is the amount of prey available and a > 0 is the rate at which the predator meets the prey for consumption. (a) Graph the Holling type I equation, given a = 0.5. (b) Determine the first derivative of the Holling type I equation and explain physically what the derivative implies. (c) Determine the second derivative of the Holling type I equation and explain physically what the derivative implies. (d) Using the interpretations from (b) and (c), explain why the Holling type I equation may not be realistic.",
+      "text": "[T] The Holling type I equation is described by \\(f(x) = ax\\), where \\(x\\) is the amount of prey available and \\(a > 0\\) is the rate at which the predator meets the prey for consumption. (a) Graph the Holling type I equation, given \\(a = 0.5\\). (b) Determine the first derivative of the Holling type I equation and explain physically what the derivative implies. (c) Determine the second derivative of the Holling type I equation and explain physically what the derivative implies. (d) Using the interpretations from (b) and (c), explain why the Holling type I equation may not be realistic.",
       "kind": "symbolic",
       "available": true,
       "book_page": 240
     },
     {
       "number": 172,
-      "text": "[T] The Holling type II equation is described by f(x) = ax/(n + x), where x is the amount of prey available and a > 0 is the maximum consumption rate of the predator. (a) Graph the Holling type II equation given a = 0.5 and n = 5. What are the differences between the Holling type I and II equations? (b) Take the first derivative of the Holling type II equation and interpret the physical meaning of the derivative. (c) Show that f(n) = (1/2)a and interpret the meaning of the parameter n. (d) Find and interpret the meaning of the second derivative. What makes the Holling type II function more realistic than the Holling type I function?",
+      "text": "[T] The Holling type II equation is described by \\(f(x) = ax/(n + x)\\), where \\(x\\) is the amount of prey available and \\(a > 0\\) is the maximum consumption rate of the predator. (a) Graph the Holling type II equation given \\(a = 0.5\\) and \\(n = 5\\). What are the differences between the Holling type I and II equations? (b) Take the first derivative of the Holling type II equation and interpret the physical meaning of the derivative. (c) Show that \\(f(n) = (1/2)a\\) and interpret the meaning of the parameter \\(n\\). (d) Find and interpret the meaning of the second derivative. What makes the Holling type II function more realistic than the Holling type I function?",
       "kind": "symbolic",
       "available": true,
       "book_page": 240
     },
     {
       "number": 173,
-      "text": "[T] The Holling type III equation is described by f(x) = a x^2 / (n^2 + x^2), where x is the amount of prey available and a > 0 is the maximum consumption rate of the predator. (a) Graph the Holling type III equation given a = 0.5 and n = 5. What are the differences between the Holling type II and III equations? (b) Take the first derivative of the Holling type III equation and interpret the physical meaning of the derivative. (c) Find and interpret the meaning of the second derivative (it may help to graph the second derivative). (d) What additional ecological phenomena does the Holling type III function describe compared with the Holling type II function?",
+      "text": "[T] The Holling type III equation is described by \\(f(x) = a x^2 / (n^2 + x^2)\\), where \\(x\\) is the amount of prey available and \\(a > 0\\) is the maximum consumption rate of the predator. (a) Graph the Holling type III equation given \\(a = 0.5\\) and \\(n = 5\\). What are the differences between the Holling type II and III equations? (b) Take the first derivative of the Holling type III equation and interpret the physical meaning of the derivative. (c) Find and interpret the meaning of the second derivative (it may help to graph the second derivative). (d) What additional ecological phenomena does the Holling type III function describe compared with the Holling type II function?",
       "kind": "symbolic",
       "available": true,
       "book_page": 240
     },
     {
       "number": 174,
-      "text": "[T] The populations of the snowshoe hare (in thousands) and the lynx (in hundreds) collected over 7 years from 1937 to 1943 are shown in the following table. The snowshoe hare is the primary prey of the lynx. Population of snowshoe hare (thousands): 20, 55, 65, 95. Population of lynx (hundreds): 10, 15, 55, 60. (a) Graph the data points and determine which Holling-type function fits the data best. (b) Using the meanings of the parameters a and n, determine values for those parameters by examining a graph of the data. Recall that n measures what prey value results in the half-maximum of the predator value. (c) Plot the resulting Holling-type I, II, and III functions on top of the data. Was the result from part (a) correct?",
+      "text": "[T] The populations of the snowshoe hare (in thousands) and the lynx (in hundreds) collected over 7 years from 1937 to 1943 are shown in the following table. The snowshoe hare is the primary prey of the lynx. Population of snowshoe hare (thousands): 20, 55, 65, 95. Population of lynx (hundreds): 10, 15, 55, 60. (a) Graph the data points and determine which Holling-type function fits the data best. (b) Using the meanings of the parameters \\(a\\) and \\(n\\), determine values for those parameters by examining a graph of the data. Recall that \\(n\\) measures what prey value results in the half-maximum of the predator value. (c) Plot the resulting Holling-type I, II, and III functions on top of the data. Was the result from part (a) correct?",
       "kind": "table",
       "available": true,
       "book_page": 241,

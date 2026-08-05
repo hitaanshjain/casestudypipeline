@@ -2,159 +2,162 @@
   "book_key": "openstax_calculus_v1",
   "section": "3.9",
   "section_title": "Derivatives of Exponential and Logarithmic Functions",
-  "exercise_pages": [284, 287],
+  "exercise_pages": [
+    284,
+    287
+  ],
   "stem_note": "Stem A ('find f'(x) for each function') governs 331-345; each item is a bare function definition in the book, inlined per item as 'Find f'(x) for f(x) = <function>.'. Stem B ('use logarithmic differentiation to find dy/dx') governs 346-353; each item is a bare function definition in the book, inlined per item as 'Use logarithmic differentiation to find dy/dx for y = <function>.'. Exercise 352's denominator is printed as a cube root in the book; rendered ^{1/3} per the existing convention in 3_1.json and 3_8.json. Exercises 354-357 each state their own complete instruction directly in the book, independent of stem B. Exercise 358 is multi-part (a)/(b) kept as one entry; part (a) asks the student to complete a 9-row table of blank values labeled (i) through (ix) against given t values, so the table's t column is inlined with its blank labels rather than computed numbers (the blanks ARE the exercise). The shared stem ('use the population of New York City from 1790 to 1860, given in the following table') governs 363-366; Table 3.8's eight rows (years since 1790, population) are inlined into each governed exercise per the existing table-inlining convention in 3_2.json (100-105) and 3_6.json (245-252), with the source citation kept in notes rather than the transcribed text. No exercise in this section requires a figure or graph read for its data; the [T] tags (354, 355, 356, 359, 360, 361, 362, 363, 364, 365, 366) denote a suggested calculator/software step and are kept as printed, classified symbolic/available since no picture is the data source.",
   "exercises": [
     {
       "number": 331,
-      "text": "Find f'(x) for f(x) = x^2 e^x.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = x^2 e^x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 332,
-      "text": "Find f'(x) for f(x) = e^{-x}/x.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = e^{-x}/x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 333,
-      "text": "Find f'(x) for f(x) = e^{x^3 ln x}.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = e^{x^3 ln x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 334,
-      "text": "Find f'(x) for f(x) = sqrt(e^{2x} + 2x).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = sqrt(e^{2x} + 2x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 335,
-      "text": "Find f'(x) for f(x) = (e^x - e^{-x}) / (e^x + e^{-x}).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = (e^x - e^{-x}) / (e^x + e^{-x})\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 336,
-      "text": "Find f'(x) for f(x) = 10^x / ln(10).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 10^x / ln(10)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 337,
-      "text": "Find f'(x) for f(x) = 2^{4x} + 4x^2.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 2^{4x} + 4x^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 338,
-      "text": "Find f'(x) for f(x) = 3^{sin(3x)}.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 3^{sin(3x)}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 339,
-      "text": "Find f'(x) for f(x) = x^pi * pi^x.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = x^pi * pi^x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 340,
-      "text": "Find f'(x) for f(x) = ln(4x^3 + x).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = ln(4x^3 + x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 341,
-      "text": "Find f'(x) for f(x) = ln(sqrt(5x - 7)).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = ln(sqrt(5x - 7))\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 342,
-      "text": "Find f'(x) for f(x) = x^2 ln(9x).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = x^2 ln(9x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 343,
-      "text": "Find f'(x) for f(x) = log(sec x).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = log(sec x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 344,
-      "text": "Find f'(x) for f(x) = log_7((6x^4 + 3)^5).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = log_7((6x^4 + 3)^5)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 345,
-      "text": "Find f'(x) for f(x) = 2^x * log_3(7^{x^2-4}).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 2^x * log_3(7^{x^2-4})\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 346,
-      "text": "Use logarithmic differentiation to find dy/dx for y = x^{sqrt(x)}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = x^{sqrt(x)}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 347,
-      "text": "Use logarithmic differentiation to find dy/dx for y = (sin(2x))^{4x}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = (sin(2x))^{4x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 348,
-      "text": "Use logarithmic differentiation to find dy/dx for y = (ln x)^{ln x}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = (ln x)^{ln x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 349,
-      "text": "Use logarithmic differentiation to find dy/dx for y = x^{log_2 x}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = x^{log_2 x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 350,
-      "text": "Use logarithmic differentiation to find dy/dx for y = (x^2 - 1)^{ln x}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = (x^2 - 1)^{ln x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 351,
-      "text": "Use logarithmic differentiation to find dy/dx for y = x^{cot x}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = x^{cot x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 352,
-      "text": "Use logarithmic differentiation to find dy/dx for y = (x + 11) / (x^2 - 4)^{1/3}.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = (x + 11) / (x^2 - 4)^{1/3}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284,
@@ -162,42 +165,42 @@
     },
     {
       "number": 353,
-      "text": "Use logarithmic differentiation to find dy/dx for y = x^{-1/2} * (x^2 + 3)^{2/3} * (3x - 4)^4.",
+      "text": "Use logarithmic differentiation to find \\(dy/dx\\) for \\(y = x^{-1/2} * (x^2 + 3)^{2/3} * (3x - 4)^4\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 354,
-      "text": "[T] Find an equation of the tangent line to the graph of f(x) = 4x*e^{(x^2 - 1)} at the point where x = -1. Graph both the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(f(x) = 4x*e^{(x^2 - 1)}\\) at the point where \\(x = -1\\). Graph both the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 355,
-      "text": "[T] Find an equation of the line that is normal to the graph of f(x) = x * 5^x at the point where x = 1. Graph both the function and the normal line.",
+      "text": "[T] Find an equation of the line that is normal to the graph of \\(f(x) = x * 5^x\\) at the point where \\(x = 1\\). Graph both the function and the normal line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 356,
-      "text": "[T] Find an equation of the tangent line to the graph of x^3 - x*ln(y) + y^3 = 2x + 5 at the point (2, 1). (Hint: Use implicit differentiation to find dy/dx.) Graph both the curve and the tangent line.",
+      "text": "[T] Find an equation of the tangent line to the graph of \\(x^3 - x*ln(y) + y^3 = 2x + 5\\) at the point \\((2, 1)\\). (Hint: Use implicit differentiation to find \\(dy/dx\\).) Graph both the curve and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 357,
-      "text": "Consider the function y = x^{1/x} for x > 0. (a) Determine the points on the graph where the tangent line is horizontal. (b) Determine the points on the graph where y' > 0 and those where y' < 0.",
+      "text": "Consider the function \\(y = x^{1/x}\\) for \\(x > 0\\). (a) Determine the points on the graph where the tangent line is horizontal. (b) Determine the points on the graph where \\(y' > 0\\) and those where \\(y' < 0\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 284
     },
     {
       "number": 358,
-      "text": "The formula I(t) = sin(t) / e^t is the formula for a decaying alternating current. (a) Complete the following table with the appropriate values: t = 0, I(t) = (i); t = pi/2, I(t) = (ii); t = pi, I(t) = (iii); t = 3pi/2, I(t) = (iv); t = 2pi, I(t) = (v); t = 5pi/2, I(t) = (vi); t = 3pi, I(t) = (vii); t = 7pi/2, I(t) = (viii); t = 4pi, I(t) = (ix). (b) Using only the values in the table, determine where the tangent line to the graph of I(t) is horizontal.",
+      "text": "The formula \\(I(t) = sin(t) / e^t\\) is the formula for a decaying alternating current. (a) Complete the following table with the appropriate values: \\(t = 0\\), \\(I(t) = (i)\\); \\(t = pi/2\\), \\(I(t) = (ii)\\); \\(t = pi\\), \\(I(t) = (iii)\\); \\(t = 3pi/2\\), \\(I(t) = (iv)\\); \\(t = 2pi\\), \\(I(t) = (v)\\); \\(t = 5pi/2\\), \\(I(t) = (vi)\\); \\(t = 3pi\\), \\(I(t) = (vii)\\); \\(t = 7pi/2\\), \\(I(t) = (viii)\\); \\(t = 4pi\\), \\(I(t) = (ix)\\). (b) Using only the values in the table, determine where the tangent line to the graph of \\(I(t)\\) is horizontal.",
       "kind": "table",
       "available": true,
       "book_page": 285,
@@ -205,35 +208,35 @@
     },
     {
       "number": 359,
-      "text": "[T] The population of Toledo, Ohio, in 2000 was approximately 500,000. Assume the population is increasing at a rate of 5% per year. (a) Write the exponential function that relates the total population as a function of t. (b) Use (a) to determine the rate at which the population is increasing in t years. (c) Use (b) to determine the rate at which the population is increasing in 10 years.",
+      "text": "[T] The population of Toledo, Ohio, in 2000 was approximately 500,000. Assume the population is increasing at a rate of 5% per year. (a) Write the exponential function that relates the total population as a function of \\(t\\). (b) Use (a) to determine the rate at which the population is increasing in \\(t\\) years. (c) Use (b) to determine the rate at which the population is increasing in 10 years.",
       "kind": "symbolic",
       "available": true,
       "book_page": 285
     },
     {
       "number": 360,
-      "text": "[T] An isotope of the element erbium has a half-life of approximately 12 hours. Initially there are 9 grams of the isotope present. (a) Write the exponential function that relates the amount of substance remaining as a function of t, measured in hours. (b) Use (a) to determine the rate at which the substance is decaying in t hours. (c) Use (b) to determine the rate of decay at t = 4 hours.",
+      "text": "[T] An isotope of the element erbium has a half-life of approximately 12 hours. Initially there are 9 grams of the isotope present. (a) Write the exponential function that relates the amount of substance remaining as a function of \\(t\\), measured in hours. (b) Use (a) to determine the rate at which the substance is decaying in \\(t\\) hours. (c) Use (b) to determine the rate of decay at \\(t = 4\\) hours.",
       "kind": "symbolic",
       "available": true,
       "book_page": 285
     },
     {
       "number": 361,
-      "text": "[T] The number of cases of influenza in New York City from the beginning of 1960 to the beginning of 1964 is modeled by the function N(t) = 5.3*e^{0.093t^2 - 0.87t}, (0 <= t <= 4), where N(t) gives the number of cases (in thousands) and t is measured in years, with t = 0 corresponding to the beginning of 1960. (a) Show work that evaluates N(0) and N(4). Briefly describe what these values indicate about the disease in New York City. (b) Show work that evaluates N'(0) and N'(3). Briefly describe what these values indicate about the disease in New York City.",
+      "text": "[T] The number of cases of influenza in New York City from the beginning of 1960 to the beginning of 1964 is modeled by the function \\(N(t) = 5.3*e^{0.093t^2 - 0.87t}\\), \\((0 <= t <= 4)\\), where \\(N(t)\\) gives the number of cases (in thousands) and \\(t\\) is measured in years, with \\(t = 0\\) corresponding to the beginning of 1960. (a) Show work that evaluates \\(N(0)\\) and \\(N(4)\\). Briefly describe what these values indicate about the disease in New York City. (b) Show work that evaluates \\(N'(0)\\) and \\(N'(3)\\). Briefly describe what these values indicate about the disease in New York City.",
       "kind": "symbolic",
       "available": true,
       "book_page": 286
     },
     {
       "number": 362,
-      "text": "[T] The relative rate of change of a differentiable function y = f(x) is given by 100*f'(x)/f(x) %. One model for population growth is a Gompertz growth function, given by P(x) = a*e^{-b*e^{-cx}} where a, b, and c are constants. (a) Find the relative rate of change formula for the generic Gompertz function. (b) Use (a) to find the relative rate of change of a population in x = 20 months when a = 204, b = 0.0198, and c = 0.15. (c) Briefly interpret what the result of (b) means.",
+      "text": "[T] The relative rate of change of a differentiable function \\(y = f(x)\\) is given by \\(100*f'(x)/f(x)\\) %. One model for population growth is a Gompertz growth function, given by \\(P(x) = a*e^{-b*e^{-cx}}\\) where \\(a\\), \\(b\\), and \\(c\\) are constants. (a) Find the relative rate of change formula for the generic Gompertz function. (b) Use (a) to find the relative rate of change of a population in \\(x = 20\\) months when \\(a = 204\\), \\(b = 0.0198\\), and \\(c = 0.15\\). (c) Briefly interpret what the result of (b) means.",
       "kind": "symbolic",
       "available": true,
       "book_page": 286
     },
     {
       "number": 363,
-      "text": "[T] Using a computer program or a calculator, fit a growth curve to the data of the form p = a*b^t, using the population of New York City from 1790 to 1860, given in the following table (Table 3.8, New York City Population Over Time): years since 1790 = 0, population = 33,131; years since 1790 = 10, population = 60,515; years since 1790 = 20, population = 96,373; years since 1790 = 30, population = 123,706; years since 1790 = 40, population = 202,300; years since 1790 = 50, population = 312,710; years since 1790 = 60, population = 515,547; years since 1790 = 70, population = 813,669.",
+      "text": "[T] Using a computer program or a calculator, fit a growth curve to the data of the form \\(p = a*b^t\\), using the population of New York City from 1790 to 1860, given in the following table (Table 3.8, New York City Population Over Time): years since 1790 = 0, population = 33,131; years since 1790 = 10, population = 60,515; years since 1790 = 20, population = 96,373; years since 1790 = 30, population = 123,706; years since 1790 = 40, population = 202,300; years since 1790 = 50, population = 312,710; years since 1790 = 60, population = 515,547; years since 1790 = 70, population = 813,669.",
       "kind": "table",
       "available": true,
       "book_page": 286,

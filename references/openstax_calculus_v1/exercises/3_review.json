@@ -2,7 +2,10 @@
   "book_key": "openstax_calculus_v1",
   "section": "3.review",
   "section_title": "Chapter 3 Review Exercises",
-  "exercise_pages": [292, 293],
+  "exercise_pages": [
+    292,
+    293
+  ],
   "stem_note": "Stem 'True or False? Justify the answer with a proof or a counterexample.' governs 367-370, folded into each item as a self-contained instruction. Stem 'Use the limit definition of the derivative to exactly evaluate the derivative.' governs 371-372. Stem 'Find the derivatives of the following functions.' governs 373-380; item 380 is an implicit equation (not y = f(x)) and is phrased 'Find the derivative for <equation>' rather than 'Find the derivative of f(x) =', matching what is actually printed (the book states no implicit-differentiation hint for this item, unlike 3.8's items which do). Stem 'Find the following derivatives of various orders.' governs 381-383. Stem 'Find an equation of the tangent line to the following equations at the specified point.' governs 384-385. Stem 'Draw the derivative for the following graphs.' governs 386-387, each a distinct picture on p292 requiring the image as data; classified graph/unavailable per the existing precedent in 3_2.json #64-67 (same generic instruction, one picture per item). The shared stem describing the Ocean City, New Jersey water-level model, w(t) = 1.9 + 2.9*cos((pi/6)*t), is inlined into each governed exercise (388-389); both ask the student to compute and interpret, with no picture needed to read the model, so they are classified symbolic/available per the existing graph-as-output-task precedent in 3_9.json (354-356, 'Graph both the function and the tangent line' kept symbolic). The shared stem describing the Hurricane Katrina wind-speed data (Table 3.9) is inlined into each governed exercise (390-391) per the table-inlining convention already used in 3_2.json, 3_6.json, and 3_9.json (363-366), with the book-cited source URL kept in notes rather than the transcribed text. Multiplication convention follows existing local precedent: bare/spaced juxtaposition for a monomial times a function call or another variable (x^2 ln(9x) in 3_9.json #342; xy and x^2y^2 in 3_8.json), explicit '*' for a numeric coefficient times a function call (5.3*e^{...} in 3_9.json #361; 2.9*cos(...) here).",
   "exercises": [
     {
@@ -35,105 +38,105 @@
     },
     {
       "number": 371,
-      "text": "Use the limit definition of the derivative to exactly evaluate the derivative for f(x) = sqrt(x + 4).",
+      "text": "Use the limit definition of the derivative to exactly evaluate the derivative for \\(f(x) = sqrt(x + 4)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 372,
-      "text": "Use the limit definition of the derivative to exactly evaluate the derivative for f(x) = 3/x.",
+      "text": "Use the limit definition of the derivative to exactly evaluate the derivative for \\(f(x) = 3/x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 373,
-      "text": "Find the derivative of f(x) = 3x^3 - 4/x^2.",
+      "text": "Find the derivative of \\(f(x) = 3x^3 - 4/x^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 374,
-      "text": "Find the derivative of f(x) = (4 - x^2)^3.",
+      "text": "Find the derivative of \\(f(x) = (4 - x^2)^3\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 375,
-      "text": "Find the derivative of f(x) = e^{sin(x)}.",
+      "text": "Find the derivative of \\(f(x) = e^{sin(x)}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 376,
-      "text": "Find the derivative of f(x) = ln(x + 2).",
+      "text": "Find the derivative of \\(f(x) = ln(x + 2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 377,
-      "text": "Find the derivative of f(x) = x^2 cos(x) + x tan(x).",
+      "text": "Find the derivative of \\(f(x) = x^2 cos(x) + x tan(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 378,
-      "text": "Find the derivative of f(x) = sqrt(3x^2 + 2).",
+      "text": "Find the derivative of \\(f(x) = sqrt(3x^2 + 2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 379,
-      "text": "Find the derivative of f(x) = (x/4) sin^{-1}(x).",
+      "text": "Find the derivative of \\(f(x) = (x/4) sin^{-1}(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 380,
-      "text": "Find the derivative for x^2y = (y + 2) + xy sin(x).",
+      "text": "Find the derivative for \\(x^2y = (y + 2) + xy sin(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 381,
-      "text": "Find the first derivative of y = x ln(x) cos(x).",
+      "text": "Find the first derivative of \\(y = x ln(x) cos(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 382,
-      "text": "Find the third derivative of y = (3x + 2)^2.",
+      "text": "Find the third derivative of \\(y = (3x + 2)^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 383,
-      "text": "Find the second derivative of y = 4^x + x^2 sin(x).",
+      "text": "Find the second derivative of \\(y = 4^x + x^2 sin(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 384,
-      "text": "Find an equation of the tangent line to y = cos^{-1}(x) + x at x = 0.",
+      "text": "Find an equation of the tangent line to \\(y = cos^{-1}(x) + x\\) at \\(x = 0\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 385,
-      "text": "Find an equation of the tangent line to y = x + e^x - 1/x at x = 1.",
+      "text": "Find an equation of the tangent line to \\(y = x + e^x - 1/x\\) at \\(x = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
@@ -154,14 +157,14 @@
     },
     {
       "number": 388,
-      "text": "The following questions concern the water level in Ocean City, New Jersey, in January, which can be approximated by w(t) = 1.9 + 2.9*cos((pi/6)*t), where t is measured in hours after midnight, and the height is measured in feet. Find and graph the derivative. What is the physical meaning?",
+      "text": "The following questions concern the water level in Ocean City, New Jersey, in January, which can be approximated by \\(w(t) = 1.9 + 2.9*cos((pi/6)*t)\\), where \\(t\\) is measured in hours after midnight, and the height is measured in feet. Find and graph the derivative. What is the physical meaning?",
       "kind": "symbolic",
       "available": true,
       "book_page": 292
     },
     {
       "number": 389,
-      "text": "The following questions concern the water level in Ocean City, New Jersey, in January, which can be approximated by w(t) = 1.9 + 2.9*cos((pi/6)*t), where t is measured in hours after midnight, and the height is measured in feet. Find w'(3). What is the physical meaning of this value?",
+      "text": "The following questions concern the water level in Ocean City, New Jersey, in January, which can be approximated by \\(w(t) = 1.9 + 2.9*cos((pi/6)*t)\\), where \\(t\\) is measured in hours after midnight, and the height is measured in feet. Find \\(w'(3)\\). What is the physical meaning of this value?",
       "kind": "symbolic",
       "available": true,
       "book_page": 292

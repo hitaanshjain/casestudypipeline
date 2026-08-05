@@ -10,147 +10,147 @@
   "exercises": [
     {
       "number": 106,
-      "text": "Find f'(x) for f(x) = x^7 + 10.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = x^7 + 10\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 107,
-      "text": "Find f'(x) for f(x) = 5x^3 - x + 1.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 5x^3 - x + 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 108,
-      "text": "Find f'(x) for f(x) = 4x^2 - 7x.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 4x^2 - 7x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 109,
-      "text": "Find f'(x) for f(x) = 8x^4 + 9x^2 - 1.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 8x^4 + 9x^2 - 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 110,
-      "text": "Find f'(x) for f(x) = x^4 + 2/x.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = x^4 + 2/x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 111,
-      "text": "Find f'(x) for f(x) = 3x(18x^4 + 13/(x+1)).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = 3x(18x^4 + 13/(x+1))\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 112,
-      "text": "Find f'(x) for f(x) = (x+2)(2x^2-3).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = (x+2)(2x^2-3)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 113,
-      "text": "Find f'(x) for f(x) = x^2(2/x^2 + 5/x^3).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = x^2(2/x^2 + 5/x^3)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 114,
-      "text": "Find f'(x) for f(x) = (x^3+2x^2-4)/3.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = (x^3+2x^2-4)/3\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 115,
-      "text": "Find f'(x) for f(x) = (4x^3-2x+1)/x^2.",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = (4x^3-2x+1)/x^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 116,
-      "text": "Find f'(x) for f(x) = (x^2+4)/(x^2-4).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = (x^2+4)/(x^2-4)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 117,
-      "text": "Find f'(x) for f(x) = (x+9)/(x^2-7x+1).",
+      "text": "Find \\(f'(x)\\) for \\(f(x) = (x+9)/(x^2-7x+1)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 118,
-      "text": "[T] Find an equation of the tangent line T(x) to the graph of y = 3x^2 + 4x + 1 at (0, 1). Use a graphing calculator to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line \\(T(x)\\) to the graph of \\(y = 3x^2 + 4x + 1\\) at \\((0, 1)\\). Use a graphing calculator to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 119,
-      "text": "[T] Find an equation of the tangent line T(x) to the graph of y = 2/x^2 + 1 at (1, 3). Use a graphing calculator to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line \\(T(x)\\) to the graph of \\(y = 2/x^2 + 1\\) at \\((1, 3)\\). Use a graphing calculator to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 120,
-      "text": "[T] Find an equation of the tangent line T(x) to the graph of y = 2x/(x-1) at (-1, 1). Use a graphing calculator to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line \\(T(x)\\) to the graph of \\(y = 2x/(x-1)\\) at \\((-1, 1)\\). Use a graphing calculator to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 121,
-      "text": "[T] Find an equation of the tangent line T(x) to the graph of y = 2/x - 3/x^2 at (1, -1). Use a graphing calculator to graph the function and the tangent line.",
+      "text": "[T] Find an equation of the tangent line \\(T(x)\\) to the graph of \\(y = 2/x - 3/x^2\\) at \\((1, -1)\\). Use a graphing calculator to graph the function and the tangent line.",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 122,
-      "text": "Assume that f(x) and g(x) are both differentiable functions for all x. Find the derivative of h(x) = 4f(x) + g(x)/7.",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions for all \\(x\\). Find the derivative of \\(h(x) = 4f(x) + g(x)/7\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 123,
-      "text": "Assume that f(x) and g(x) are both differentiable functions for all x. Find the derivative of h(x) = x^3 f(x).",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions for all \\(x\\). Find the derivative of \\(h(x) = x^3 f(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 124,
-      "text": "Assume that f(x) and g(x) are both differentiable functions for all x. Find the derivative of h(x) = f(x)g(x)/2.",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions for all \\(x\\). Find the derivative of \\(h(x) = f(x)g(x)/2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 125,
-      "text": "Assume that f(x) and g(x) are both differentiable functions for all x. Find the derivative of h(x) = 3f(x)/(g(x)+2).",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions for all \\(x\\). Find the derivative of \\(h(x) = 3f(x)/(g(x)+2)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 228
     },
     {
       "number": 126,
-      "text": "Assume that f(x) and g(x) are both differentiable functions with values as given in the following table: x = 1, 2, 3, 4; f(x) = 3, 5, -2, 0; g(x) = 2, 3, -4, 6; f'(x) = -1, 7, 8, -3; g'(x) = 4, 1, 2, 9. Find h'(1) if h(x) = x f(x) + 4g(x).",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions with values as given in the following table: \\(x = 1, 2, 3, 4\\); \\(f(x) = 3, 5, -2, 0\\); \\(g(x) = 2, 3, -4, 6\\); \\(f'(x) = -1, 7, 8, -3\\); \\(g'(x) = 4, 1, 2, 9\\). Find \\(h'(1)\\) if \\(h(x) = x f(x) + 4g(x)\\).",
       "kind": "table",
       "available": true,
       "book_page": 228,
@@ -158,7 +158,7 @@
     },
     {
       "number": 127,
-      "text": "Assume that f(x) and g(x) are both differentiable functions with values as given in the following table: x = 1, 2, 3, 4; f(x) = 3, 5, -2, 0; g(x) = 2, 3, -4, 6; f'(x) = -1, 7, 8, -3; g'(x) = 4, 1, 2, 9. Find h'(2) if h(x) = f(x)/g(x).",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions with values as given in the following table: \\(x = 1, 2, 3, 4\\); \\(f(x) = 3, 5, -2, 0\\); \\(g(x) = 2, 3, -4, 6\\); \\(f'(x) = -1, 7, 8, -3\\); \\(g'(x) = 4, 1, 2, 9\\). Find \\(h'(2)\\) if \\(h(x) = f(x)/g(x)\\).",
       "kind": "table",
       "available": true,
       "book_page": 228,
@@ -166,7 +166,7 @@
     },
     {
       "number": 128,
-      "text": "Assume that f(x) and g(x) are both differentiable functions with values as given in the following table: x = 1, 2, 3, 4; f(x) = 3, 5, -2, 0; g(x) = 2, 3, -4, 6; f'(x) = -1, 7, 8, -3; g'(x) = 4, 1, 2, 9. Find h'(3) if h(x) = 2x + f(x)g(x).",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions with values as given in the following table: \\(x = 1, 2, 3, 4\\); \\(f(x) = 3, 5, -2, 0\\); \\(g(x) = 2, 3, -4, 6\\); \\(f'(x) = -1, 7, 8, -3\\); \\(g'(x) = 4, 1, 2, 9\\). Find \\(h'(3)\\) if \\(h(x) = 2x + f(x)g(x)\\).",
       "kind": "table",
       "available": true,
       "book_page": 228,
@@ -174,7 +174,7 @@
     },
     {
       "number": 129,
-      "text": "Assume that f(x) and g(x) are both differentiable functions with values as given in the following table: x = 1, 2, 3, 4; f(x) = 3, 5, -2, 0; g(x) = 2, 3, -4, 6; f'(x) = -1, 7, 8, -3; g'(x) = 4, 1, 2, 9. Find h'(4) if h(x) = 1/x + g(x)/f(x).",
+      "text": "Assume that \\(f(x)\\) and \\(g(x)\\) are both differentiable functions with values as given in the following table: \\(x = 1, 2, 3, 4\\); \\(f(x) = 3, 5, -2, 0\\); \\(g(x) = 2, 3, -4, 6\\); \\(f'(x) = -1, 7, 8, -3\\); \\(g'(x) = 4, 1, 2, 9\\). Find \\(h'(4)\\) if \\(h(x) = 1/x + g(x)/f(x)\\).",
       "kind": "table",
       "available": true,
       "book_page": 228,
@@ -182,140 +182,140 @@
     },
     {
       "number": 130,
-      "text": "Using the following figure showing the piecewise-linear graphs of f(x) and g(x), find the indicated derivatives, if they exist. Let h(x) = f(x) + g(x). Find (a) h'(1), (b) h'(3), and (c) h'(4).",
+      "text": "Using the following figure showing the piecewise-linear graphs of \\(f(x)\\) and \\(g(x)\\), find the indicated derivatives, if they exist. Let \\(h(x) = f(x) + g(x)\\). Find (a) \\(h'(1)\\), (b) \\(h'(3)\\), and (c) \\(h'(4)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 229
     },
     {
       "number": 131,
-      "text": "Using the following figure showing the piecewise-linear graphs of f(x) and g(x), find the indicated derivatives, if they exist. Let h(x) = f(x)g(x). Find (a) h'(1), (b) h'(3), and (c) h'(4).",
+      "text": "Using the following figure showing the piecewise-linear graphs of \\(f(x)\\) and \\(g(x)\\), find the indicated derivatives, if they exist. Let \\(h(x) = f(x)g(x)\\). Find (a) \\(h'(1)\\), (b) \\(h'(3)\\), and (c) \\(h'(4)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 229
     },
     {
       "number": 132,
-      "text": "Using the following figure showing the piecewise-linear graphs of f(x) and g(x), find the indicated derivatives, if they exist. Let h(x) = f(x)/g(x). Find (a) h'(1), (b) h'(3), and (c) h'(4).",
+      "text": "Using the following figure showing the piecewise-linear graphs of \\(f(x)\\) and \\(g(x)\\), find the indicated derivatives, if they exist. Let \\(h(x) = f(x)/g(x)\\). Find (a) \\(h'(1)\\), (b) \\(h'(3)\\), and (c) \\(h'(4)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 229
     },
     {
       "number": 133,
-      "text": "[T] For f(x) = 2x^3 + 3x - x^2 with a = 2: (a) evaluate f'(a), and (b) graph the function f(x) and the tangent line at x = a.",
+      "text": "[T] For \\(f(x) = 2x^3 + 3x - x^2\\) with \\(a = 2\\): (a) evaluate \\(f'(a)\\), and (b) graph the function \\(f(x)\\) and the tangent line at \\(x = a\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 134,
-      "text": "[T] For f(x) = 1/x - x^2 with a = 1: (a) evaluate f'(a), and (b) graph the function f(x) and the tangent line at x = a.",
+      "text": "[T] For \\(f(x) = 1/x - x^2\\) with \\(a = 1\\): (a) evaluate \\(f'(a)\\), and (b) graph the function \\(f(x)\\) and the tangent line at \\(x = a\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 135,
-      "text": "[T] For f(x) = x^2 - x^12 + 3x + 2 with a = 0: (a) evaluate f'(a), and (b) graph the function f(x) and the tangent line at x = a.",
+      "text": "[T] For \\(f(x) = x^2 - x^12 + 3x + 2\\) with \\(a = 0\\): (a) evaluate \\(f'(a)\\), and (b) graph the function \\(f(x)\\) and the tangent line at \\(x = a\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 136,
-      "text": "[T] For f(x) = 1/x - x^2 with a = -1: (a) evaluate f'(a), and (b) graph the function f(x) and the tangent line at x = a.",
+      "text": "[T] For \\(f(x) = 1/x - x^2\\) with \\(a = -1\\): (a) evaluate \\(f'(a)\\), and (b) graph the function \\(f(x)\\) and the tangent line at \\(x = a\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 137,
-      "text": "Find an equation of the tangent line to the graph of f(x) = 2x^3 + 4x^2 - 5x - 3 at x = -1.",
+      "text": "Find an equation of the tangent line to the graph of \\(f(x) = 2x^3 + 4x^2 - 5x - 3\\) at \\(x = -1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 138,
-      "text": "Find an equation of the tangent line to the graph of f(x) = x^2 + 4/x - 10 at x = 8.",
+      "text": "Find an equation of the tangent line to the graph of \\(f(x) = x^2 + 4/x - 10\\) at \\(x = 8\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 139,
-      "text": "Find an equation of the tangent line to the graph of f(x) = (3x - x^2)(3 - x - x^2) at x = 1.",
+      "text": "Find an equation of the tangent line to the graph of \\(f(x) = (3x - x^2)(3 - x - x^2)\\) at \\(x = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 140,
-      "text": "Find the point on the graph of f(x) = x^3 such that the tangent line at that point has an x intercept of 6.",
+      "text": "Find the point on the graph of \\(f(x) = x^3\\) such that the tangent line at that point has an \\(x\\) intercept of 6.",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 141,
-      "text": "Find an equation of the line passing through the point P(3, 3) and tangent to the graph of f(x) = 6/(x-1).",
+      "text": "Find an equation of the line passing through the point \\(P(3, 3)\\) and tangent to the graph of \\(f(x) = 6/(x-1)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 142,
-      "text": "Determine all points on the graph of f(x) = x^3 + x^2 - x - 1 for which (a) the tangent line is horizontal, and (b) the tangent line has a slope of -1.",
+      "text": "Determine all points on the graph of \\(f(x) = x^3 + x^2 - x - 1\\) for which (a) the tangent line is horizontal, and (b) the tangent line has a slope of -1.",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 143,
-      "text": "Find a quadratic polynomial such that f(1) = 5, f'(1) = 3, and f''(1) = -6.",
+      "text": "Find a quadratic polynomial such that \\(f(1) = 5\\), \\(f'(1) = 3\\), and \\(f''(1) = -6\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 144,
-      "text": "A car driving along a freeway with traffic has traveled s(t) = t^3 - 6t^2 + 9t meters in t seconds. (a) Determine the time in seconds when the velocity of the car is 0. (b) Determine the acceleration of the car when the velocity is 0.",
+      "text": "A car driving along a freeway with traffic has traveled \\(s(t) = t^3 - 6t^2 + 9t\\) meters in \\(t\\) seconds. (a) Determine the time in seconds when the velocity of the car is 0. (b) Determine the acceleration of the car when the velocity is 0.",
       "kind": "symbolic",
       "available": true,
       "book_page": 229
     },
     {
       "number": 145,
-      "text": "[T] A herring swimming along a straight line has traveled s(t) = t^2/(t^2+2) feet in t seconds. Determine the velocity of the herring when it has traveled 3 seconds.",
+      "text": "[T] A herring swimming along a straight line has traveled \\(s(t) = t^2/(t^2+2)\\) feet in \\(t\\) seconds. Determine the velocity of the herring when it has traveled 3 seconds.",
       "kind": "symbolic",
       "available": true,
       "book_page": 230
     },
     {
       "number": 146,
-      "text": "The population in millions of arctic flounder in the Atlantic Ocean is modeled by the function P(t) = (8t+3)/(0.2t^2+1), where t is measured in years. (a) Determine the initial flounder population. (b) Determine P'(10) and briefly interpret the result.",
+      "text": "The population in millions of arctic flounder in the Atlantic Ocean is modeled by the function \\(P(t) = (8t+3)/(0.2t^2+1)\\), where \\(t\\) is measured in years. (a) Determine the initial flounder population. (b) Determine \\(P'(10)\\) and briefly interpret the result.",
       "kind": "symbolic",
       "available": true,
       "book_page": 230
     },
     {
       "number": 147,
-      "text": "[T] The concentration of antibiotic in the bloodstream t hours after being injected is given by the function C(t) = (2t^2+t)/(t^3+50), where C is measured in milligrams per liter of blood. (a) Find the rate of change of C(t). (b) Determine the rate of change for t = 8, 12, 24, and 36. (c) Briefly describe what seems to be occurring as the number of hours increases.",
+      "text": "[T] The concentration of antibiotic in the bloodstream \\(t\\) hours after being injected is given by the function \\(C(t) = (2t^2+t)/(t^3+50)\\), where \\(C\\) is measured in milligrams per liter of blood. (a) Find the rate of change of \\(C(t)\\). (b) Determine the rate of change for \\(t = 8, 12, 24, and 36\\). (c) Briefly describe what seems to be occurring as the number of hours increases.",
       "kind": "symbolic",
       "available": true,
       "book_page": 230
     },
     {
       "number": 148,
-      "text": "A book publisher has a cost function given by C(x) = (x^3+2x+3)/x^2, where x is the number of copies of a book in thousands and C is the cost, per book, measured in dollars. Evaluate C'(2) and explain its meaning.",
+      "text": "A book publisher has a cost function given by \\(C(x) = (x^3+2x+3)/x^2\\), where \\(x\\) is the number of copies of a book in thousands and \\(C\\) is the cost, per book, measured in dollars. Evaluate \\(C'(2)\\) and explain its meaning.",
       "kind": "symbolic",
       "available": true,
       "book_page": 230
     },
     {
       "number": 149,
-      "text": "[T] According to Newton's law of universal gravitation, the force F between two bodies of constant mass m_1 and m_2 is given by the formula F = G m_1 m_2/d^2, where G is the gravitational constant and d is the distance between the bodies. (a) Suppose that G, m_1, and m_2 are constants. Find the rate of change of force F with respect to distance d. (b) Find the rate of change of force F with gravitational constant G = 6.67 \\times 10^{-11} Nm^2/kg^2, on two bodies 10 meters apart, each with a mass of 1000 kilograms.",
+      "text": "[T] According to Newton's law of universal gravitation, the force \\(F\\) between two bodies of constant mass \\(m_1\\) and \\(m_2\\) is given by the formula \\(F = G m_1 m_2/d^2\\), where \\(G\\) is the gravitational constant and \\(d\\) is the distance between the bodies. (a) Suppose that \\(G\\), \\(m_1\\), and \\(m_2\\) are constants. Find the rate of change of force \\(F\\) with respect to distance \\(d\\). (b) Find the rate of change of force \\(F\\) with gravitational constant \\(G = 6.67 \\times 10^{-11} Nm^2/kg^2\\), on two bodies 10 meters apart, each with a mass of 1000 kilograms.",
       "kind": "symbolic",
       "available": true,
       "book_page": 230

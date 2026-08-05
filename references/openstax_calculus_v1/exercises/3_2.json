@@ -10,259 +10,259 @@
   "exercises": [
     {
       "number": 54,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 6.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 6\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 55,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 2 - 3x.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 2 - 3x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 56,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 2x/7 + 1.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 2x/7 + 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 57,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 4x^2.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 4x^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 58,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 5x - x^2.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 5x - x^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 59,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = \\sqrt{2x}.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = \\sqrt{2x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 60,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = \\sqrt{x - 6}.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = \\sqrt{x - 6}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 61,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 9/x.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 9/x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 62,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = x + 1/x.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = x + 1/x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 63,
-      "text": "Using the definition of a derivative, find f'(x) for f(x) = 1/\\sqrt{x}.",
+      "text": "Using the definition of a derivative, find \\(f'(x)\\) for \\(f(x) = 1/\\sqrt{x}\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 212
     },
     {
       "number": 64,
-      "text": "Use the graph of y = f(x) to sketch the graph of its derivative f'(x).",
+      "text": "Use the graph of \\(y = f(x)\\) to sketch the graph of its derivative \\(f'(x)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 212
     },
     {
       "number": 65,
-      "text": "Use the graph of y = f(x) to sketch the graph of its derivative f'(x).",
+      "text": "Use the graph of \\(y = f(x)\\) to sketch the graph of its derivative \\(f'(x)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 212
     },
     {
       "number": 66,
-      "text": "Use the graph of y = f(x) to sketch the graph of its derivative f'(x).",
+      "text": "Use the graph of \\(y = f(x)\\) to sketch the graph of its derivative \\(f'(x)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 212
     },
     {
       "number": 67,
-      "text": "Use the graph of y = f(x) to sketch the graph of its derivative f'(x).",
+      "text": "Use the graph of \\(y = f(x)\\) to sketch the graph of its derivative \\(f'(x)\\).",
       "kind": "graph",
       "available": false,
       "book_page": 213
     },
     {
       "number": 68,
-      "text": "The given limit represents the derivative of a function y = f(x) at x = a. Find f(x) and a: lim_{h -> 0} ((1 + h)^{2/3} - 1) / h.",
+      "text": "The given limit represents the derivative of a function \\(y = f(x)\\) at \\(x = a\\). Find \\(f(x)\\) and \\(a\\): \\(lim_{h -> 0} ((1 + h)^{2/3} - 1) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 69,
-      "text": "The given limit represents the derivative of a function y = f(x) at x = a. Find f(x) and a: lim_{h -> 0} ([3(2 + h)^2 + 2] - 14) / h.",
+      "text": "The given limit represents the derivative of a function \\(y = f(x)\\) at \\(x = a\\). Find \\(f(x)\\) and \\(a\\): \\(lim_{h -> 0} ([3(2 + h)^2 + 2] - 14) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 70,
-      "text": "The given limit represents the derivative of a function y = f(x) at x = a. Find f(x) and a: lim_{h -> 0} (cos(pi + h) + 1) / h.",
+      "text": "The given limit represents the derivative of a function \\(y = f(x)\\) at \\(x = a\\). Find \\(f(x)\\) and \\(a\\): \\(lim_{h -> 0} (cos(pi + h) + 1) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 71,
-      "text": "The given limit represents the derivative of a function y = f(x) at x = a. Find f(x) and a: lim_{h -> 0} ((2 + h)^4 - 16) / h.",
+      "text": "The given limit represents the derivative of a function \\(y = f(x)\\) at \\(x = a\\). Find \\(f(x)\\) and \\(a\\): \\(lim_{h -> 0} ((2 + h)^4 - 16) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 72,
-      "text": "The given limit represents the derivative of a function y = f(x) at x = a. Find f(x) and a: lim_{h -> 0} ([2(3 + h)^2 - (3 + h)] - 15) / h.",
+      "text": "The given limit represents the derivative of a function \\(y = f(x)\\) at \\(x = a\\). Find \\(f(x)\\) and \\(a\\): \\(lim_{h -> 0} ([2(3 + h)^2 - (3 + h)] - 15) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 73,
-      "text": "The given limit represents the derivative of a function y = f(x) at x = a. Find f(x) and a: lim_{h -> 0} (e^h - 1) / h.",
+      "text": "The given limit represents the derivative of a function \\(y = f(x)\\) at \\(x = a\\). Find \\(f(x)\\) and \\(a\\): \\(lim_{h -> 0} (e^h - 1) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 74,
-      "text": "For the function f(x) = { 2\\sqrt{x}, 0 <= x <= 1; 3x - 1, x > 1 }: (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at x = 1.",
+      "text": "For the function \\(f(x) = { 2\\sqrt{x}, 0 <= x <= 1; 3x - 1, x > 1 }\\): (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at \\(x = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 75,
-      "text": "For the function f(x) = { 3, x < 1; 3x, x >= 1 }: (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at x = 1.",
+      "text": "For the function \\(f(x) = { 3, x < 1; 3x, x >= 1 }\\): (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at \\(x = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 76,
-      "text": "For the function f(x) = { -x^2 + 2, x <= 1; x, x > 1 }: (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at x = 1.",
+      "text": "For the function \\(f(x) = { -x^2 + 2, x <= 1; x, x > 1 }\\): (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at \\(x = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 77,
-      "text": "For the function f(x) = { 2x, x <= 1; 2/x, x > 1 }: (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at x = 1.",
+      "text": "For the function \\(f(x) = { 2x, x <= 1; 2/x, x > 1 }\\): (a) sketch the graph and (b) use the definition of a derivative to show that the function is not differentiable at \\(x = 1\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 78,
-      "text": "For the following graph, (a) determine for which values of x = a the limit as x approaches a of f(x) exists but f is not continuous at x = a, and (b) determine for which values of x = a the function is continuous but not differentiable at x = a.",
+      "text": "For the following graph, (a) determine for which values of \\(x = a\\) the limit as \\(x\\) approaches \\(a\\) of \\(f(x)\\) exists but \\(f\\) is not continuous at \\(x = a\\), and (b) determine for which values of \\(x = a\\) the function is continuous but not differentiable at \\(x = a\\).",
       "kind": "graph",
       "available": false,
       "book_page": 213
     },
     {
       "number": 79,
-      "text": "For the following graph, (a) determine for which values of x = a the limit as x approaches a of f(x) exists but f is not continuous at x = a, and (b) determine for which values of x = a the function is continuous but not differentiable at x = a.",
+      "text": "For the following graph, (a) determine for which values of \\(x = a\\) the limit as \\(x\\) approaches \\(a\\) of \\(f(x)\\) exists but \\(f\\) is not continuous at \\(x = a\\), and (b) determine for which values of \\(x = a\\) the function is continuous but not differentiable at \\(x = a\\).",
       "kind": "graph",
       "available": false,
       "book_page": 213
     },
     {
       "number": 80,
-      "text": "Use the graph to evaluate (a) f'(-0.5), (b) f'(0), (c) f'(1), (d) f'(2), and (e) f'(3), if it exists.",
+      "text": "Use the graph to evaluate (a) \\(f'(-0.5)\\), (b) \\(f'(0)\\), (c) \\(f'(1)\\), (d) \\(f'(2)\\), and (e) \\(f'(3)\\), if it exists.",
       "kind": "graph",
       "available": false,
       "book_page": 213
     },
     {
       "number": 81,
-      "text": "Using f''(x) = lim_{h -> 0} (f'(x + h) - f'(x)) / h, find f''(x) for f(x) = 2 - 3x.",
+      "text": "Using \\(f''(x) = lim_{h -> 0} (f'(x + h) - f'(x)) / h\\), find \\(f''(x)\\) for \\(f(x) = 2 - 3x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 82,
-      "text": "Using f''(x) = lim_{h -> 0} (f'(x + h) - f'(x)) / h, find f''(x) for f(x) = 4x^2.",
+      "text": "Using \\(f''(x) = lim_{h -> 0} (f'(x + h) - f'(x)) / h\\), find \\(f''(x)\\) for \\(f(x) = 4x^2\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 83,
-      "text": "Using f''(x) = lim_{h -> 0} (f'(x + h) - f'(x)) / h, find f''(x) for f(x) = x + 1/x.",
+      "text": "Using \\(f''(x) = lim_{h -> 0} (f'(x + h) - f'(x)) / h\\), find \\(f''(x)\\) for \\(f(x) = x + 1/x\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 213
     },
     {
       "number": 84,
-      "text": "[T] Use a calculator to graph f(x) = -5/x. Determine the function f'(x), then use a calculator to graph f'(x).",
+      "text": "[T] Use a calculator to graph \\(f(x) = -5/x\\). Determine the function \\(f'(x)\\), then use a calculator to graph \\(f'(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 85,
-      "text": "[T] Use a calculator to graph f(x) = 3x^2 + 2x + 4. Determine the function f'(x), then use a calculator to graph f'(x).",
+      "text": "[T] Use a calculator to graph \\(f(x) = 3x^2 + 2x + 4\\). Determine the function \\(f'(x)\\), then use a calculator to graph \\(f'(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 86,
-      "text": "[T] Use a calculator to graph f(x) = \\sqrt{x} + 3x. Determine the function f'(x), then use a calculator to graph f'(x).",
+      "text": "[T] Use a calculator to graph \\(f(x) = \\sqrt{x} + 3x\\). Determine the function \\(f'(x)\\), then use a calculator to graph \\(f'(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 87,
-      "text": "[T] Use a calculator to graph f(x) = 1/\\sqrt{2x}. Determine the function f'(x), then use a calculator to graph f'(x).",
+      "text": "[T] Use a calculator to graph \\(f(x) = 1/\\sqrt{2x}\\). Determine the function \\(f'(x)\\), then use a calculator to graph \\(f'(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 88,
-      "text": "[T] Use a calculator to graph f(x) = 1 + x + 1/x. Determine the function f'(x), then use a calculator to graph f'(x).",
+      "text": "[T] Use a calculator to graph \\(f(x) = 1 + x + 1/x\\). Determine the function \\(f'(x)\\), then use a calculator to graph \\(f'(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 89,
-      "text": "[T] Use a calculator to graph f(x) = x^3 + 1. Determine the function f'(x), then use a calculator to graph f'(x).",
+      "text": "[T] Use a calculator to graph \\(f(x) = x^3 + 1\\). Determine the function \\(f'(x)\\), then use a calculator to graph \\(f'(x)\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 90,
-      "text": "P(x) denotes the population of a city at time x in years. Describe what the following two expressions represent in this context, including units: (a) (P(x + h) - P(x)) / h, and (b) P'(x) = lim_{h -> 0} (P(x + h) - P(x)) / h.",
+      "text": "\\(P(x)\\) denotes the population of a city at time \\(x\\) in years. Describe what the following two expressions represent in this context, including units: (a) \\((P(x + h) - P(x)) / h\\), and (b) \\(P'(x) = lim_{h -> 0} (P(x + h) - P(x)) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214,
@@ -270,7 +270,7 @@
     },
     {
       "number": 91,
-      "text": "C(x) denotes the total amount of money (in thousands of dollars) spent on concessions by x customers at an amusement park. Describe what the following two expressions represent in this context, including units: (a) (C(x + h) - C(x)) / h, and (b) C'(x) = lim_{h -> 0} (C(x + h) - C(x)) / h.",
+      "text": "\\(C(x)\\) denotes the total amount of money (in thousands of dollars) spent on concessions by \\(x\\) customers at an amusement park. Describe what the following two expressions represent in this context, including units: (a) \\((C(x + h) - C(x)) / h\\), and (b) \\(C'(x) = lim_{h -> 0} (C(x + h) - C(x)) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214,
@@ -278,7 +278,7 @@
     },
     {
       "number": 92,
-      "text": "R(x) denotes the total cost (in thousands of dollars) of manufacturing x clock radios. Describe what the following two expressions represent in this context, including units: (a) (R(x + h) - R(x)) / h, and (b) R'(x) = lim_{h -> 0} (R(x + h) - R(x)) / h.",
+      "text": "\\(R(x)\\) denotes the total cost (in thousands of dollars) of manufacturing \\(x\\) clock radios. Describe what the following two expressions represent in this context, including units: (a) \\((R(x + h) - R(x)) / h\\), and (b) \\(R'(x) = lim_{h -> 0} (R(x + h) - R(x)) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214,
@@ -286,7 +286,7 @@
     },
     {
       "number": 93,
-      "text": "g(x) denotes the grade (in percentage points) received on a test, given x hours of studying. Describe what the following two expressions represent in this context, including units: (a) (g(x + h) - g(x)) / h, and (b) g'(x) = lim_{h -> 0} (g(x + h) - g(x)) / h.",
+      "text": "\\(g(x)\\) denotes the grade (in percentage points) received on a test, given \\(x\\) hours of studying. Describe what the following two expressions represent in this context, including units: (a) \\((g(x + h) - g(x)) / h\\), and (b) \\(g'(x) = lim_{h -> 0} (g(x + h) - g(x)) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214,
@@ -294,7 +294,7 @@
     },
     {
       "number": 94,
-      "text": "B(x) denotes the cost (in dollars) of a sociology textbook at university bookstores in the United States in x years since 1990. Describe what the following two expressions represent in this context, including units: (a) (B(x + h) - B(x)) / h, and (b) B'(x) = lim_{h -> 0} (B(x + h) - B(x)) / h.",
+      "text": "\\(B(x)\\) denotes the cost (in dollars) of a sociology textbook at university bookstores in the United States in \\(x\\) years since 1990. Describe what the following two expressions represent in this context, including units: (a) \\((B(x + h) - B(x)) / h\\), and (b) \\(B'(x) = lim_{h -> 0} (B(x + h) - B(x)) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214,
@@ -302,7 +302,7 @@
     },
     {
       "number": 95,
-      "text": "p(x) denotes atmospheric pressure in Torrs at an altitude of x feet. Describe what the following two expressions represent in this context, including units: (a) (p(x + h) - p(x)) / h, and (b) p'(x) = lim_{h -> 0} (p(x + h) - p(x)) / h.",
+      "text": "\\(p(x)\\) denotes atmospheric pressure in Torrs at an altitude of \\(x\\) feet. Describe what the following two expressions represent in this context, including units: (a) \\((p(x + h) - p(x)) / h\\), and (b) \\(p'(x) = lim_{h -> 0} (p(x + h) - p(x)) / h\\).",
       "kind": "symbolic",
       "available": true,
       "book_page": 214,
@@ -310,35 +310,35 @@
     },
     {
       "number": 96,
-      "text": "Sketch the graph of a function y = f(x) with all of the following properties: (a) f'(x) > 0 for -2 <= x < 1; (b) f'(2) = 0; (c) f'(x) > 0 for x > 2; (d) f(2) = 2 and f(0) = 1; (e) lim_{x -> -infinity} f(x) = 0 and lim_{x -> infinity} f(x) = infinity; (f) f'(1) does not exist.",
+      "text": "Sketch the graph of a function \\(y = f(x)\\) with all of the following properties: (a) \\(f'(x) > 0\\) for \\(-2 <= x < 1\\); (b) \\(f'(2) = 0\\); (c) \\(f'(x) > 0\\) for \\(x > 2\\); (d) \\(f(2) = 2\\) and \\(f(0) = 1\\); (e) \\(lim_{x -> -infinity} f(x) = 0\\) and \\(lim_{x -> infinity} f(x) = infinity\\); (f) \\(f'(1)\\) does not exist.",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 97,
-      "text": "Suppose temperature T in degrees Fahrenheit at a height x feet above the ground is given by y = T(x). (a) Give a physical interpretation, with units, of T'(x). (b) If we know that T'(1000) = -0.1, explain the physical meaning.",
+      "text": "Suppose temperature \\(T\\) in degrees Fahrenheit at a height \\(x\\) feet above the ground is given by \\(y = T(x)\\). (a) Give a physical interpretation, with units, of \\(T'(x)\\). (b) If we know that \\(T'(1000) = -0.1\\), explain the physical meaning.",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 98,
-      "text": "Suppose the total profit of a company is y = P(x) thousand dollars when x units of an item are sold. (a) What does (P(b) - P(a)) / (b - a) for 0 < a < b measure, and what are the units? (b) What does P'(x) measure, and what are the units? (c) Suppose that P'(30) = 5, what is the approximate change in profit if the number of items sold increases from 30 to 31?",
+      "text": "Suppose the total profit of a company is \\(y = P(x)\\) thousand dollars when \\(x\\) units of an item are sold. (a) What does \\((P(b) - P(a)) / (b - a)\\) for \\(0 < a < b\\) measure, and what are the units? (b) What does \\(P'(x)\\) measure, and what are the units? (c) Suppose that \\(P'(30) = 5\\), what is the approximate change in profit if the number of items sold increases from 30 to 31?",
       "kind": "symbolic",
       "available": true,
       "book_page": 214
     },
     {
       "number": 99,
-      "text": "The graph in the following figure models the number of people N(t) who have come down with the flu t weeks after its initial outbreak in a town with a population of 50,000 citizens. (a) Describe what N'(t) represents and how it behaves as t increases. (b) What does the derivative tell us about how this town is affected by the flu outbreak?",
+      "text": "The graph in the following figure models the number of people \\(N(t)\\) who have come down with the flu \\(t\\) weeks after its initial outbreak in a town with a population of 50,000 citizens. (a) Describe what \\(N'(t)\\) represents and how it behaves as \\(t\\) increases. (b) What does the derivative tell us about how this town is affected by the flu outbreak?",
       "kind": "graph",
       "available": false,
       "book_page": 215
     },
     {
       "number": 100,
-      "text": "The following table shows the height h (in meters) of the Saturn V rocket for the Apollo 11 mission at time t (in seconds) after launch: t = 0 s, h = 0 m; t = 1 s, h = 2 m; t = 2 s, h = 4 m; t = 3 s, h = 13 m; t = 4 s, h = 25 m; t = 5 s, h = 32 m. What is the physical meaning of h'(t)? What are the units?",
+      "text": "The following table shows the height \\(h\\) (in meters) of the Saturn V rocket for the Apollo 11 mission at time \\(t\\) (in seconds) after launch: \\(t = 0\\) s, \\(h = 0\\) m; \\(t = 1\\) s, \\(h = 2\\) m; \\(t = 2\\) s, \\(h = 4\\) m; \\(t = 3\\) s, \\(h = 13\\) m; \\(t = 4\\) s, \\(h = 25\\) m; \\(t = 5\\) s, \\(h = 32\\) m. What is the physical meaning of \\(h'(t)\\)? What are the units?",
       "kind": "table",
       "available": true,
       "book_page": 215,
@@ -346,7 +346,7 @@
     },
     {
       "number": 101,
-      "text": "[T] Using the table showing the height h (in meters) of the Saturn V rocket for the Apollo 11 mission at time t (in seconds) after launch (t = 0 s, h = 0 m; t = 1 s, h = 2 m; t = 2 s, h = 4 m; t = 3 s, h = 13 m; t = 4 s, h = 25 m; t = 5 s, h = 32 m), construct a table of values for h'(t) and graph both h(t) and h'(t) on the same graph. (Hint: for interior points, estimate both the left limit and the right limit and average them. An interior point of an interval I is an element of I that is not an endpoint of I.)",
+      "text": "[T] Using the table showing the height \\(h\\) (in meters) of the Saturn V rocket for the Apollo 11 mission at time \\(t\\) (in seconds) after launch (\\(t = 0\\) s, \\(h = 0\\) m; \\(t = 1\\) s, \\(h = 2\\) m; \\(t = 2\\) s, \\(h = 4\\) m; \\(t = 3\\) s, \\(h = 13\\) m; \\(t = 4\\) s, \\(h = 25\\) m; \\(t = 5\\) s, \\(h = 32\\) m), construct a table of values for \\(h'(t)\\) and graph both \\(h(t)\\) and \\(h'(t)\\) on the same graph. (Hint: for interior points, estimate both the left limit and the right limit and average them. An interior point of an interval \\(I\\) is an element of \\(I\\) that is not an endpoint of \\(I\\).)",
       "kind": "table",
       "available": true,
       "book_page": 215,
@@ -354,7 +354,7 @@
     },
     {
       "number": 102,
-      "text": "[T] Using the table showing the height h (in meters) of the Saturn V rocket for the Apollo 11 mission at time t (in seconds) after launch (t = 0 s, h = 0 m; t = 1 s, h = 2 m; t = 2 s, h = 4 m; t = 3 s, h = 13 m; t = 4 s, h = 25 m; t = 5 s, h = 32 m): the best linear fit to the data is given by H(t) = 7.229t - 4.905, where H is the height of the rocket (in meters) and t is the time elapsed since takeoff. From this equation, determine H'(t). Graph H(t) with the given data and, on a separate coordinate plane, graph H'(t).",
+      "text": "[T] Using the table showing the height \\(h\\) (in meters) of the Saturn V rocket for the Apollo 11 mission at time \\(t\\) (in seconds) after launch (\\(t = 0\\) s, \\(h = 0\\) m; \\(t = 1\\) s, \\(h = 2\\) m; \\(t = 2\\) s, \\(h = 4\\) m; \\(t = 3\\) s, \\(h = 13\\) m; \\(t = 4\\) s, \\(h = 25\\) m; \\(t = 5\\) s, \\(h = 32\\) m): the best linear fit to the data is given by \\(H(t) = 7.229t - 4.905\\), where \\(H\\) is the height of the rocket (in meters) and \\(t\\) is the time elapsed since takeoff. From this equation, determine \\(H'(t)\\). Graph \\(H(t)\\) with the given data and, on a separate coordinate plane, graph \\(H'(t)\\).",
       "kind": "table",
       "available": true,
       "book_page": 215,
@@ -362,7 +362,7 @@
     },
     {
       "number": 103,
-      "text": "[T] Using the table showing the height h (in meters) of the Saturn V rocket for the Apollo 11 mission at time t (in seconds) after launch (t = 0 s, h = 0 m; t = 1 s, h = 2 m; t = 2 s, h = 4 m; t = 3 s, h = 13 m; t = 4 s, h = 25 m; t = 5 s, h = 32 m): the best quadratic fit to the data is given by G(t) = 1.429t^2 + 0.0857t - 0.1429, where G is the height of the rocket (in meters) and t is the time elapsed since takeoff. From this equation, determine G'(t). Graph G(t) with the given data and, on a separate coordinate plane, graph G'(t).",
+      "text": "[T] Using the table showing the height \\(h\\) (in meters) of the Saturn V rocket for the Apollo 11 mission at time \\(t\\) (in seconds) after launch (\\(t = 0\\) s, \\(h = 0\\) m; \\(t = 1\\) s, \\(h = 2\\) m; \\(t = 2\\) s, \\(h = 4\\) m; \\(t = 3\\) s, \\(h = 13\\) m; \\(t = 4\\) s, \\(h = 25\\) m; \\(t = 5\\) s, \\(h = 32\\) m): the best quadratic fit to the data is given by \\(G(t) = 1.429t^2 + 0.0857t - 0.1429\\), where \\(G\\) is the height of the rocket (in meters) and \\(t\\) is the time elapsed since takeoff. From this equation, determine \\(G'(t)\\). Graph \\(G(t)\\) with the given data and, on a separate coordinate plane, graph \\(G'(t)\\).",
       "kind": "table",
       "available": true,
       "book_page": 216,
@@ -370,7 +370,7 @@
     },
     {
       "number": 104,
-      "text": "[T] Using the table showing the height h (in meters) of the Saturn V rocket for the Apollo 11 mission at time t (in seconds) after launch (t = 0 s, h = 0 m; t = 1 s, h = 2 m; t = 2 s, h = 4 m; t = 3 s, h = 13 m; t = 4 s, h = 25 m; t = 5 s, h = 32 m): the best cubic fit to the data is given by F(t) = 0.2037t^3 + 2.956t^2 - 2.705t + 0.4683, where F is the height of the rocket (in meters) and t is the time elapsed since takeoff. From this equation, determine F'(t). Graph F(t) with the given data and, on a separate coordinate plane, graph F'(t). Does the linear, quadratic, or cubic function fit the data best?",
+      "text": "[T] Using the table showing the height \\(h\\) (in meters) of the Saturn V rocket for the Apollo 11 mission at time \\(t\\) (in seconds) after launch (\\(t = 0\\) s, \\(h = 0\\) m; \\(t = 1\\) s, \\(h = 2\\) m; \\(t = 2\\) s, \\(h = 4\\) m; \\(t = 3\\) s, \\(h = 13\\) m; \\(t = 4\\) s, \\(h = 25\\) m; \\(t = 5\\) s, \\(h = 32\\) m): the best cubic fit to the data is given by \\(F(t) = 0.2037t^3 + 2.956t^2 - 2.705t + 0.4683\\), where \\(F\\) is the height of the rocket (in meters) and \\(t\\) is the time elapsed since takeoff. From this equation, determine \\(F'(t)\\). Graph \\(F(t)\\) with the given data and, on a separate coordinate plane, graph \\(F'(t)\\). Does the linear, quadratic, or cubic function fit the data best?",
       "kind": "table",
       "available": true,
       "book_page": 216,
@@ -378,7 +378,7 @@
     },
     {
       "number": 105,
-      "text": "Using the best linear, quadratic, and cubic fits to the Saturn V rocket height data (H(t) = 7.229t - 4.905, G(t) = 1.429t^2 + 0.0857t - 0.1429, and F(t) = 0.2037t^3 + 2.956t^2 - 2.705t + 0.4683, where t is the time in seconds elapsed since takeoff), determine what H''(t), G''(t), and F''(t) are. What are the physical meanings of H''(t), G''(t), and F''(t), and what are their units?",
+      "text": "Using the best linear, quadratic, and cubic fits to the Saturn V rocket height data (\\(H(t) = 7.229t - 4.905\\), \\(G(t) = 1.429t^2 + 0.0857t - 0.1429\\), and \\(F(t) = 0.2037t^3 + 2.956t^2 - 2.705t + 0.4683\\), where \\(t\\) is the time in seconds elapsed since takeoff), determine what \\(H''(t)\\), \\(G''(t)\\), and \\(F''(t)\\) are. What are the physical meanings of \\(H''(t)\\), \\(G''(t)\\), and \\(F''(t)\\), and what are their units?",
       "kind": "table",
       "available": true,
       "book_page": 216,
