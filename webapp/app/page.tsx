@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { BangIcon } from "@/components/icons";
 import type { ResolveResult } from "@/lib/exerciseBank";
@@ -21,26 +21,57 @@ export default function Home() {
   const [resolved, setResolved] = useState<ResolveResult | null>(null);
   const [resolving, setResolving] = useState(false);
   const [resolveFailed, setResolveFailed] = useState(false); // network-level failure only
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const lookupReady = mode === "lookup" && resolved?.found === true && resolved.available === true;
+
+  const doResolve = useCallback(async (q: string) => {
+    setResolving(true);
+    try {
+      const res = await fetch(`/api/problems/resolve?ref=${encodeURIComponent(q)}`);
+      setResolved(await res.json());
+    } catch {
+      setResolveFailed(true);
+    } finally {
+      setResolving(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (mode !== "lookup") return;
     const q = refInput.trim();
+    if (!q) return;
+    debounceRef.current = setTimeout(() => {
+      debounceRef.current = null;
+      void doResolve(q);
+    }, 400);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [refInput, mode, doResolve]);
+
+  function onRefChange(value: string) {
+    setRefInput(value);
     setResolved(null);
     setResolveFailed(false);
-    if (!q) return;
-    const t = setTimeout(async () => {
-      setResolving(true);
-      try {
-        const res = await fetch(`/api/problems/resolve?ref=${encodeURIComponent(q)}`);
-        setResolved(await res.json());
-      } catch {
-        setResolveFailed(true);
-      } finally {
-        setResolving(false);
-      }
-    }, 400);
-    return () => clearTimeout(t);
-  }, [refInput, mode]);
+  }
+
+  function onRefKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    const q = refInput.trim();
+    if (q) void doResolve(q);
+  }
+
+  function switchMode(next: "paste" | "lookup") {
+    setMode(next);
+    setResolved(null);
+    setResolveFailed(false);
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,11 +79,11 @@ export default function Home() {
     setError(null);
     setSubmitting(true);
     try {
-      const lookupReady = mode === "lookup" && resolved?.found === true && resolved.available === true;
-      const problemText = lookupReady ? resolved.text : problem;
-      const source: ProblemSource | undefined = lookupReady
-        ? { book_key: "openstax_calculus_v1", chapter: resolved.ref.chapter, section: resolved.ref.section, number: resolved.ref.number }
-        : undefined;
+      const problemText = lookupReady && resolved?.found && resolved.available ? resolved.text : problem;
+      const source: ProblemSource | undefined =
+        lookupReady && resolved?.found && resolved.available
+          ? { book_key: "openstax_calculus_v1", chapter: resolved.ref.chapter, section: resolved.ref.section, number: resolved.ref.number }
+          : undefined;
       const res = await fetch("/api/runs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -96,7 +127,7 @@ export default function Home() {
               type="button"
               className={`${styles.modeBtn} ${mode === "paste" ? styles.modeBtnActive : ""}`}
               aria-pressed={mode === "paste"}
-              onClick={() => setMode("paste")}
+              onClick={() => switchMode("paste")}
             >
               Paste a problem
             </button>
@@ -104,7 +135,7 @@ export default function Home() {
               type="button"
               className={`${styles.modeBtn} ${mode === "lookup" ? styles.modeBtnActive : ""}`}
               aria-pressed={mode === "lookup"}
-              onClick={() => setMode("lookup")}
+              onClick={() => switchMode("lookup")}
             >
               Textbook lookup
             </button>
@@ -138,7 +169,8 @@ export default function Home() {
                 className={styles.refInput}
                 placeholder="e.g. 3.41 or Chapter 3, Problem 41 (OpenStax Calculus Vol 1, chapter 3 for now)"
                 value={refInput}
-                onChange={(e) => setRefInput(e.target.value)}
+                onChange={(e) => onRefChange(e.target.value)}
+                onKeyDown={onRefKeyDown}
                 autoComplete="off"
               />
               {resolving && <p className={styles.refStatus}>Looking it up...</p>}
@@ -189,7 +221,7 @@ export default function Home() {
           <button
             type="submit"
             className={`btn btn-primary ${styles.submit}`}
-            disabled={submitting || (mode === "lookup" && !(resolved?.found === true && resolved.available === true))}
+            disabled={submitting || (mode === "lookup" && !lookupReady)}
           >
             {submitting ? "Starting..." : "Run Pipeline"}
           </button>
@@ -204,20 +236,42 @@ function renderResolved(r: ResolveResult) {
     return (
       <div className={styles.preview}>
         <p className={styles.previewCitation}>{r.citation}</p>
+        {r.hinted_section && (
+          <p className={styles.refStatus}>
+            {`You typed section ${r.hinted_section}; this exercise is in ${
+              r.ref.section === "3.review" ? "the chapter review" : `section ${r.ref.section}`
+            }.`}
+          </p>
+        )}
         <p className={styles.previewText}>{r.text}</p>
         <p className={styles.attribution}>{r.attribution}</p>
       </div>
     );
   }
   let message: string;
-  if (r.found) {
-    message = "This problem needs its printed graph or figure, which we can't show yet. Paste the problem text instead.";
-  } else if (r.reason === "bad_ref") {
-    message = "Enter a reference like 3.41 or Chapter 3, Problem 41.";
-  } else if (r.reason === "not_extracted") {
-    message = `Only chapter ${r.chapters.join(", ")} is available right now. Paste the problem instead.`;
-  } else {
-    message = `Chapter ${r.chapter} has exercises 1-${r.max}.`;
+  switch (r.reason) {
+    case "needs_figure":
+      message = "This problem needs its printed graph or figure, which we can't show yet. Paste the problem text instead.";
+      break;
+    case "bad_ref":
+      message = "Enter a reference like 3.41 or Chapter 3, Problem 41.";
+      break;
+    case "not_extracted":
+      message =
+        r.chapters.length === 0
+          ? "No textbook chapters are available yet. Paste the problem instead."
+          : `Only chapter ${r.chapters.join(", ")} is available right now. Paste the problem instead.`;
+      break;
+    case "no_such_exercise":
+      message = `Chapter ${r.chapter} has exercises 1-${r.max}.`;
+      break;
+    default: {
+      // Exhaustiveness check: a malformed payload or a future union member must
+      // never fall through to rendering undefined field interpolations.
+      const _exhaustive: never = r;
+      void _exhaustive;
+      message = "Could not resolve that reference.";
+    }
   }
   return <p className={styles.refStatus}>{message}</p>;
 }

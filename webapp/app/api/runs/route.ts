@@ -9,6 +9,9 @@ function parseSource(s: unknown): ProblemSource | undefined {
   if (!s || typeof s !== "object") return undefined;
   const { book_key, chapter, section, number } = s as Record<string, unknown>;
   if (typeof book_key !== "string" || typeof chapter !== "number" || typeof section !== "string" || typeof number !== "number") return undefined;
+  // buildCitation/OPENSTAX_ATTRIBUTION are hardcoded to this one book; a foreign
+  // book_key would render OpenStax attribution over non-OpenStax content.
+  if (book_key !== "openstax_calculus_v1") return undefined;
   return { book_key, chapter, section, number };
 }
 

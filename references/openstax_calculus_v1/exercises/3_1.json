@@ -253,7 +253,8 @@
       "text": "[T] f(x) = x^2 + 3x + 4, P(1, 8) on the graph of y = f(x). (Round slopes to 6 decimal places.) (a) Find the slope of the secant line PQ for each point Q(x, f(x)) with the following x values: x = 1.1 (i); x = 1.01 (ii); x = 1.001 (iii); x = 1.0001 (iv); x = 1.00001 (v); x = 1.000001 (vi); x = 0.9 (vii); x = 0.99 (viii); x = 0.999 (ix); x = 0.9999 (x); x = 0.99999 (xi); x = 0.999999 (xii). (b) Use the answers from (a) to estimate the value of the slope of the tangent line at P. (c) Use the answer from (b) to find an equation of the tangent line to f at point P.",
       "kind": "table",
       "available": true,
-      "book_page": 200
+      "book_page": 200,
+      "notes": "Book prints 'Round to 6 decimal places.'; 'slopes' added for referent clarity."
     },
     {
       "number": 32,
@@ -267,7 +268,8 @@
       "text": "[T] f(x) = 10e^{0.5x}, P(0, 10) on the graph of y = f(x). (Round slopes to 4 decimal places.) (a) Find the slope of the secant line PQ for each point Q(x, f(x)) with the following x values: x = -0.1 (i); x = -0.01 (ii); x = -0.001 (iii); x = -0.0001 (iv); x = -0.00001 (v); x = -0.000001 (vi). (b) Use the answers from (a) to estimate the value of the slope of the tangent line at P. (c) Use the answer from (b) to find an equation of the tangent line to f at point P.",
       "kind": "table",
       "available": true,
-      "book_page": 200
+      "book_page": 200,
+      "notes": "Book prints 'Round to 4 decimal places.'; 'slopes' added for referent clarity."
     },
     {
       "number": 34,

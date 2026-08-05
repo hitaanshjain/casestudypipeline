@@ -60,9 +60,22 @@ Before the first live run, read the "live-key work" notes in CLAUDE.md
 (sec 13 backlog): the non-mock critic pass/fail contract needs one reconciliation
 pass, and no live run has ever been made.
 
+## Textbook lookup
+
+Instead of pasting a problem, a student can type a reference like `3.41` or
+`Chapter 3, Problem 41` (OpenStax Calculus Vol 1, chapter 3 only for now).
+`GET /api/problems/resolve?ref=<ref>` resolves it against the exercise bank at
+`references/openstax_calculus_v1/exercises/` (391 exercises, 94% servable; the
+rest need a printed graph or figure we don't show yet) and returns the exercise
+text, citation, and attribution for a preview before the student submits.
+`webapp/tests/exerciseBank.test.ts` validates the committed bank (contiguous
+numbering, ASCII text, schema, and figure coverage) as part of the test suite.
+
 ## Pipeline flow
 
-1. `POST /api/runs` with `{problem, preferredContext}` returns a run id;
+1. `POST /api/runs` with `{problem, preferredContext, source}` returns a run
+   id (`source` is optional: `{book_key, chapter, section, number}`, set when
+   the problem came from the textbook lookup rather than a paste);
    `/runs/<id>` polls `GET /api/runs/<id>`.
 2. Stage 1: the phase-1 generator prompt, with read-only corpus tools over
    `references/`, writes the 5-file package to `runs/<id>/`.

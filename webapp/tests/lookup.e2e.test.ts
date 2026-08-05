@@ -57,6 +57,12 @@ describe("textbook lookup end to end (mock mode)", () => {
       source: { book_key: "openstax_calculus_v1", chapter: r.ref.chapter, section: r.ref.section, number: r.ref.number },
     });
     const s = await pollUntilDone(id);
+    expect(s.failed).toBe(false);
+    expect(s.stages.stage1.status).toBe("done");
+    expect(s.stages.critic.status).toBe("done");
+    expect(s.stages.case_study.status).toBe("done");
+    expect(["done", "cached"]).toContain(s.stages.concept_cards.status);
+    expect(["done", "cached"]).toContain(s.stages.practice_deck.status);
     expect(s.input.problem).toBe(ex.text);
     expect(s.input.source).toMatchObject({ chapter: r.ref.chapter, section: r.ref.section, number: ex.number });
   }, E2E_TIMEOUT);

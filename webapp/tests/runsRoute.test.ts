@@ -29,6 +29,12 @@ describe("POST /api/runs source pass-through", () => {
     expect(vi.mocked(startRun).mock.calls[0][0].source).toBeUndefined();
   });
 
+  it("strips a source with a non-OpenStax book_key rather than failing the run", async () => {
+    const res = await post({ problem: PROBLEM, source: { ...SOURCE, book_key: "stewart_8e" } });
+    expect(res.status).toBe(200);
+    expect(vi.mocked(startRun).mock.calls[0][0].source).toBeUndefined();
+  });
+
   it("still rejects a short problem", async () => {
     const res = await post({ problem: "too short", source: SOURCE });
     expect(res.status).toBe(400);

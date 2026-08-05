@@ -32,7 +32,7 @@ describe("exerciseBank loader", () => {
 });
 
 describe("validateBank", () => {
-  beforeEach(() => { clearBankCache(); });
+  beforeEach(() => { clearBankCache(); dirs.forEach((d) => rmSync(d, { recursive: true, force: true })); dirs = []; });
 
   it("passes a valid bank", () => {
     expect(validateBank(bank([validFile()]))).toEqual([]);
