@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   // up from webapp/) contains other lockfiles/configs Next would otherwise guess
   // at, since the whole pipeline (prompts/, references/, tools/) lives there too.
   outputFileTracingRoot: path.join(__dirname, ".."),
+  devIndicators: false,
 };
 
 export default nextConfig;
